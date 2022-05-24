@@ -34,15 +34,15 @@ class VolunteerTest {
     public void getAllVolunteerTest() {
         String title = "테스트 봉사 제목";
         String picture = "testImage";
-        String dDay = "2022-05-24";
-        String applyDay = "2022-05-25 18:00";
+        String volunteerDate = "2022-05-24";
+        String applicationDate = "2022-05-25 18:00";
         String maximumPerson = "20";
 
         Volunteer savedVolunteer = Volunteer.builder()
                 .title(title)
                 .picture(picture)
-                .dDay(dDay)
-                .applyDay(applyDay)
+                .volunteerDate(volunteerDate)
+                .applicationDate(applicationDate)
                 .maximumPerson(maximumPerson)
                 .build();
         log.info(savedVolunteer.getTitle());
@@ -55,8 +55,8 @@ class VolunteerTest {
 
         assertThat(volunteer.getTitle()).isEqualTo(title);
         assertThat(volunteer.getPicture()).isEqualTo(picture);
-        assertThat(volunteer.getDDay()).isEqualTo(dDay);
-        assertThat(volunteer.getApplyDay()).isEqualTo(applyDay);
+        assertThat(volunteer.getVolunteerDate()).isEqualTo(volunteerDate);
+        assertThat(volunteer.getApplicationDate()).isEqualTo(applicationDate);
         assertThat(volunteer.getMaximumPerson()).isEqualTo(maximumPerson);
 
     }
@@ -66,16 +66,16 @@ class VolunteerTest {
         String title = "테스트 봉사 제목";
         String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
         String picture = "testImage";
-        String dDay = "2022-05-24";
-        String applyDay = "2022-05-25 18:00";
+        String volunteerDate = "2022-05-24";
+        String applicationDate = "2022-05-25 18:00";
         String maximumPerson = "20";
 
         VolunteerSaveRequestDto savedVolunteer = VolunteerSaveRequestDto.builder()
                 .title(title)
                 .content(content)
                 .picture(picture)
-                .dDay(dDay)
-                .applyDay(applyDay)
+                .volunteerDate(volunteerDate)
+                .applicationDate(applicationDate)
                 .maximumPerson(maximumPerson)
                 .build();
 
@@ -90,8 +90,8 @@ class VolunteerTest {
         assertThat(volunteer.getTitle()).isEqualTo(title);
         assertThat(volunteer.getContent()).isEqualTo(content);
         assertThat(volunteer.getPicture()).isEqualTo(picture);
-        assertThat(volunteer.getDDay()).isEqualTo(dDay);
-        assertThat(volunteer.getApplyDay()).isEqualTo(applyDay);
+        assertThat(volunteer.getVolunteerDate()).isEqualTo(volunteerDate);
+        assertThat(volunteer.getApplicationDate()).isEqualTo(applicationDate);
         assertThat(volunteer.getMaximumPerson()).isEqualTo(maximumPerson);
     }
 
