@@ -1,5 +1,6 @@
 package com.example.jamong.domain.volunteer;
 
+import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -21,7 +22,7 @@ class VolunteerTest {
 
 
     @AfterEach
-    public void CleanUp(){
+    public void CleanUp() {
         volunteerRepository.deleteAll();
     }
 
@@ -32,9 +33,8 @@ class VolunteerTest {
     }
 
     @Test
-    public void getAllVolunteerTest(){
+    public void getAllVolunteerTest() {
         String title = "테스트 봉사 제목";
-        String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
         String picture = "testImage";
         String dDay = "2022-05-24";
         String applyDay = "2022-05-25 18:00";
@@ -42,7 +42,6 @@ class VolunteerTest {
 
         Volunteer savedVolunteer = Volunteer.builder()
                 .title(title)
-                .content(content)
                 .picture(picture)
                 .dDay(dDay)
                 .applyDay(applyDay)
@@ -57,12 +56,45 @@ class VolunteerTest {
         Volunteer volunteer = volunteerList.get(0);
 
         assertThat(volunteer.getTitle()).isEqualTo(title);
-        assertThat(volunteer.getContent()).isEqualTo(content);
         assertThat(volunteer.getPicture()).isEqualTo(picture);
         assertThat(volunteer.getDDay()).isEqualTo(dDay);
         assertThat(volunteer.getApplyDay()).isEqualTo(applyDay);
         assertThat(volunteer.getMaximumPerson()).isEqualTo(maximumPerson);
 
+    }
+
+    @Test
+    public void postVolunteerTest() {
+        String title = "테스트 봉사 제목";
+        String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
+        String picture = "testImage";
+        String dDay = "2022-05-24";
+        String applyDay = "2022-05-25 18:00";
+        String maximumPerson = "20";
+
+        VolunteerSaveRequestDto savedVolunteer = VolunteerSaveRequestDto.builder()
+                .title(title)
+                .content(content)
+                .picture(picture)
+                .dDay(dDay)
+                .applyDay(applyDay)
+                .maximumPerson(maximumPerson)
+                .build();
+
+        log.info(savedVolunteer.getTitle());
+
+        volunteerRepository.save(savedVolunteer.toEntity());
+
+        List<Volunteer> volunteerList = volunteerRepository.findAll();
+
+        Volunteer volunteer = volunteerList.get(0);
+
+        assertThat(volunteer.getTitle()).isEqualTo(title);
+        assertThat(volunteer.getContent()).isEqualTo(content);
+        assertThat(volunteer.getPicture()).isEqualTo(picture);
+        assertThat(volunteer.getDDay()).isEqualTo(dDay);
+        assertThat(volunteer.getApplyDay()).isEqualTo(applyDay);
+        assertThat(volunteer.getMaximumPerson()).isEqualTo(maximumPerson);
     }
 
 }
