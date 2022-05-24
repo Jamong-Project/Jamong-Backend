@@ -11,11 +11,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class VolunteerController {
-   private final VolunteerService volunteerService;
+    private final VolunteerService volunteerService;
 
-   @GetMapping("/v1/volunteers")
+    @GetMapping("/v1/volunteers")
     public List<VolunteerResponseDto> findAll() {
-       return volunteerService.findAll();
-   }
+        return volunteerService.findAll();
+    }
 
 }

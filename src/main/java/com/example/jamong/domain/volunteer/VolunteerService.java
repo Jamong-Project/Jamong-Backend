@@ -22,7 +22,7 @@ public class VolunteerService {
 
         List<VolunteerResponseDto> dtos = new ArrayList<VolunteerResponseDto>();
 
-        for(Volunteer volunteer : volunteerList){
+        for (Volunteer volunteer : volunteerList) {
             dtos.add(new VolunteerResponseDto(volunteer));
         }
 
