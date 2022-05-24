@@ -1,17 +1,19 @@
 package com.example.jamong.domain.volunteer;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import static javax.persistence.GenerationType.*;
 
 @Getter
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @Entity
 public class Volunteer {
@@ -22,18 +24,18 @@ public class Volunteer {
     private String title;
     private String content;
     private String picture;
-    private String dDay;
-    private String applyDay;
+    private String volunteerDate;
+    private String applicationDate;
     private String maximumPerson;
 
     @Builder
-    public Volunteer(Long id,String title, String content, String picture, String dDay, String applyDay, String maximumPerson) {
+    public Volunteer(Long id, String title, String content, String picture, String volunteerDate, String applicationDate, String maximumPerson) {
         this.title = title;
         this.id = id;
         this.content = content;
         this.picture = picture;
-        this.dDay = dDay;
-        this.applyDay = applyDay;
+        this.volunteerDate = volunteerDate;
+        this.applicationDate = applicationDate;
         this.maximumPerson = maximumPerson;
     }
 }

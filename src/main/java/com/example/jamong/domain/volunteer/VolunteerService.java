@@ -1,6 +1,7 @@
 package com.example.jamong.domain.volunteer;
 
 import com.example.jamong.domain.volunteer.dto.VolunteerResponseDto;
+import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,18 @@ public class VolunteerService {
     public List<VolunteerResponseDto> findAll() {
         List<Volunteer> volunteerList = volunteerRepository.findAll();
 
-        List<VolunteerResponseDto> dtos = new ArrayList<VolunteerResponseDto>();
+        List<VolunteerResponseDto> dtos = new ArrayList<>();
 
         for (Volunteer volunteer : volunteerList) {
             dtos.add(new VolunteerResponseDto(volunteer));
         }
 
         return dtos;
+    }
+
+    @Transactional
+    public Volunteer save(VolunteerSaveRequestDto requestDto) {
+        return volunteerRepository.save(requestDto.toEntity());
+
     }
 }

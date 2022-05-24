@@ -7,19 +7,17 @@ import lombok.Getter;
 @Getter
 public class VolunteerResponseDto {
     private final String title;
-    private final String content;
     private final String picture;
-    private final String dDay;
-    private final String applyDay;
+    private final String volunteerDate;
+    private final String applicationDate;
     private final String maximumPerson;
 
     @Builder
     public VolunteerResponseDto(Volunteer entity) {
         this.title = entity.getTitle();
-        this.content = entity.getContent();
         this.picture = entity.getPicture();
-        this.dDay = entity.getDDay();
-        this.applyDay = entity.getApplyDay();
+        this.volunteerDate = entity.getVolunteerDate();
+        this.applicationDate = entity.getApplicationDate();
         this.maximumPerson = entity.getMaximumPerson();
     }
 }
