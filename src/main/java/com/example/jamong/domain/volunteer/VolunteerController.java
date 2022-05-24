@@ -3,7 +3,6 @@ package com.example.jamong.domain.volunteer;
 import com.example.jamong.domain.volunteer.dto.VolunteerResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
