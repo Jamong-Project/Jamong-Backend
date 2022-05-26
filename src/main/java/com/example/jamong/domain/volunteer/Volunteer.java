@@ -1,5 +1,6 @@
 package com.example.jamong.domain.volunteer;
 
+import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
@@ -37,5 +38,14 @@ public class Volunteer {
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
         this.maximumPerson = maximumPerson;
+    }
+
+    public void update(VolunteerUpdateRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.picture = requestDto.getPicture();
+        this.volunteerDate = requestDto.getVolunteerDate();
+        this.applicationDate = requestDto.getApplicationDate();
+        this.maximumPerson = requestDto.getMaximumPerson();
     }
 }

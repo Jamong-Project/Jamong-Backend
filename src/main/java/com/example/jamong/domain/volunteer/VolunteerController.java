@@ -2,11 +2,9 @@ package com.example.jamong.domain.volunteer;
 
 import com.example.jamong.domain.volunteer.dto.VolunteerResponseDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
+import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +22,11 @@ public class VolunteerController {
     public Volunteer save(@RequestBody VolunteerSaveRequestDto requestDto) {
         return volunteerService.save(requestDto);
     }
+
+    @PatchMapping("/v1/volunteers/{id}")
+    public Volunteer update(@PathVariable Long id, @RequestBody VolunteerUpdateRequestDto requestDto) {
+        return volunteerService.update(id, requestDto);
+    }
+
 
 }

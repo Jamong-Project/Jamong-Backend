@@ -2,6 +2,7 @@ package com.example.jamong.domain.volunteer;
 
 import com.example.jamong.domain.volunteer.dto.VolunteerResponseDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
+import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,16 @@ public class VolunteerService {
     @Transactional
     public Volunteer save(VolunteerSaveRequestDto requestDto) {
         return volunteerRepository.save(requestDto.toEntity());
+
+    }
+
+    public Volunteer update(Long id, VolunteerUpdateRequestDto requestDto) {
+        Volunteer entity = volunteerRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
+
+        entity.update(requestDto);
+
+        return entity;
 
     }
 }
