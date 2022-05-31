@@ -128,4 +128,14 @@ class VolunteerTest {
         assertThat(volunteer.getApplicationDate()).isEqualTo(applicationDate);
         assertThat(volunteer.getMaximumPerson()).isEqualTo(maximumPerson);
     }
+
+    @Test
+    public void deleteVolunteerTest() {
+        Volunteer volunteer = volunteerRepository.findAll().get(0);
+
+        volunteerService.delete(volunteer.getId());
+
+        List<Volunteer> volunteerList = volunteerRepository.findAll();
+        assertThat(volunteerList.size()).isEqualTo(0);
+    }
 }
