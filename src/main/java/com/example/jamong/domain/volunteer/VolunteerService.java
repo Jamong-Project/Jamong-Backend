@@ -39,7 +39,9 @@ public class VolunteerService {
 
     public Volunteer update(Long id, VolunteerUpdateRequestDto requestDto) {
         Volunteer entity = volunteerRepository.findById(id)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(
+                        () -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id)
+                );
 
         entity.update(requestDto);
 
