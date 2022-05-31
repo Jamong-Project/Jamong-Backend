@@ -28,5 +28,8 @@ public class VolunteerController {
         return volunteerService.update(id, requestDto);
     }
 
-
+    @DeleteMapping("/v1/volunteers/{id}")
+    public void delete(@PathVariable Long id) {
+        volunteerService.delete(id);
+    }
 }
