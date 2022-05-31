@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import static javax.persistence.GenerationType.*;
 
 @Getter
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @NoArgsConstructor
 @Entity
 public class Volunteer {
