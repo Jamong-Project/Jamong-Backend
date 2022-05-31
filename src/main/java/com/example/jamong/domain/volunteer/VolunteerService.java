@@ -43,7 +43,7 @@ public class VolunteerService {
 
         entity.update(requestDto);
 
-        return entity;
+        return volunteerRepository.save(entity);
 
     }
 }

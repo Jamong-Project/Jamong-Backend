@@ -31,8 +31,8 @@ public class Volunteer {
 
     @Builder
     public Volunteer(Long id, String title, String content, String picture, String volunteerDate, String applicationDate, String maximumPerson) {
-        this.title = title;
         this.id = id;
+        this.title = title;
         this.content = content;
         this.picture = picture;
         this.volunteerDate = volunteerDate;
