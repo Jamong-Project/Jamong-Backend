@@ -29,7 +29,7 @@ public class VolunteerController {
     }
 
     @DeleteMapping("/v1/volunteers/{id}")
-    public void delete(@PathVariable Long id) {
-        volunteerService.delete(id);
+    public Volunteer delete(@PathVariable Long id) {
+        return volunteerService.delete(id);
     }
 }
