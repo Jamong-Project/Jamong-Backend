@@ -31,6 +31,12 @@ public class VolunteerService {
         return dtos;
     }
 
+    public VolunteerResponseDto findById(Long id) {
+        Volunteer entity = volunteerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id));
+        return new VolunteerResponseDto(entity);
+    }
+
     @Transactional
     public Volunteer save(VolunteerSaveRequestDto requestDto) {
         return volunteerRepository.save(requestDto.toEntity());
@@ -53,10 +59,11 @@ public class VolunteerService {
     public Volunteer delete(Long id) {
         Volunteer entity = volunteerRepository.findById(id)
                 .orElseThrow(
-                        ()-> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id)
+                        () -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id)
                 );
 
         volunteerRepository.delete(entity);
         return entity;
     }
+
 }

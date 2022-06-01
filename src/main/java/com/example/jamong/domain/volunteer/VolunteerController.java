@@ -18,6 +18,11 @@ public class VolunteerController {
         return volunteerService.findAll();
     }
 
+    @GetMapping("/v1/volunteers/{id}")
+    public VolunteerResponseDto findById(@PathVariable Long id) {
+        return volunteerService.findById(id);
+    }
+
     @PostMapping("/v1/volunteers")
     public Volunteer save(@RequestBody VolunteerSaveRequestDto requestDto) {
         return volunteerService.save(requestDto);
