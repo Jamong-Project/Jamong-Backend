@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,9 +27,9 @@ class VolunteerTest {
     String title = "테스트 봉사 제목";
     String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
     String picture = "이미지 testImage";
-    String volunteerDate = "2022-05-24";
-    String applicationDate = "2022-05-25 18:00";
-    String maximumPerson = "20";
+    LocalDateTime volunteerDate = LocalDateTime.parse("2022-05-24T00:00");
+    LocalDateTime applicationDate = LocalDateTime.parse("2022-05-25T18:00");
+    Integer maximumPerson = 20;
 
     @AfterEach
     public void CleanUp() {
@@ -68,9 +69,9 @@ class VolunteerTest {
         String title = "테스트 봉사 제목";
         String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
         String picture = "testImage";
-        String volunteerDate = "2022-05-24";
-        String applicationDate = "2022-05-25 18:00";
-        String maximumPerson = "20";
+        LocalDateTime volunteerDate = LocalDateTime.parse("2022-05-24T00:00");
+        LocalDateTime applicationDate = LocalDateTime.parse("2022-05-25T18:00");
+        Integer maximumPerson = 20;
 
         VolunteerSaveRequestDto savedVolunteer = VolunteerSaveRequestDto.builder()
                 .title(title)
@@ -102,9 +103,9 @@ class VolunteerTest {
         String updatedTitle = "변경된 테스트 봉사 제목";
         String updatedContent = "변경된 테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
         String updatedPicture = "변경된 이미지 testImage";
-        String updatedVolunteerDate = "변경된 2022-05-24";
-        String updatedApplicationDate = "변경된 2022-05-25 18:00";
-        String updatedMaximumPerson = "변경된 20";
+        LocalDateTime updatedVolunteerDate = LocalDateTime.parse("2022-06-01T00:00");
+        LocalDateTime updatedApplicationDate = LocalDateTime.parse("2022-06-01T18:00");
+        Integer updatedMaximumPerson = 10;
 
         VolunteerUpdateRequestDto requestDto = VolunteerUpdateRequestDto.builder()
                 .title(updatedTitle)
