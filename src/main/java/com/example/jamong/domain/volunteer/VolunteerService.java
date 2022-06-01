@@ -43,6 +43,7 @@ public class VolunteerService {
 
     }
 
+    @Transactional
     public Volunteer update(Long id, VolunteerUpdateRequestDto requestDto) {
         Volunteer entity = volunteerRepository.findById(id)
                 .orElseThrow(
