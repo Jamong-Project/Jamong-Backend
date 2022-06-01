@@ -4,18 +4,31 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class VolunteerUpdateRequestDto {
     private final String title;
     private final String content;
     private final String picture;
-    private final String volunteerDate;
-    private final String applicationDate;
-    private final String maximumPerson;
+
+    @DateTimeFormat
+    private final LocalDateTime volunteerDate;
+
+    @DateTimeFormat
+    private final LocalDateTime applicationDate;
+
+    private final Integer maximumPerson;
 
     @Builder
-    public VolunteerUpdateRequestDto(String title, String content, String picture, String volunteerDate, String applicationDate, String maximumPerson) {
+    public VolunteerUpdateRequestDto(
+            String title, String content, String picture,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime volunteerDate,
+            @DateTimeFormat(pattern = "yyyy-MM-dd-HH:mm") LocalDateTime applicationDate,
+            Integer maximumPerson) {
+
         this.title = title;
         this.content = content;
         this.picture = picture;

@@ -1,15 +1,19 @@
 package com.example.jamong.domain.volunteer;
 
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import java.time.LocalDateTime;
 
 import static javax.persistence.GenerationType.*;
 
@@ -24,12 +28,15 @@ public class Volunteer {
     private String title;
     private String content;
     private String picture;
-    private String volunteerDate;
-    private String applicationDate;
-    private String maximumPerson;
+
+    private LocalDateTime volunteerDate;
+
+    private LocalDateTime applicationDate;
+
+    private Integer maximumPerson;
 
     @Builder
-    public Volunteer(Long id, String title, String content, String picture, String volunteerDate, String applicationDate, String maximumPerson) {
+    public Volunteer(Long id, String title, String content, String picture, LocalDateTime volunteerDate, LocalDateTime applicationDate, Integer maximumPerson) {
         this.id = id;
         this.title = title;
         this.content = content;
