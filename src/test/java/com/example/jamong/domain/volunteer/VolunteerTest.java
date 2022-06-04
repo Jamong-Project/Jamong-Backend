@@ -110,7 +110,7 @@ class VolunteerTest {
         LocalDateTime updatedVolunteerDate = LocalDateTime.parse("2022-06-01T00:00");
         LocalDateTime updatedApplicationDate = LocalDateTime.parse("2022-06-01T18:00");
         Integer updatedMaximumPerson = 10;
-        Integer updatedCurrentPerson = 2;
+        Integer updatedCurrentPerson = 1;
 
         VolunteerUpdateRequestDto requestDto = VolunteerUpdateRequestDto.builder()
                 .title(updatedTitle)
