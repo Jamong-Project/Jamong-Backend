@@ -21,13 +21,14 @@ public class VolunteerUpdateRequestDto {
     private final LocalDateTime applicationDate;
 
     private final Integer maximumPerson;
+    private final Integer currentPerson;
 
     @Builder
     public VolunteerUpdateRequestDto(
             String title, String content, String picture,
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime volunteerDate,
             @DateTimeFormat(pattern = "yyyy-MM-dd-HH:mm") LocalDateTime applicationDate,
-            Integer maximumPerson) {
+            Integer maximumPerson, Integer currentPerson) {
 
         this.title = title;
         this.content = content;
@@ -35,5 +36,6 @@ public class VolunteerUpdateRequestDto {
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
         this.maximumPerson = maximumPerson;
+        this.currentPerson = currentPerson;
     }
 }

@@ -10,6 +10,7 @@ import lombok.Getter;
 import org.apache.tomcat.jni.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,15 +27,17 @@ public class VolunteerSaveRequestDto {
     private final LocalDateTime applicationDate;
 
     private final Integer maximumPerson;
+    private final Integer currentPerson;
 
     @Builder
-    public VolunteerSaveRequestDto(String title, String content, String picture, LocalDateTime volunteerDate, LocalDateTime applicationDate, Integer maximumPerson) {
+    public VolunteerSaveRequestDto(String title, String content, String picture, LocalDateTime volunteerDate, LocalDateTime applicationDate, Integer maximumPerson, Integer currentPerson) {
         this.title = title;
         this.content = content;
         this.picture = picture;
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
         this.maximumPerson = maximumPerson;
+        this.currentPerson = currentPerson;
     }
 
     public Volunteer toEntity() {
@@ -45,6 +48,7 @@ public class VolunteerSaveRequestDto {
                 .volunteerDate(volunteerDate)
                 .applicationDate(applicationDate)
                 .maximumPerson(maximumPerson)
+                .currentPerson(currentPerson)
                 .build();
     }
 }

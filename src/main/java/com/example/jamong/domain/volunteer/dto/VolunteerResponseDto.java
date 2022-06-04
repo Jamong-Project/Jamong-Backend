@@ -19,6 +19,7 @@ public class VolunteerResponseDto {
     private final LocalDateTime applicationDate;
 
     private final Integer maximumPerson;
+    private final Integer currentPerson;
 
     @Builder
     public VolunteerResponseDto(Volunteer entity) {
@@ -27,5 +28,6 @@ public class VolunteerResponseDto {
         this.volunteerDate = entity.getVolunteerDate();
         this.applicationDate = entity.getApplicationDate();
         this.maximumPerson = entity.getMaximumPerson();
+        this.currentPerson = entity.getCurrentPerson();
     }
 }
