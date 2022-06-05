@@ -13,11 +13,9 @@ public class VolunteerResponseDto {
     private final String title;
     private final String picture;
 
-    @DateTimeFormat
-    private final LocalDateTime volunteerDate;
+    private final Long volunteerDate;
 
-    @DateTimeFormat
-    private final LocalDateTime applicationDate;
+    private final Long applicationDate;
 
     private final Integer maximumPeople;
     private final Integer currentPeople;

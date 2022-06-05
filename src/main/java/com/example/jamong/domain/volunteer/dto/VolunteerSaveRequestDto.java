@@ -14,17 +14,15 @@ public class VolunteerSaveRequestDto {
     private final String picture;
 
 
-    @DateTimeFormat
-    private final LocalDateTime volunteerDate;
+    private final Long volunteerDate;
 
-    @DateTimeFormat
-    private final LocalDateTime applicationDate;
+    private final Long applicationDate;
 
     private final Integer maximumPeople;
     private final Integer currentPeople;
 
     @Builder
-    public VolunteerSaveRequestDto(String title, String content, String picture, LocalDateTime volunteerDate, LocalDateTime applicationDate, Integer maximumPeople, Integer currentPeople) {
+    public VolunteerSaveRequestDto(String title, String content, String picture, Long volunteerDate, Long applicationDate, Integer maximumPeople, Integer currentPeople) {
         this.title = title;
         this.content = content;
         this.picture = picture;

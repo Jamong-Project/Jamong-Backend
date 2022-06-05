@@ -27,15 +27,15 @@ public class Volunteer {
     private String content;
     private String picture;
 
-    private LocalDateTime volunteerDate;
+    private Long volunteerDate;
 
-    private LocalDateTime applicationDate;
+    private Long applicationDate;
 
     private Integer maximumPeople;
     private Integer currentPeople;
 
     @Builder
-    public Volunteer(Long id, String title, String content, String picture, LocalDateTime volunteerDate, LocalDateTime applicationDate, Integer maximumPeople) {
+    public Volunteer(Long id, String title, String content, String picture, Long volunteerDate, Long applicationDate, Integer maximumPeople) {
         this.id = id;
         this.title = title;
         this.content = content;

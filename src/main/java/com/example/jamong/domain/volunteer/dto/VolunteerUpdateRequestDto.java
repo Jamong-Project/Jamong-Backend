@@ -12,19 +12,17 @@ public class VolunteerUpdateRequestDto {
     private final String content;
     private final String picture;
 
-    @DateTimeFormat
-    private final LocalDateTime volunteerDate;
+    private final Long volunteerDate;
 
-    @DateTimeFormat
-    private final LocalDateTime applicationDate;
+    private final Long applicationDate;
 
     private final Integer maximumPeople;
     private final Integer currentPeople;
 
     @Builder
     public VolunteerUpdateRequestDto(String title, String content, String picture,
-                                     LocalDateTime volunteerDate,
-                                     LocalDateTime applicationDate,
+                                     Long volunteerDate,
+                                     Long applicationDate,
                                      Integer maximumPeople, Integer currentPeople) {
 
         this.title = title;
