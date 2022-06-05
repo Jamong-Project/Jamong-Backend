@@ -1,16 +1,10 @@
 package com.example.jamong.domain.volunteer.dto;
 
 import com.example.jamong.domain.volunteer.Volunteer;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
-import org.apache.tomcat.jni.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,18 +20,18 @@ public class VolunteerSaveRequestDto {
     @DateTimeFormat
     private final LocalDateTime applicationDate;
 
-    private final Integer maximumPerson;
-    private final Integer currentPerson;
+    private final Integer maximumPeople;
+    private final Integer currentPeople;
 
     @Builder
-    public VolunteerSaveRequestDto(String title, String content, String picture, LocalDateTime volunteerDate, LocalDateTime applicationDate, Integer maximumPerson, Integer currentPerson) {
+    public VolunteerSaveRequestDto(String title, String content, String picture, LocalDateTime volunteerDate, LocalDateTime applicationDate, Integer maximumPeople, Integer currentPeople) {
         this.title = title;
         this.content = content;
         this.picture = picture;
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
-        this.maximumPerson = maximumPerson;
-        this.currentPerson = currentPerson;
+        this.maximumPeople = maximumPeople;
+        this.currentPeople = currentPeople;
     }
 
     public Volunteer toEntity() {
@@ -47,8 +41,7 @@ public class VolunteerSaveRequestDto {
                 .picture(picture)
                 .volunteerDate(volunteerDate)
                 .applicationDate(applicationDate)
-                .maximumPerson(maximumPerson)
-                .currentPerson(currentPerson)
+                .maximumPeople(maximumPeople)
                 .build();
     }
 }

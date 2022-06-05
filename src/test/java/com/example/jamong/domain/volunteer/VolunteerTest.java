@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -29,8 +28,8 @@ class VolunteerTest {
     String picture = "이미지 testImage";
     LocalDateTime volunteerDate = LocalDateTime.parse("2022-05-24T00:00");
     LocalDateTime applicationDate = LocalDateTime.parse("2022-05-25T18:00");
-    Integer maximumPerson = 20;
-    Integer currentPerson = 0;
+    Integer maximumPeople = 20;
+    Integer currentPeople = 0;
 
     @AfterEach
     public void CleanUp() {
@@ -45,7 +44,7 @@ class VolunteerTest {
                 .picture(picture)
                 .volunteerDate(volunteerDate)
                 .applicationDate(applicationDate)
-                .maximumPerson(maximumPerson)
+                .maximumPeople(maximumPeople)
                 .build();
 
         volunteerRepository.save(savedVolunteer);
@@ -61,8 +60,8 @@ class VolunteerTest {
         assertThat(volunteer.getPicture()).isEqualTo(picture);
         assertThat(volunteer.getVolunteerDate()).isEqualTo(volunteerDate);
         assertThat(volunteer.getApplicationDate()).isEqualTo(applicationDate);
-        assertThat(volunteer.getMaximumPerson()).isEqualTo(maximumPerson);
-        assertThat(volunteer.getCurrentPerson()).isEqualTo(currentPerson);
+        assertThat(volunteer.getMaximumPeople()).isEqualTo(maximumPeople);
+        assertThat(volunteer.getCurrentPeople()).isEqualTo(currentPeople);
 
     }
 
@@ -73,7 +72,7 @@ class VolunteerTest {
         String picture = "testImage";
         LocalDateTime volunteerDate = LocalDateTime.parse("2022-05-24T00:00");
         LocalDateTime applicationDate = LocalDateTime.parse("2022-05-25T18:00");
-        Integer maximumPerson = 20;
+        Integer maximumPeople = 20;
 
 
         VolunteerSaveRequestDto savedVolunteer = VolunteerSaveRequestDto.builder()
@@ -82,7 +81,7 @@ class VolunteerTest {
                 .picture(picture)
                 .volunteerDate(volunteerDate)
                 .applicationDate(applicationDate)
-                .maximumPerson(maximumPerson)
+                .maximumPeople(maximumPeople)
                 .build();
 
         log.info(savedVolunteer.getTitle());
@@ -98,8 +97,8 @@ class VolunteerTest {
         assertThat(volunteer.getPicture()).isEqualTo(picture);
         assertThat(volunteer.getVolunteerDate()).isEqualTo(volunteerDate);
         assertThat(volunteer.getApplicationDate()).isEqualTo(applicationDate);
-        assertThat(volunteer.getMaximumPerson()).isEqualTo(maximumPerson);
-        assertThat(volunteer.getCurrentPerson()).isEqualTo(0);
+        assertThat(volunteer.getMaximumPeople()).isEqualTo(maximumPeople);
+        assertThat(volunteer.getCurrentPeople()).isEqualTo(0);
     }
 
     @Test
@@ -109,8 +108,8 @@ class VolunteerTest {
         String updatedPicture = "변경된 이미지 testImage";
         LocalDateTime updatedVolunteerDate = LocalDateTime.parse("2022-06-01T00:00");
         LocalDateTime updatedApplicationDate = LocalDateTime.parse("2022-06-01T18:00");
-        Integer updatedMaximumPerson = 10;
-        Integer updatedCurrentPerson = 2;
+        Integer updatedMaximumPeople = 10;
+        Integer updatedCurrentPeople = 2;
 
         VolunteerUpdateRequestDto requestDto = VolunteerUpdateRequestDto.builder()
                 .title(updatedTitle)
@@ -118,8 +117,8 @@ class VolunteerTest {
                 .picture(updatedPicture)
                 .volunteerDate(updatedVolunteerDate)
                 .applicationDate(updatedApplicationDate)
-                .maximumPerson(updatedMaximumPerson)
-                .currentPerson(updatedCurrentPerson)
+                .maximumPeople(updatedMaximumPeople)
+                .currentPeople(updatedCurrentPeople)
                 .build();
 
         List<Volunteer> volunteerList = volunteerRepository.findAll();
@@ -133,8 +132,8 @@ class VolunteerTest {
         assertThat(volunteer.getPicture()).isEqualTo(picture);
         assertThat(volunteer.getVolunteerDate()).isEqualTo(volunteerDate);
         assertThat(volunteer.getApplicationDate()).isEqualTo(applicationDate);
-        assertThat(volunteer.getMaximumPerson()).isEqualTo(maximumPerson);
-        assertThat(volunteer.getCurrentPerson()).isEqualTo(currentPerson);
+        assertThat(volunteer.getMaximumPeople()).isEqualTo(maximumPeople);
+        assertThat(volunteer.getCurrentPeople()).isEqualTo(currentPeople);
     }
 
     @Test

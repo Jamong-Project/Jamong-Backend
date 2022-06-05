@@ -1,13 +1,9 @@
 package com.example.jamong.domain.volunteer;
 
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,19 +31,19 @@ public class Volunteer {
 
     private LocalDateTime applicationDate;
 
-    private Integer maximumPerson;
-    private Integer currentPerson;
+    private Integer maximumPeople;
+    private Integer currentPeople;
 
     @Builder
-    public Volunteer(Long id, String title, String content, String picture, LocalDateTime volunteerDate, LocalDateTime applicationDate, Integer maximumPerson, Integer currentPerson) {
+    public Volunteer(Long id, String title, String content, String picture, LocalDateTime volunteerDate, LocalDateTime applicationDate, Integer maximumPeople) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.picture = picture;
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
-        this.maximumPerson = maximumPerson;
-        this.currentPerson = INITIAL_CURRENT_PERSON_VALUE;
+        this.maximumPeople = maximumPeople;
+        this.currentPeople = INITIAL_CURRENT_PERSON_VALUE;
     }
 
     public void update(VolunteerUpdateRequestDto requestDto) {
@@ -56,7 +52,7 @@ public class Volunteer {
         this.picture = requestDto.getPicture();
         this.volunteerDate = requestDto.getVolunteerDate();
         this.applicationDate = requestDto.getApplicationDate();
-        this.maximumPerson = requestDto.getMaximumPerson();
-        this.currentPerson = requestDto.getCurrentPerson();
+        this.maximumPeople = requestDto.getMaximumPeople();
+        this.currentPeople = requestDto.getCurrentPeople();
     }
 }

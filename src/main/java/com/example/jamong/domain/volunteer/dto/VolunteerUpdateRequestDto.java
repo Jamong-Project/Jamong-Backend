@@ -1,7 +1,5 @@
 package com.example.jamong.domain.volunteer.dto;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,22 +18,21 @@ public class VolunteerUpdateRequestDto {
     @DateTimeFormat
     private final LocalDateTime applicationDate;
 
-    private final Integer maximumPerson;
-    private final Integer currentPerson;
+    private final Integer maximumPeople;
+    private final Integer currentPeople;
 
     @Builder
-    public VolunteerUpdateRequestDto(
-            String title, String content, String picture,
-            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDateTime volunteerDate,
-            @DateTimeFormat(pattern = "yyyy-MM-dd-HH:mm") LocalDateTime applicationDate,
-            Integer maximumPerson, Integer currentPerson) {
+    public VolunteerUpdateRequestDto(String title, String content, String picture,
+                                     LocalDateTime volunteerDate,
+                                     LocalDateTime applicationDate,
+                                     Integer maximumPeople, Integer currentPeople) {
 
         this.title = title;
         this.content = content;
         this.picture = picture;
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
-        this.maximumPerson = maximumPerson;
-        this.currentPerson = currentPerson;
+        this.maximumPeople = maximumPeople;
+        this.currentPeople = currentPeople;
     }
 }
