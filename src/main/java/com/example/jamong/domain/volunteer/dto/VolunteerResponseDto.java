@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 public class VolunteerResponseDto {
+    private final Long id;
     private final String title;
     private final String picture;
 
@@ -23,6 +24,7 @@ public class VolunteerResponseDto {
 
     @Builder
     public VolunteerResponseDto(Volunteer entity) {
+        this.id = entity.getId();
         this.title = entity.getTitle();
         this.picture = entity.getPicture();
         this.volunteerDate = entity.getVolunteerDate();
