@@ -26,8 +26,8 @@ class VolunteerTest {
     String title = "테스트 봉사 제목";
     String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
     String picture = "이미지 testImage";
-    LocalDateTime volunteerDate = LocalDateTime.parse("2022-05-24T00:00");
-    LocalDateTime applicationDate = LocalDateTime.parse("2022-05-25T18:00");
+    Long volunteerDate = 1660112000000L;
+    Long applicationDate = 1674121200000L;
     Integer maximumPeople = 20;
     Integer currentPeople = 0;
 
@@ -70,8 +70,8 @@ class VolunteerTest {
         String title = "테스트 봉사 제목";
         String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
         String picture = "testImage";
-        LocalDateTime volunteerDate = LocalDateTime.parse("2022-05-24T00:00");
-        LocalDateTime applicationDate = LocalDateTime.parse("2022-05-25T18:00");
+        Long volunteerDate = 1660112000000L;
+        Long applicationDate = 1674121200000L;
         Integer maximumPeople = 20;
 
 
@@ -106,8 +106,8 @@ class VolunteerTest {
         String updatedTitle = "변경된 테스트 봉사 제목";
         String updatedContent = "변경된 테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
         String updatedPicture = "변경된 이미지 testImage";
-        LocalDateTime updatedVolunteerDate = LocalDateTime.parse("2022-06-01T00:00");
-        LocalDateTime updatedApplicationDate = LocalDateTime.parse("2022-06-01T18:00");
+        Long updatedVolunteerDate = 1660112000000L;
+        Long updatedApplicationDate = 1674121200000L;
         Integer updatedMaximumPeople = 10;
         Integer updatedCurrentPeople = 2;
 
