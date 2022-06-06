@@ -4,6 +4,7 @@ import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import static javax.persistence.GenerationType.*;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 public class Volunteer {
@@ -47,12 +49,33 @@ public class Volunteer {
     }
 
     public void update(VolunteerUpdateRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
-        this.picture = requestDto.getPicture();
-        this.volunteerDate = requestDto.getVolunteerDate();
-        this.applicationDate = requestDto.getApplicationDate();
-        this.maximumPeople = requestDto.getMaximumPeople();
-        this.currentPeople = requestDto.getCurrentPeople();
+        if (requestDto.getTitle() != null) {
+            this.title = requestDto.getTitle();
+        }
+
+        if (requestDto.getContent() != null) {
+            this.content = requestDto.getContent();
+        }
+
+        if (requestDto.getPicture() != null) {
+            this.picture = requestDto.getPicture();
+        }
+
+        if (requestDto.getApplicationDate() != null) {
+            this.applicationDate = requestDto.getApplicationDate();
+        }
+
+        if (requestDto.getVolunteerDate() != null) {
+            this.volunteerDate = requestDto.getVolunteerDate();
+        }
+
+        if (requestDto.getMaximumPeople() != null) {
+            this.maximumPeople = requestDto.getMaximumPeople();
+        }
+
+        if (requestDto.getCurrentPeople() != null) {
+            this.currentPeople = requestDto.getCurrentPeople();
+        }
+
     }
 }
