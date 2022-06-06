@@ -1,10 +1,12 @@
 package com.example.jamong.domain.volunteer;
 
+import com.example.jamong.domain.s3.AwsS3Service;
 import com.example.jamong.domain.volunteer.dto.VolunteerResponseDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @RestController
 public class VolunteerController {
     private final VolunteerService volunteerService;
+    private final AwsS3Service awsS3Service;
 
     @GetMapping("/v1/volunteers")
     public List<VolunteerResponseDto> findAll() {
@@ -26,6 +29,12 @@ public class VolunteerController {
     @PostMapping("/v1/volunteers")
     public Volunteer save(@RequestBody VolunteerSaveRequestDto requestDto) {
         return volunteerService.save(requestDto);
+    }
+
+    @PostMapping("/upload")
+    public String uploadFile(
+            @RequestPart(value = "file") MultipartFile multipartFile) {
+        return awsS3Service.uploadFileV1(multipartFile);
     }
 
     @PatchMapping("/v1/volunteers/{id}")

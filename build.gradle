@@ -20,6 +20,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://repo.spring.io/libs-milestone'}
 }
 
 dependencies {
@@ -42,7 +43,10 @@ dependencies {
 	implementation('org.mariadb.jdbc:mariadb-java-client')
 
 	implementation 'org.mariadb.jdbc:mariadb-java-client'
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
