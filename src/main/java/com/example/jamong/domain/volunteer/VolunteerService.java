@@ -5,6 +5,10 @@ import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,16 +23,55 @@ public class VolunteerService {
     private final VolunteerRepository volunteerRepository;
 
     @Transactional
-    public List<VolunteerResponseDto> findAll() {
-        List<Volunteer> volunteerList = volunteerRepository.findAll();
+    public ResponseEntity<List<VolunteerResponseDto>> findAll(Integer to, Integer from, String ordering) {
+        List<Volunteer> volunteerList;
+        Direction sort = Direction.ASC;
+        HttpHeaders responseHeaders = new HttpHeaders();
 
+        if (ordering == null) {
+            ordering = "id";
+        }
+
+        if (ordering.charAt(0) == '-') {
+            sort = Direction.DESC;
+            ordering = ordering.substring(1);
+        }
+
+        volunteerList = volunteerRepository.findAll(Sort.by(sort, ordering));
+
+        int totalPage = volunteerList.size();
+        responseHeaders.set("totalPage", String.valueOf(totalPage));
         List<VolunteerResponseDto> dtos = new ArrayList<>();
 
-        for (Volunteer volunteer : volunteerList) {
+
+        if (from == null) {
+            from = 0;
+
+            if (to != null) {
+                to = totalPage;
+            }
+        }
+
+        if (to == null) {
+            to = 11;
+        }
+
+        if (to > totalPage) {
+            for (Volunteer volunteer : volunteerList.subList(from, totalPage)) {
+                dtos.add(new VolunteerResponseDto(volunteer));
+            }
+            return ResponseEntity.ok()
+                    .headers(responseHeaders)
+                    .body(dtos);
+        }
+
+        for (Volunteer volunteer : volunteerList.subList(from, to)) {
             dtos.add(new VolunteerResponseDto(volunteer));
         }
 
-        return dtos;
+        return ResponseEntity.ok()
+                .headers(responseHeaders)
+                .body(dtos);
     }
 
     @Transactional

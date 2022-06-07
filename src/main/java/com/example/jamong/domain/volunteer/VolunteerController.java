@@ -6,7 +6,9 @@ import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,8 +22,10 @@ public class VolunteerController {
     private final AwsS3Service awsS3Service;
 
     @GetMapping("/v1/volunteers")
-    public List<VolunteerResponseDto> findAll() {
-        return volunteerService.findAll();
+    public ResponseEntity<List<VolunteerResponseDto>> findAll(@RequestParam(required = false) Integer to, @RequestParam(required = false) Integer from,
+                                                              @RequestParam(required = false) String ordering) {
+
+        return volunteerService.findAll(to, from, ordering);
     }
 
     @GetMapping("/v1/volunteers/{id}")
@@ -31,7 +35,7 @@ public class VolunteerController {
 
     @PostMapping(value = "/v1/volunteers", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public Volunteer save(@RequestPart(value = "request") VolunteerSaveRequestDto requestDto, @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
-        if (multipartFile != null) {
+        if (multipartFile != null && !multipartFile.isEmpty()) {
             log.info(requestDto.setPicture(awsS3Service.uploadFileV1(multipartFile)));
         }
         return volunteerService.save(requestDto);
