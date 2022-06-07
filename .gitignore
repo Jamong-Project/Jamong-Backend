@@ -37,3 +37,4 @@ out/
 .vscode/
 
 aws.properties
+application-local-properties

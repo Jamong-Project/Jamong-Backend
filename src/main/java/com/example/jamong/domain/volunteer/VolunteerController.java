@@ -5,11 +5,14 @@ import com.example.jamong.domain.volunteer.dto.VolunteerResponseDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class VolunteerController {
@@ -26,8 +29,11 @@ public class VolunteerController {
         return volunteerService.findById(id);
     }
 
-    @PostMapping("/v1/volunteers")
-    public Volunteer save(@RequestBody VolunteerSaveRequestDto requestDto) {
+    @PostMapping(value = "/v1/volunteers", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Volunteer save(@RequestPart(value = "request") VolunteerSaveRequestDto requestDto, @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
+        if (multipartFile != null) {
+            log.info(requestDto.setPicture(awsS3Service.uploadFileV1(multipartFile)));
+        }
         return volunteerService.save(requestDto);
     }
 

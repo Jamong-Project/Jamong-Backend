@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class VolunteerSaveRequestDto {
     private final String title;
     private final String content;
-    private final String picture;
+    private String picture;
 
 
     private final Long volunteerDate;
@@ -30,6 +30,11 @@ public class VolunteerSaveRequestDto {
         this.applicationDate = applicationDate;
         this.maximumPeople = maximumPeople;
         this.currentPeople = currentPeople;
+    }
+
+    public String setPicture(String picture) {
+        this.picture = picture;
+        return picture;
     }
 
     public Volunteer toEntity() {
