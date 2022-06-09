@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -27,6 +28,8 @@ public class Volunteer {
 
     private String title;
     private String content;
+
+    @Column(length = 1000)
     private String picture;
 
     private Long volunteerDate;
