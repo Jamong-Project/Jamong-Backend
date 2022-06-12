@@ -5,6 +5,7 @@ import com.example.jamong.domain.volunteer.Volunteer;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -28,9 +29,8 @@ public class VolunteerSaveRequestDto {
         this.currentPeople = currentPeople;
     }
 
-    public List<Picture> setPictures(List<Picture> picture) {
-        this.pictures = picture;
-        return picture;
+    public void setPictures(List<Picture> pictures) {
+       this.pictures = pictures;
     }
 
     public Volunteer toEntity() {
@@ -43,4 +43,5 @@ public class VolunteerSaveRequestDto {
                 .maximumPeople(maximumPeople)
                 .build();
     }
+
 }

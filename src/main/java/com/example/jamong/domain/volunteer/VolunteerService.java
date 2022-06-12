@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,9 @@ public class VolunteerService {
     private final static Integer DEFAULT_TO_INDEX = 11;
 
     private final VolunteerRepository volunteerRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Transactional
     public ResponseEntity<List<VolunteerCardDto>> findAll(Integer to, Integer from, String ordering) {
@@ -90,8 +95,8 @@ public class VolunteerService {
 
     @Transactional
     public Volunteer save(VolunteerSaveRequestDto requestDto) {
-        return volunteerRepository.save(requestDto.toEntity());
-
+        Volunteer save = volunteerRepository.save(requestDto.toEntity());
+        return save;
     }
 
     @Transactional

@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
 import com.example.jamong.domain.picture.Picture;
 import com.example.jamong.domain.volunteer.Volunteer;
+import com.example.jamong.domain.volunteer.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marvin.image.MarvinImage;
@@ -35,9 +36,9 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    private List<Picture> pictureList = new ArrayList<>();
-
     public List<Picture> uploadFile(List<MultipartFile> multipartFiles) {
+        List<Picture> pictureList = new ArrayList<>();
+        
         for (MultipartFile multipartFile : multipartFiles){
             String fileName = CommonUtils.buildFileName(multipartFile.getOriginalFilename());
             String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
@@ -60,6 +61,7 @@ public class AwsS3Service {
                 } catch (IOException e) {
                     throw new IllegalArgumentException();
                 }
+
                 pictureList.add(
                         Picture.builder()
                                 .url(amazonS3Client.getUrl(bucketName, fileName).toString())

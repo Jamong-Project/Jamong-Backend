@@ -13,10 +13,10 @@ import javax.persistence.*;
 public class Picture {
 
     @Id
-    @GeneratedValue
-    @Column(name = "PICTURE_ID")
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(length = 1000)
     private String url;
     private String fileName;
 

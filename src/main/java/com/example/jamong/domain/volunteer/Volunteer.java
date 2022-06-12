@@ -23,7 +23,6 @@ public class Volunteer {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "VOLUNTEER_ID")
     private Long id;
 
     private String title;
@@ -31,7 +30,7 @@ public class Volunteer {
     @Column(length = 1000)
     private String content;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Picture> pictures = new ArrayList<>();
 
     private Long volunteerDate;
@@ -42,8 +41,7 @@ public class Volunteer {
     private Integer currentPeople;
 
     @Builder
-    public Volunteer(Long id, String title, String content, List<Picture> pictures, Long volunteerDate, Long applicationDate, Integer maximumPeople) {
-        this.id = id;
+    public Volunteer(String title, String content, List<Picture> pictures, Long volunteerDate, Long applicationDate, Integer maximumPeople) {
         this.title = title;
         this.content = content;
         this.pictures = pictures;

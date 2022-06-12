@@ -35,6 +35,7 @@ public class VolunteerController {
 
     @PostMapping(value = "/v1/volunteers", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public Volunteer save(@RequestPart(value = "request") VolunteerSaveRequestDto requestDto, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFile) {
+
         if (multipartFile != null && !multipartFile.isEmpty()) {
             requestDto.setPictures(awsS3Service.uploadFile(multipartFile));
         }
