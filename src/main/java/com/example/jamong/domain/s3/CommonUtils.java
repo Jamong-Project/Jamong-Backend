@@ -1,5 +1,7 @@
 package com.example.jamong.domain.s3;
 
+import java.util.UUID;
+
 public class CommonUtils {
     private static final String FILE_EXTENSION_SEPARATOR = ".";
 
@@ -9,6 +11,6 @@ public class CommonUtils {
         String fileName = originalFileName.substring(0, fileExtensionIndex);
         String now = String.valueOf(System.currentTimeMillis());
 
-        return fileName + now + fileExtension;
+        return UUID.randomUUID() + fileName + fileExtension;
     }
 }

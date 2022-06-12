@@ -1,6 +1,7 @@
 package com.example.jamong.domain.volunteer;
 
-import com.example.jamong.domain.volunteer.dto.VolunteerResponseDto;
+import com.example.jamong.domain.volunteer.dto.VolunteerArticleDto;
+import com.example.jamong.domain.volunteer.dto.VolunteerCardDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +23,28 @@ import java.util.List;
 @Service
 public class VolunteerService {
 
+    private final static String DEFAULT_ORDERING_OPTION = "id";
+    private final static Integer DESC_OPTION_CHARACTER_INDEX = 0;
+    private final static char DESC_OPTION_CHARACTER = '-';
+    private final static Integer DEFAULT_FROM_INDEX = 0;
+    private final static Integer DEFAULT_TO_INDEX = 11;
+
     private final VolunteerRepository volunteerRepository;
 
+    @PersistenceContext
+    private EntityManager em;
+
     @Transactional
-    public ResponseEntity<List<VolunteerResponseDto>> findAll(Integer to, Integer from, String ordering) {
+    public ResponseEntity<List<VolunteerCardDto>> findAll(Integer to, Integer from, String ordering) {
         List<Volunteer> volunteerList;
         Direction sort = Direction.ASC;
         HttpHeaders responseHeaders = new HttpHeaders();
 
         if (ordering == null) {
-            ordering = "id";
+            ordering = DEFAULT_ORDERING_OPTION;
         }
 
-        if (ordering.charAt(0) == '-') {
+        if (ordering.charAt(DESC_OPTION_CHARACTER_INDEX) == DESC_OPTION_CHARACTER) {
             sort = Direction.DESC;
             ordering = ordering.substring(1);
         }
@@ -40,12 +52,12 @@ public class VolunteerService {
         volunteerList = volunteerRepository.findAll(Sort.by(sort, ordering));
 
         int totalPage = volunteerList.size();
-        responseHeaders.set("totalPage", String.valueOf(totalPage));
-        List<VolunteerResponseDto> dtos = new ArrayList<>();
+        responseHeaders.set("total-page", String.valueOf(totalPage));
+        List<VolunteerCardDto> dtos = new ArrayList<>();
 
 
         if (from == null) {
-            from = 0;
+            from = DEFAULT_FROM_INDEX;
 
             if (to != null) {
                 to = totalPage;
@@ -53,12 +65,12 @@ public class VolunteerService {
         }
 
         if (to == null) {
-            to = 11;
+            to = DEFAULT_TO_INDEX;
         }
 
         if (to > totalPage) {
             for (Volunteer volunteer : volunteerList.subList(from, totalPage)) {
-                dtos.add(new VolunteerResponseDto(volunteer));
+                dtos.add(new VolunteerCardDto(volunteer));
             }
             return ResponseEntity.ok()
                     .headers(responseHeaders)
@@ -66,7 +78,7 @@ public class VolunteerService {
         }
 
         for (Volunteer volunteer : volunteerList.subList(from, to)) {
-            dtos.add(new VolunteerResponseDto(volunteer));
+            dtos.add(new VolunteerCardDto(volunteer));
         }
 
         return ResponseEntity.ok()
@@ -75,16 +87,15 @@ public class VolunteerService {
     }
 
     @Transactional
-    public VolunteerResponseDto findById(Long id) {
+    public VolunteerArticleDto findById(Long id) {
         Volunteer entity = volunteerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id));
-        return new VolunteerResponseDto(entity);
+        return new VolunteerArticleDto(entity);
     }
 
     @Transactional
     public Volunteer save(VolunteerSaveRequestDto requestDto) {
         return volunteerRepository.save(requestDto.toEntity());
-
     }
 
     @Transactional
