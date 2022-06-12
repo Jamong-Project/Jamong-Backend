@@ -9,7 +9,6 @@ import java.util.List;
 
 @Getter
 public class VolunteerCardDto {
-    private final static Integer REPRESENTATIVE_IMAGE_INDEX = 0;
 
     private final Long id;
     private final String title;
@@ -23,7 +22,7 @@ public class VolunteerCardDto {
     public VolunteerCardDto(Volunteer entity) {
         this.id = entity.getId();
         this.title = entity.getTitle();
-        this.picture = entity.getPictures().get(REPRESENTATIVE_IMAGE_INDEX);
+        this.picture = entity.representPicture();
         this.volunteerDate = entity.getVolunteerDate();
         this.applicationDate = entity.getApplicationDate();
         this.maximumPeople = entity.getMaximumPeople();

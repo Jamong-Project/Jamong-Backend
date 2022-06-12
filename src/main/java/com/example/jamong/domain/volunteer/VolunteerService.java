@@ -95,8 +95,7 @@ public class VolunteerService {
 
     @Transactional
     public Volunteer save(VolunteerSaveRequestDto requestDto) {
-        Volunteer save = volunteerRepository.save(requestDto.toEntity());
-        return save;
+        return volunteerRepository.save(requestDto.toEntity());
     }
 
     @Transactional

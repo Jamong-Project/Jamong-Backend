@@ -20,6 +20,7 @@ import static javax.persistence.GenerationType.*;
 @Entity
 public class Volunteer {
     private static final Integer INITIAL_CURRENT_PERSON_VALUE = 0;
+    private final static Integer REPRESENTATIVE_IMAGE_INDEX = 0;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -49,6 +50,13 @@ public class Volunteer {
         this.applicationDate = applicationDate;
         this.maximumPeople = maximumPeople;
         this.currentPeople = INITIAL_CURRENT_PERSON_VALUE;
+    }
+
+    public Picture representPicture() {
+        if (pictures.isEmpty() || pictures == null) {
+            return null;
+        }
+        return pictures.get(0);
     }
 
     public void update(VolunteerUpdateRequestDto requestDto) {
