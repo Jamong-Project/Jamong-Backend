@@ -62,8 +62,8 @@ public class Volunteer {
             this.content = requestDto.getContent();
         }
 
-        if (requestDto.getPicture() != null) {
-            this.pictures = requestDto.getPicture();
+        if (requestDto.getPictures() != null) {
+            this.pictures = requestDto.getPictures();
         }
 
         if (requestDto.getApplicationDate() != null) {

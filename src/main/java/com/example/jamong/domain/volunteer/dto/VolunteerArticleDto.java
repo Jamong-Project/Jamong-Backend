@@ -12,7 +12,7 @@ public class VolunteerArticleDto {
     private final Long id;
     private final String title;
     private final String content;
-    private final List<Picture> picture;
+    private final List<Picture> pictures;
     private final Long volunteerDate;
     private final Long applicationDate;
     private final Integer maximumPeople;
@@ -23,7 +23,7 @@ public class VolunteerArticleDto {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
-        this.picture = entity.getPictures();
+        this.pictures = entity.getPictures();
         this.volunteerDate = entity.getVolunteerDate();
         this.applicationDate = entity.getApplicationDate();
         this.maximumPeople = entity.getMaximumPeople();
