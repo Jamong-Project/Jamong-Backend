@@ -1,5 +1,6 @@
 package com.example.jamong.domain.volunteer;
 
+import com.example.jamong.domain.picture.Picture;
 import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -25,7 +25,6 @@ class VolunteerTest {
 
     String title = "테스트 봉사 제목";
     String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
-    String picture = "이미지 testImage";
     Long volunteerDate = 1660112000000L;
     Long applicationDate = 1674121200000L;
     Integer maximumPeople = 20;
@@ -41,7 +40,6 @@ class VolunteerTest {
         Volunteer savedVolunteer = Volunteer.builder()
                 .title(title)
                 .content(content)
-                .picture(picture)
                 .volunteerDate(volunteerDate)
                 .applicationDate(applicationDate)
                 .maximumPeople(maximumPeople)
@@ -57,7 +55,6 @@ class VolunteerTest {
         Volunteer volunteer = volunteerList.get(0);
 
         assertThat(volunteer.getTitle()).isEqualTo(title);
-        assertThat(volunteer.getPicture()).isEqualTo(picture);
         assertThat(volunteer.getVolunteerDate()).isEqualTo(volunteerDate);
         assertThat(volunteer.getApplicationDate()).isEqualTo(applicationDate);
         assertThat(volunteer.getMaximumPeople()).isEqualTo(maximumPeople);
@@ -78,7 +75,6 @@ class VolunteerTest {
         VolunteerSaveRequestDto savedVolunteer = VolunteerSaveRequestDto.builder()
                 .title(title)
                 .content(content)
-                .picture(picture)
                 .volunteerDate(volunteerDate)
                 .applicationDate(applicationDate)
                 .maximumPeople(maximumPeople)
@@ -94,7 +90,7 @@ class VolunteerTest {
 
         assertThat(volunteer.getTitle()).isEqualTo(title);
         assertThat(volunteer.getContent()).isEqualTo(content);
-        assertThat(volunteer.getPicture()).isEqualTo(picture);
+        assertThat(volunteer.getPictures()).isEqualTo(picture);
         assertThat(volunteer.getVolunteerDate()).isEqualTo(volunteerDate);
         assertThat(volunteer.getApplicationDate()).isEqualTo(applicationDate);
         assertThat(volunteer.getMaximumPeople()).isEqualTo(maximumPeople);
@@ -105,7 +101,6 @@ class VolunteerTest {
     public void updateVolunteerTest() {
         String updatedTitle = "변경된 테스트 봉사 제목";
         String updatedContent = "변경된 테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
-        String updatedPicture = "변경된 이미지 testImage";
         Long updatedVolunteerDate = 1660112000000L;
         Long updatedApplicationDate = 1674121200000L;
         Integer updatedMaximumPeople = 10;
@@ -114,7 +109,6 @@ class VolunteerTest {
         VolunteerUpdateRequestDto requestDto = VolunteerUpdateRequestDto.builder()
                 .title(updatedTitle)
                 .content(updatedContent)
-                .picture(updatedPicture)
                 .volunteerDate(updatedVolunteerDate)
                 .applicationDate(updatedApplicationDate)
                 .maximumPeople(updatedMaximumPeople)
@@ -129,7 +123,6 @@ class VolunteerTest {
 
         assertThat(volunteer.getTitle()).isEqualTo(title);
         assertThat(volunteer.getContent()).isEqualTo(content);
-        assertThat(volunteer.getPicture()).isEqualTo(picture);
         assertThat(volunteer.getVolunteerDate()).isEqualTo(volunteerDate);
         assertThat(volunteer.getApplicationDate()).isEqualTo(applicationDate);
         assertThat(volunteer.getMaximumPeople()).isEqualTo(maximumPeople);
