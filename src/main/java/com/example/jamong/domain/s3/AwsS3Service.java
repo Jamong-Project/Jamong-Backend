@@ -28,7 +28,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Service
 public class AwsS3Service {
-
+    private final static Integer IMAGE_TARGET_SIZE = 300;
     private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -41,7 +41,7 @@ public class AwsS3Service {
         if (Objects.requireNonNull(multipartFile.getContentType()).contains("image")){
             validateFileExists(multipartFile);
 
-            MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 300);
+            MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, IMAGE_TARGET_SIZE);
 
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentType(resizedFile.getContentType());

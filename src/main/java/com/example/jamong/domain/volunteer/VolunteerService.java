@@ -20,6 +20,12 @@ import java.util.List;
 @Service
 public class VolunteerService {
 
+    private final static String DEFAULT_ORDERING_OPTION = "id";
+    private final static Integer DESC_OPTION_CHARACTER_INDEX = 0;
+    private final static char DESC_OPTION_CHARACTER = '-';
+    private final static Integer DEFAULT_FROM_INDEX = 0;
+    private final static Integer DEFAULT_TO_INDEX = 11;
+
     private final VolunteerRepository volunteerRepository;
 
     @Transactional
@@ -29,10 +35,10 @@ public class VolunteerService {
         HttpHeaders responseHeaders = new HttpHeaders();
 
         if (ordering == null) {
-            ordering = "id";
+            ordering = DEFAULT_ORDERING_OPTION;
         }
 
-        if (ordering.charAt(0) == '-') {
+        if (ordering.charAt(DESC_OPTION_CHARACTER_INDEX) == DESC_OPTION_CHARACTER) {
             sort = Direction.DESC;
             ordering = ordering.substring(1);
         }
@@ -45,7 +51,7 @@ public class VolunteerService {
 
 
         if (from == null) {
-            from = 0;
+            from = DEFAULT_FROM_INDEX;
 
             if (to != null) {
                 to = totalPage;
@@ -53,7 +59,7 @@ public class VolunteerService {
         }
 
         if (to == null) {
-            to = 11;
+            to = DEFAULT_TO_INDEX;
         }
 
         if (to > totalPage) {
