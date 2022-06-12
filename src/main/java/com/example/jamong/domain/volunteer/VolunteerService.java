@@ -47,7 +47,7 @@ public class VolunteerService {
         volunteerList = volunteerRepository.findAll(Sort.by(sort, ordering));
 
         int totalPage = volunteerList.size();
-        responseHeaders.set("totalPage", String.valueOf(totalPage));
+        responseHeaders.set("total-page", String.valueOf(totalPage));
         List<VolunteerCardDto> dtos = new ArrayList<>();
 
 
