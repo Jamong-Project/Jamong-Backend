@@ -1,15 +1,16 @@
 package com.example.jamong.domain.volunteer;
 
+import com.example.jamong.domain.picture.Picture;
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.persistence.GenerationType.*;
 
@@ -22,13 +23,16 @@ public class Volunteer {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "VOLUNTEER_ID")
     private Long id;
 
     private String title;
-    private String content;
 
     @Column(length = 1000)
-    private String picture;
+    private String content;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Picture> pictures = new ArrayList<>();
 
     private Long volunteerDate;
 
@@ -38,11 +42,11 @@ public class Volunteer {
     private Integer currentPeople;
 
     @Builder
-    public Volunteer(Long id, String title, String content, String picture, Long volunteerDate, Long applicationDate, Integer maximumPeople) {
+    public Volunteer(Long id, String title, String content, List<Picture> pictures, Long volunteerDate, Long applicationDate, Integer maximumPeople) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.picture = picture;
+        this.pictures = pictures;
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
         this.maximumPeople = maximumPeople;
@@ -59,7 +63,7 @@ public class Volunteer {
         }
 
         if (requestDto.getPicture() != null) {
-            this.picture = requestDto.getPicture();
+            this.pictures = requestDto.getPicture();
         }
 
         if (requestDto.getApplicationDate() != null) {

@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
+import com.example.jamong.domain.picture.Picture;
+import com.example.jamong.domain.volunteer.Volunteer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marvin.image.MarvinImage;
@@ -18,10 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -34,31 +35,41 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public String uploadFileV1(MultipartFile multipartFile) {
-        String fileName = CommonUtils.buildFileName(multipartFile.getOriginalFilename());
-        String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
+    private List<Picture> pictureList = new ArrayList<>();
 
-        if (Objects.requireNonNull(multipartFile.getContentType()).contains("image")){
-            validateFileExists(multipartFile);
+    public List<Picture> uploadFile(List<MultipartFile> multipartFiles) {
+        for (MultipartFile multipartFile : multipartFiles){
+            String fileName = CommonUtils.buildFileName(multipartFile.getOriginalFilename());
+            String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
 
-            MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, IMAGE_TARGET_SIZE);
+            if (Objects.requireNonNull(multipartFile.getContentType()).contains("image")){
+                validateFileExists(multipartFile);
 
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentType(resizedFile.getContentType());
+                MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, IMAGE_TARGET_SIZE);
 
-            try (InputStream inputStream = resizedFile.getInputStream()) {
-                byte[] bytes = IOUtils.toByteArray(inputStream);
-                objectMetadata.setContentLength(bytes.length);
-                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+                ObjectMetadata objectMetadata = new ObjectMetadata();
+                objectMetadata.setContentType(resizedFile.getContentType());
 
-                amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayInputStream, objectMetadata)
-                        .withCannedAcl(CannedAccessControlList.PublicRead));
-            } catch (IOException e) {
-                throw new IllegalArgumentException();
+                try (InputStream inputStream = resizedFile.getInputStream()) {
+                    byte[] bytes = IOUtils.toByteArray(inputStream);
+                    objectMetadata.setContentLength(bytes.length);
+                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+
+                    amazonS3Client.putObject(new PutObjectRequest(bucketName, fileName, byteArrayInputStream, objectMetadata)
+                            .withCannedAcl(CannedAccessControlList.PublicRead));
+                } catch (IOException e) {
+                    throw new IllegalArgumentException();
+                }
+                pictureList.add(
+                        Picture.builder()
+                                .url(amazonS3Client.getUrl(bucketName, fileName).toString())
+                                .fileName(fileName)
+                                .build()
+                );
+                log.info(pictureList.toString());
             }
-            return amazonS3Client.getUrl(bucketName, fileName).toString();
         }
-        return amazonS3Client.getUrl(bucketName, fileName).toString();
+        return pictureList;
     }
 
     MultipartFile resizeImage(String fileName, String fileFormatName, MultipartFile originalImage, int targetWidth) {
