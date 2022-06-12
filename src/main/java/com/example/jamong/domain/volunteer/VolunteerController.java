@@ -41,12 +41,6 @@ public class VolunteerController {
         return volunteerService.save(requestDto);
     }
 
-    @PostMapping("/upload")
-    public String uploadFile(
-            @RequestPart(value = "file") MultipartFile multipartFile) {
-        return awsS3Service.uploadFileV1(multipartFile);
-    }
-
     @PatchMapping("/v1/volunteers/{id}")
     public Volunteer update(@PathVariable Long id, @RequestBody VolunteerUpdateRequestDto requestDto) {
         return volunteerService.update(id, requestDto);
