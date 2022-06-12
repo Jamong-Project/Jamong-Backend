@@ -1,6 +1,7 @@
 package com.example.jamong.domain.volunteer;
 
-import com.example.jamong.domain.volunteer.dto.VolunteerResponseDto;
+import com.example.jamong.domain.volunteer.dto.VolunteerArticleDto;
+import com.example.jamong.domain.volunteer.dto.VolunteerCardDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class VolunteerService {
     private final VolunteerRepository volunteerRepository;
 
     @Transactional
-    public ResponseEntity<List<VolunteerResponseDto>> findAll(Integer to, Integer from, String ordering) {
+    public ResponseEntity<List<VolunteerCardDto>> findAll(Integer to, Integer from, String ordering) {
         List<Volunteer> volunteerList;
         Direction sort = Direction.ASC;
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -47,7 +48,7 @@ public class VolunteerService {
 
         int totalPage = volunteerList.size();
         responseHeaders.set("totalPage", String.valueOf(totalPage));
-        List<VolunteerResponseDto> dtos = new ArrayList<>();
+        List<VolunteerCardDto> dtos = new ArrayList<>();
 
 
         if (from == null) {
@@ -64,7 +65,7 @@ public class VolunteerService {
 
         if (to > totalPage) {
             for (Volunteer volunteer : volunteerList.subList(from, totalPage)) {
-                dtos.add(new VolunteerResponseDto(volunteer));
+                dtos.add(new VolunteerCardDto(volunteer));
             }
             return ResponseEntity.ok()
                     .headers(responseHeaders)
@@ -72,7 +73,7 @@ public class VolunteerService {
         }
 
         for (Volunteer volunteer : volunteerList.subList(from, to)) {
-            dtos.add(new VolunteerResponseDto(volunteer));
+            dtos.add(new VolunteerCardDto(volunteer));
         }
 
         return ResponseEntity.ok()
@@ -81,10 +82,10 @@ public class VolunteerService {
     }
 
     @Transactional
-    public VolunteerResponseDto findById(Long id) {
+    public VolunteerArticleDto findById(Long id) {
         Volunteer entity = volunteerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id));
-        return new VolunteerResponseDto(entity);
+        return new VolunteerArticleDto(entity);
     }
 
     @Transactional

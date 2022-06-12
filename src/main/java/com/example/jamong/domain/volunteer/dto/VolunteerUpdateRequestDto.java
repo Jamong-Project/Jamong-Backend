@@ -11,11 +11,8 @@ public class VolunteerUpdateRequestDto {
     private final String title;
     private final String content;
     private final String picture;
-
     private final Long volunteerDate;
-
     private final Long applicationDate;
-
     private final Integer maximumPeople;
     private final Integer currentPeople;
 

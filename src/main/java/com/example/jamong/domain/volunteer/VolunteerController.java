@@ -1,7 +1,8 @@
 package com.example.jamong.domain.volunteer;
 
 import com.example.jamong.domain.s3.AwsS3Service;
-import com.example.jamong.domain.volunteer.dto.VolunteerResponseDto;
+import com.example.jamong.domain.volunteer.dto.VolunteerArticleDto;
+import com.example.jamong.domain.volunteer.dto.VolunteerCardDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +22,14 @@ public class VolunteerController {
     private final AwsS3Service awsS3Service;
 
     @GetMapping("/v1/volunteers")
-    public ResponseEntity<List<VolunteerResponseDto>> findAll(@RequestParam(required = false) Integer to, @RequestParam(required = false) Integer from,
-                                                              @RequestParam(required = false) String ordering) {
+    public ResponseEntity<List<VolunteerCardDto>> findAll(@RequestParam(required = false) Integer to, @RequestParam(required = false) Integer from,
+                                                          @RequestParam(required = false) String ordering) {
 
         return volunteerService.findAll(to, from, ordering);
     }
 
     @GetMapping("/v1/volunteers/{id}")
-    public VolunteerResponseDto findById(@PathVariable Long id) {
+    public VolunteerArticleDto findById(@PathVariable Long id) {
         return volunteerService.findById(id);
     }
 
