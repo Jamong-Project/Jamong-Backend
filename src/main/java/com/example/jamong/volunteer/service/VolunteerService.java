@@ -32,9 +32,6 @@ public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
 
-    @PersistenceContext
-    private EntityManager em;
-
     @Transactional
     public ResponseEntity<List<VolunteerCardDto>> findAll(Integer to, Integer from, String ordering) {
         Direction sort = Direction.ASC;
