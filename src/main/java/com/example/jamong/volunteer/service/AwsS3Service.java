@@ -1,13 +1,11 @@
-package com.example.jamong.domain.s3;
+package com.example.jamong.volunteer.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
-import com.example.jamong.domain.picture.Picture;
-import com.example.jamong.domain.volunteer.Volunteer;
-import com.example.jamong.domain.volunteer.VolunteerRepository;
+import com.example.jamong.volunteer.domain.Picture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import marvin.image.MarvinImage;

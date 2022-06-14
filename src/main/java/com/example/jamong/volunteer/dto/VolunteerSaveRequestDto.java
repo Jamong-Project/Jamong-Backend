@@ -1,11 +1,10 @@
-package com.example.jamong.domain.volunteer.dto;
+package com.example.jamong.volunteer.dto;
 
-import com.example.jamong.domain.picture.Picture;
-import com.example.jamong.domain.volunteer.Volunteer;
+import com.example.jamong.volunteer.domain.Picture;
+import com.example.jamong.volunteer.domain.Volunteer;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

@@ -1,9 +1,11 @@
-package com.example.jamong.domain.volunteer;
+package com.example.jamong.volunteer.service;
 
-import com.example.jamong.domain.volunteer.dto.VolunteerArticleDto;
-import com.example.jamong.domain.volunteer.dto.VolunteerCardDto;
-import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
-import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
+import com.example.jamong.volunteer.repository.VolunteerRepository;
+import com.example.jamong.volunteer.domain.Volunteer;
+import com.example.jamong.volunteer.dto.VolunteerArticleDto;
+import com.example.jamong.volunteer.dto.VolunteerCardDto;
+import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
+import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;

@@ -1,6 +1,5 @@
-package com.example.jamong.domain.picture;
+package com.example.jamong.volunteer.domain;
 
-import com.example.jamong.domain.volunteer.Volunteer;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

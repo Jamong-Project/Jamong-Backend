@@ -1,4 +1,4 @@
-package com.example.jamong.domain.s3;
+package com.example.jamong.volunteer.service;
 
 import java.util.UUID;
 
