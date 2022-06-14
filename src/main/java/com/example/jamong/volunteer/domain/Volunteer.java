@@ -1,7 +1,6 @@
-package com.example.jamong.domain.volunteer;
+package com.example.jamong.volunteer.domain;
 
-import com.example.jamong.domain.picture.Picture;
-import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
+import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,8 +18,8 @@ import static javax.persistence.GenerationType.*;
 @NoArgsConstructor
 @Entity
 public class Volunteer {
-    private static final Integer INITIAL_CURRENT_PERSON_VALUE = 0;
-    private final static Integer REPRESENTATIVE_IMAGE_INDEX = 0;
+    private final static int INITIAL_CURRENT_PERSON_VALUE = 0;
+    private final static int REPRESENTATIVE_IMAGE_INDEX = 0;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -38,22 +37,27 @@ public class Volunteer {
 
     private Long applicationDate;
 
-    private Integer maximumPeople;
-    private Integer currentPeople;
+    private int maximumPeople;
+    private int currentPeople;
 
     @Builder
-    public Volunteer(String title, String content, List<Picture> pictures, Long volunteerDate, Long applicationDate, Integer maximumPeople) {
+    public Volunteer(String title, String content, List<Picture> pictures, Long volunteerDate, Long applicationDate, int maximumPeople, Integer currentPeople) {
         this.title = title;
         this.content = content;
         this.pictures = pictures;
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
         this.maximumPeople = maximumPeople;
-        this.currentPeople = INITIAL_CURRENT_PERSON_VALUE;
+        this. currentPeople = INITIAL_CURRENT_PERSON_VALUE;
+
+        if (currentPeople != null) {
+            this.currentPeople = currentPeople;
+        }
+
     }
 
     public Picture representPicture() {
-        if (pictures.isEmpty() || pictures == null) {
+        if (pictures == null || pictures.isEmpty()) {
             return null;
         }
         return pictures.get(0);
