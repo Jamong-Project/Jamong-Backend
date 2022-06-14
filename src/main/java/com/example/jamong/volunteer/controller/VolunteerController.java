@@ -1,10 +1,12 @@
-package com.example.jamong.domain.volunteer;
+package com.example.jamong.volunteer.controller;
 
-import com.example.jamong.domain.s3.AwsS3Service;
-import com.example.jamong.domain.volunteer.dto.VolunteerArticleDto;
-import com.example.jamong.domain.volunteer.dto.VolunteerCardDto;
-import com.example.jamong.domain.volunteer.dto.VolunteerSaveRequestDto;
-import com.example.jamong.domain.volunteer.dto.VolunteerUpdateRequestDto;
+import com.example.jamong.volunteer.service.AwsS3Service;
+import com.example.jamong.volunteer.service.VolunteerService;
+import com.example.jamong.volunteer.domain.Volunteer;
+import com.example.jamong.volunteer.dto.VolunteerArticleDto;
+import com.example.jamong.volunteer.dto.VolunteerCardDto;
+import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
+import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
