@@ -13,8 +13,8 @@ public class VolunteerCardDto {
     private final Picture picture;
     private final Long volunteerDate;
     private final Long applicationDate;
-    private final Integer maximumPeople;
-    private final Integer currentPeople;
+    private final int maximumPeople;
+    private final int currentPeople;
 
     @Builder
     public VolunteerCardDto(Volunteer entity) {

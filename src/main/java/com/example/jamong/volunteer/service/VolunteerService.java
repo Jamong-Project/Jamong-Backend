@@ -25,11 +25,10 @@ import java.util.List;
 @Service
 public class VolunteerService {
 
-    private final static String DEFAULT_ORDERING_OPTION = "id";
-    private final static Integer DESC_OPTION_CHARACTER_INDEX = 0;
-    private final static char DESC_OPTION_CHARACTER = '-';
-    private final static Integer DEFAULT_FROM_INDEX = 0;
-    private final static Integer DEFAULT_TO_INDEX = 11;
+    private static final String DEFAULT_ORDERING_OPTION = "id";
+    private static final int DESC_OPTION_CHARACTER_INDEX = 0;
+    private static final char DESC_OPTION_CHARACTER = '-';
+    private static final int DEFAULT_FROM_INDEX = 0;
 
     private final VolunteerRepository volunteerRepository;
 
@@ -38,51 +37,64 @@ public class VolunteerService {
 
     @Transactional
     public ResponseEntity<List<VolunteerCardDto>> findAll(Integer to, Integer from, String ordering) {
-        List<Volunteer> volunteerList;
         Direction sort = Direction.ASC;
-        HttpHeaders responseHeaders = new HttpHeaders();
 
-        if (ordering == null) {
-            ordering = DEFAULT_ORDERING_OPTION;
-        }
+        ordering = orderingEmptyChecker(ordering);
+        from = fromEmptyChecker(from);
+        to = toEmptyChecker(to, from);
 
-        if (ordering.charAt(DESC_OPTION_CHARACTER_INDEX) == DESC_OPTION_CHARACTER) {
+        if (sortOptionFinder(ordering)) {
             sort = Direction.DESC;
             ordering = ordering.substring(1);
         }
 
-        volunteerList = volunteerRepository.findAll(Sort.by(sort, ordering));
+        List<Volunteer> volunteerList = volunteerRepository.findAll(Sort.by(sort, ordering));
 
-        int totalPage = volunteerList.size();
-        responseHeaders.set("total-page", String.valueOf(totalPage));
-        List<VolunteerCardDto> dtos = new ArrayList<>();
+        return getSubList(to, from, volunteerList);
+    }
 
+    private Integer toEmptyChecker(Integer to, Integer from) {
+        if (to == null) {
+            to = from + 12;
+        }
+        return to;
+    }
 
+    private String orderingEmptyChecker(String ordering) {
+        if (ordering == null) {
+            ordering = DEFAULT_ORDERING_OPTION;
+        }
+        return ordering;
+    }
+
+    private Integer fromEmptyChecker(Integer from) {
         if (from == null) {
             from = DEFAULT_FROM_INDEX;
-
-            if (to != null) {
-                to = totalPage;
-            }
         }
+        return from;
+    }
 
-        if (to == null) {
-            to = DEFAULT_TO_INDEX;
-        }
+    private boolean sortOptionFinder(String ordering) {
+        return ordering.charAt(DESC_OPTION_CHARACTER_INDEX) == DESC_OPTION_CHARACTER;
+    }
+
+    private ResponseEntity<List<VolunteerCardDto>> getSubList(Integer to, Integer from, List<Volunteer> volunteerList) {
+        final int totalPage = volunteerList.size();
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("total-page", String.valueOf(totalPage));
 
         if (to > totalPage) {
-            for (Volunteer volunteer : volunteerList.subList(from, totalPage)) {
-                dtos.add(new VolunteerCardDto(volunteer));
-            }
-            return ResponseEntity.ok()
-                    .headers(responseHeaders)
-                    .body(dtos);
+            return getResponseEntity(volunteerList, from, totalPage,responseHeaders);
         }
 
-        for (Volunteer volunteer : volunteerList.subList(from, to)) {
+        return getResponseEntity(volunteerList, from, to, responseHeaders);
+    }
+
+    private ResponseEntity<List<VolunteerCardDto>> getResponseEntity(List<Volunteer> volunteerList, Integer from, int totalPage, HttpHeaders responseHeaders) {
+        List<VolunteerCardDto> dtos = new ArrayList<>();
+        for (Volunteer volunteer : volunteerList.subList(from, totalPage)) {
             dtos.add(new VolunteerCardDto(volunteer));
         }
-
         return ResponseEntity.ok()
                 .headers(responseHeaders)
                 .body(dtos);

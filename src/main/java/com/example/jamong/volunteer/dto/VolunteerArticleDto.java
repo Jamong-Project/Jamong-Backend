@@ -15,8 +15,8 @@ public class VolunteerArticleDto {
     private final List<Picture> pictures;
     private final Long volunteerDate;
     private final Long applicationDate;
-    private final Integer maximumPeople;
-    private final Integer currentPeople;
+    private final int maximumPeople;
+    private final int currentPeople;
 
     @Builder
     public VolunteerArticleDto(Volunteer entity) {
