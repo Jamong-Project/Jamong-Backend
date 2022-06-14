@@ -50,18 +50,18 @@ public class VolunteerService {
         return getSubList(to, from, volunteerList);
     }
 
-    private Integer toEmptyChecker(Integer to, Integer from) {
-        if (to == null) {
-            to = from + 12;
-        }
-        return to;
-    }
-
     private String orderingEmptyChecker(String ordering) {
         if (ordering == null) {
             ordering = DEFAULT_ORDERING_OPTION;
         }
         return ordering;
+    }
+
+    private Integer toEmptyChecker(Integer to, Integer from) {
+        if (to == null) {
+            to = from + 12;
+        }
+        return to;
     }
 
     private Integer fromEmptyChecker(Integer from) {
@@ -81,7 +81,7 @@ public class VolunteerService {
         responseHeaders.set("total-page", String.valueOf(totalPage));
 
         if (to > totalPage) {
-            return getResponseEntity(volunteerList, from, totalPage,responseHeaders);
+            return getResponseEntity(volunteerList, from, totalPage, responseHeaders);
         }
 
         return getResponseEntity(volunteerList, from, to, responseHeaders);
