@@ -87,9 +87,9 @@ public class VolunteerService {
         return getResponseEntity(volunteerList, from, to, responseHeaders);
     }
 
-    private ResponseEntity<List<VolunteerCardDto>> getResponseEntity(List<Volunteer> volunteerList, Integer from, int totalPage, HttpHeaders responseHeaders) {
+    private ResponseEntity<List<VolunteerCardDto>> getResponseEntity(List<Volunteer> volunteerList, Integer from, Integer to, HttpHeaders responseHeaders) {
         List<VolunteerCardDto> dtos = new ArrayList<>();
-        for (Volunteer volunteer : volunteerList.subList(from, totalPage)) {
+        for (Volunteer volunteer : volunteerList.subList(from - 1, to)) {
             dtos.add(new VolunteerCardDto(volunteer));
         }
         return ResponseEntity.ok()
