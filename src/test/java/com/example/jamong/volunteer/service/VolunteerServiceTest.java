@@ -1,5 +1,6 @@
 package com.example.jamong.volunteer.service;
 
+import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerArticleDto;
 import com.example.jamong.volunteer.dto.VolunteerCardDto;
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -195,5 +196,15 @@ class VolunteerServiceTest {
 
         List<Volunteer> volunteerList = volunteerRepository.findAll();
         assertThat(volunteerList.size()).isEqualTo(49);
+    }
+
+    @Test
+    @DisplayName("없는 게시물 조회 시 예외 발생")
+    public void NoExistVolunteerExceptionTest() {
+        assertThatExceptionOfType(NoExistVolunteerException.class)
+                .isThrownBy(
+                        () -> {
+                            volunteerService.findById(55L);
+                        });
     }
 }

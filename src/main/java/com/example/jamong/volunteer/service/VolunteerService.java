@@ -1,5 +1,6 @@
 package com.example.jamong.volunteer.service;
 
+import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerArticleDto;
@@ -100,7 +101,9 @@ public class VolunteerService {
     @Transactional
     public VolunteerArticleDto findById(Long id) {
         Volunteer entity = volunteerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id));
+                .orElseThrow(
+                        () -> new NoExistVolunteerException()
+                );
         return new VolunteerArticleDto(entity);
     }
 
@@ -113,7 +116,7 @@ public class VolunteerService {
     public Volunteer update(Long id, VolunteerUpdateRequestDto requestDto) {
         Volunteer entity = volunteerRepository.findById(id)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id)
+                        () -> new NoExistVolunteerException()
                 );
 
         entity.update(requestDto);
@@ -126,7 +129,7 @@ public class VolunteerService {
     public Volunteer delete(Long id) {
         Volunteer entity = volunteerRepository.findById(id)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id)
+                        () -> new NoExistVolunteerException()
                 );
 
         volunteerRepository.delete(entity);
