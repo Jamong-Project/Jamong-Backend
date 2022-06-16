@@ -19,23 +19,24 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("v1/volunteers")
 public class VolunteerController {
     private final VolunteerService volunteerService;
     private final AwsS3Service awsS3Service;
 
-    @GetMapping("/v1/volunteers")
+    @GetMapping
     public ResponseEntity<List<VolunteerCardDto>> findAll(@RequestParam(required = false) Integer to, @RequestParam(required = false) Integer from,
                                                           @RequestParam(required = false) String ordering) {
 
         return volunteerService.findAll(to, from, ordering);
     }
 
-    @GetMapping("/v1/volunteers/{id}")
+    @GetMapping("/{id}")
     public VolunteerArticleDto findById(@PathVariable Long id) {
         return volunteerService.findById(id);
     }
 
-    @PostMapping(value = "/v1/volunteers", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public Volunteer save(@RequestPart(value = "request") VolunteerSaveRequestDto requestDto, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFile) {
 
         if (multipartFile != null && !multipartFile.isEmpty()) {
@@ -44,12 +45,12 @@ public class VolunteerController {
         return volunteerService.save(requestDto);
     }
 
-    @PatchMapping("/v1/volunteers/{id}")
+    @PatchMapping("/{id}")
     public Volunteer update(@PathVariable Long id, @RequestBody VolunteerUpdateRequestDto requestDto) {
         return volunteerService.update(id, requestDto);
     }
 
-    @DeleteMapping("/v1/volunteers/{id}")
+    @DeleteMapping("/{id}")
     public Volunteer delete(@PathVariable Long id) {
         return volunteerService.delete(id);
     }
