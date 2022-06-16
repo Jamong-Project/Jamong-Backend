@@ -33,7 +33,7 @@ public class VolunteerService {
     private final VolunteerRepository volunteerRepository;
 
     @Transactional
-    public ResponseEntity<List<VolunteerCardDto>> findAll(Integer to, Integer from, String ordering) {
+    public ResponseEntity<List<VolunteerCardDto>> findAll(Integer from, Integer to, String ordering) {
         Direction sort = Direction.ASC;
 
         ordering = orderingEmptyChecker(ordering);
@@ -59,7 +59,7 @@ public class VolunteerService {
 
     private Integer toEmptyChecker(Integer to, Integer from) {
         if (to == null) {
-            to = from + 12;
+            to = from + 11;
         }
         return to;
     }
@@ -89,7 +89,7 @@ public class VolunteerService {
 
     private ResponseEntity<List<VolunteerCardDto>> getResponseEntity(List<Volunteer> volunteerList, Integer from, Integer to, HttpHeaders responseHeaders) {
         List<VolunteerCardDto> dtos = new ArrayList<>();
-        for (Volunteer volunteer : volunteerList.subList(from - 1, to)) {
+        for (Volunteer volunteer : volunteerList.subList(from, to + 1)) {
             dtos.add(new VolunteerCardDto(volunteer));
         }
         return ResponseEntity.ok()
