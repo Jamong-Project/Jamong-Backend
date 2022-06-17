@@ -1,5 +1,6 @@
 package com.example.jamong.volunteer.service;
 
+import com.example.jamong.exception.FromBiggerThanToException;
 import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerArticleDto;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
+import javax.persistence.criteria.From;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -200,11 +202,20 @@ class VolunteerServiceTest {
 
     @Test
     @DisplayName("없는 게시물 조회 시 예외 발생")
-    public void NoExistVolunteerExceptionTest() {
+    public void noExistVolunteerExceptionTest() {
         assertThatExceptionOfType(NoExistVolunteerException.class)
                 .isThrownBy(
                         () -> {
                             volunteerService.findById(55L);
                         });
     }
+
+    @Test
+    @DisplayName("from이 to보다 클 경우 예외 발생")
+    public void fromBiggerThanToExceptionTest() {
+        assertThatThrownBy(
+                () -> volunteerService.findAll(11, 2, null)
+                ).isInstanceOf(FromBiggerThanToException.class);
+    }
+
 }

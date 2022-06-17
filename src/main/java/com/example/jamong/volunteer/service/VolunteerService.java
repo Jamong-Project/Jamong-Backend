@@ -1,5 +1,6 @@
 package com.example.jamong.volunteer.service;
 
+import com.example.jamong.exception.FromBiggerThanToException;
 import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import com.example.jamong.volunteer.domain.Volunteer;
@@ -39,7 +40,9 @@ public class VolunteerService {
 
         ordering = orderingEmptyChecker(ordering);
         from = fromEmptyChecker(from);
-        to = toEmptyChecker(to, from);
+        to = toEmptyChecker(from, to);
+
+        isFromBiggerThanTo(from, to);
 
         if (sortOptionFinder(ordering)) {
             sort = Direction.DESC;
@@ -48,7 +51,13 @@ public class VolunteerService {
 
         List<Volunteer> volunteerList = volunteerRepository.findAll(Sort.by(sort, ordering));
 
-        return getSubList(to, from, volunteerList);
+        return getSubList(from , to, volunteerList);
+    }
+
+    private void isFromBiggerThanTo(Integer from, Integer to) {
+        if (from > to) {
+           throw new FromBiggerThanToException();
+        }
     }
 
     private String orderingEmptyChecker(String ordering) {
@@ -58,7 +67,7 @@ public class VolunteerService {
         return ordering;
     }
 
-    private Integer toEmptyChecker(Integer to, Integer from) {
+    private Integer toEmptyChecker(Integer from, Integer to) {
         if (to == null) {
             to = from + 11;
         }
@@ -76,7 +85,7 @@ public class VolunteerService {
         return ordering.charAt(DESC_OPTION_CHARACTER_INDEX) == DESC_OPTION_CHARACTER;
     }
 
-    private ResponseEntity<List<VolunteerCardDto>> getSubList(Integer to, Integer from, List<Volunteer> volunteerList) {
+    private ResponseEntity<List<VolunteerCardDto>> getSubList(Integer from, Integer to, List<Volunteer> volunteerList) {
         final int totalPage = volunteerList.size();
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("total-page", String.valueOf(totalPage));
