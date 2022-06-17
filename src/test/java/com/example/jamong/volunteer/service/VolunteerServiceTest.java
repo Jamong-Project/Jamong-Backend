@@ -1,5 +1,6 @@
 package com.example.jamong.volunteer.service;
 
+import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerArticleDto;
 import com.example.jamong.volunteer.dto.VolunteerCardDto;
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -41,31 +42,17 @@ class VolunteerServiceTest {
         Integer maximumPeople = 20;
         Integer currentPeople = 0;
 
-        Volunteer savedVolunteer = Volunteer.builder()
-                .title(title)
-                .content(content)
-                .volunteerDate(volunteerDate)
-                .applicationDate(applicationDate)
-                .maximumPeople(maximumPeople)
-                .build();
-
-        String title2 = "테스트 봉사 제목2";
-        String content2 = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.2";
-        Long volunteerDate2 = 1660112000000L;
-        Long applicationDate2 = 1674121200000L;
-        Integer maximumPeople2 = 20;
-        Integer currentPeople2 = 0;
-
-        Volunteer savedVolunteer2 = Volunteer.builder()
-                .title(title2)
-                .content(content2)
-                .volunteerDate(volunteerDate2)
-                .applicationDate(applicationDate2)
-                .maximumPeople(maximumPeople2)
-                .build();
-
-        volunteerRepository.save(savedVolunteer);
-        volunteerRepository.save(savedVolunteer2);
+        for (int i = 1; i < 51; i++) {
+            volunteerRepository.save(
+                    Volunteer.builder()
+                            .title(title + i)
+                            .content(content + i)
+                            .volunteerDate(volunteerDate)
+                            .applicationDate(applicationDate)
+                            .maximumPeople(maximumPeople)
+                            .build()
+            );
+        }
     }
 
     @Test
@@ -75,8 +62,53 @@ class VolunteerServiceTest {
 
         VolunteerCardDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
 
-        assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(2);
-        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목");
+        assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(12);
+        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목1");
+        assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);
+        assertThat(actualVolunteer.getApplicationDate()).isEqualTo(1674121200000L);
+        assertThat(actualVolunteer.getMaximumPeople()).isEqualTo(20);
+        assertThat(actualVolunteer.getCurrentPeople()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("to 쿼리 옵션을 추가하면 처음부터 to 까지의 게시물을 조회한다.")
+    void findOnlyTo() {
+        ResponseEntity<List<VolunteerCardDto>> volunteerResponseEntity = volunteerService.findAll(null, 2, null);
+
+        VolunteerCardDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
+
+        assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(3);
+        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목1");
+        assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);
+        assertThat(actualVolunteer.getApplicationDate()).isEqualTo(1674121200000L);
+        assertThat(actualVolunteer.getMaximumPeople()).isEqualTo(20);
+        assertThat(actualVolunteer.getCurrentPeople()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("from 쿼리 옵션을 추가하면 from 부터 12개의 게시물을 조회한다.")
+    void findOnlyFrom() {
+        ResponseEntity<List<VolunteerCardDto>> volunteerResponseEntity = volunteerService.findAll(2, null, null);
+
+        VolunteerCardDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
+
+        assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(12);
+        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목3");
+        assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);
+        assertThat(actualVolunteer.getApplicationDate()).isEqualTo(1674121200000L);
+        assertThat(actualVolunteer.getMaximumPeople()).isEqualTo(20);
+        assertThat(actualVolunteer.getCurrentPeople()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("from과 To 옵션을 추가하면 from 부터 to까지의 게시물을 조회한다.")
+    void findToAndFrom() {
+        ResponseEntity<List<VolunteerCardDto>> volunteerResponseEntity = volunteerService.findAll(2, 4, null);
+
+        VolunteerCardDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
+
+        assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(3);
+        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목3");
         assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);
         assertThat(actualVolunteer.getApplicationDate()).isEqualTo(1674121200000L);
         assertThat(actualVolunteer.getMaximumPeople()).isEqualTo(20);
@@ -89,7 +121,7 @@ class VolunteerServiceTest {
         Volunteer volunteer = volunteerRepository.findAll().get(0);
         VolunteerArticleDto actualVolunteer = volunteerService.findById(volunteer.getId());
 
-        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목");
+        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목1");
         assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);
         assertThat(actualVolunteer.getApplicationDate()).isEqualTo(1674121200000L);
         assertThat(actualVolunteer.getMaximumPeople()).isEqualTo(20);
@@ -115,7 +147,7 @@ class VolunteerServiceTest {
 
         volunteerRepository.save(savedVolunteer);
 
-        Volunteer actualVolunteer = volunteerRepository.findAll().get(2);
+        Volunteer actualVolunteer = volunteerRepository.findAll().get(50);
 
         assertThat(actualVolunteer.getTitle()).isEqualTo("새로 저장된 테스트 봉사 제목");
         assertThat(actualVolunteer.getContent()).isEqualTo("새로 저장된 테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.");
@@ -163,6 +195,16 @@ class VolunteerServiceTest {
         volunteerService.delete(volunteer.getId());
 
         List<Volunteer> volunteerList = volunteerRepository.findAll();
-        assertThat(volunteerList.size()).isEqualTo(1);
+        assertThat(volunteerList.size()).isEqualTo(49);
+    }
+
+    @Test
+    @DisplayName("없는 게시물 조회 시 예외 발생")
+    public void NoExistVolunteerExceptionTest() {
+        assertThatExceptionOfType(NoExistVolunteerException.class)
+                .isThrownBy(
+                        () -> {
+                            volunteerService.findById(55L);
+                        });
     }
 }

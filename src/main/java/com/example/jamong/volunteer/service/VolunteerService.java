@@ -1,5 +1,6 @@
 package com.example.jamong.volunteer.service;
 
+import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerArticleDto;
@@ -32,11 +33,8 @@ public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
 
-    @PersistenceContext
-    private EntityManager em;
-
     @Transactional
-    public ResponseEntity<List<VolunteerCardDto>> findAll(Integer to, Integer from, String ordering) {
+    public ResponseEntity<List<VolunteerCardDto>> findAll(Integer from, Integer to, String ordering) {
         Direction sort = Direction.ASC;
 
         ordering = orderingEmptyChecker(ordering);
@@ -53,18 +51,18 @@ public class VolunteerService {
         return getSubList(to, from, volunteerList);
     }
 
-    private Integer toEmptyChecker(Integer to, Integer from) {
-        if (to == null) {
-            to = from + 12;
-        }
-        return to;
-    }
-
     private String orderingEmptyChecker(String ordering) {
         if (ordering == null) {
             ordering = DEFAULT_ORDERING_OPTION;
         }
         return ordering;
+    }
+
+    private Integer toEmptyChecker(Integer to, Integer from) {
+        if (to == null) {
+            to = from + 11;
+        }
+        return to;
     }
 
     private Integer fromEmptyChecker(Integer from) {
@@ -84,15 +82,15 @@ public class VolunteerService {
         responseHeaders.set("total-page", String.valueOf(totalPage));
 
         if (to > totalPage) {
-            return getResponseEntity(volunteerList, from, totalPage,responseHeaders);
+            return getResponseEntity(volunteerList, from, totalPage, responseHeaders);
         }
 
         return getResponseEntity(volunteerList, from, to, responseHeaders);
     }
 
-    private ResponseEntity<List<VolunteerCardDto>> getResponseEntity(List<Volunteer> volunteerList, Integer from, int totalPage, HttpHeaders responseHeaders) {
+    private ResponseEntity<List<VolunteerCardDto>> getResponseEntity(List<Volunteer> volunteerList, Integer from, Integer to, HttpHeaders responseHeaders) {
         List<VolunteerCardDto> dtos = new ArrayList<>();
-        for (Volunteer volunteer : volunteerList.subList(from, totalPage)) {
+        for (Volunteer volunteer : volunteerList.subList(from, to + 1)) {
             dtos.add(new VolunteerCardDto(volunteer));
         }
         return ResponseEntity.ok()
@@ -103,7 +101,9 @@ public class VolunteerService {
     @Transactional
     public VolunteerArticleDto findById(Long id) {
         Volunteer entity = volunteerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id));
+                .orElseThrow(
+                        () -> new NoExistVolunteerException()
+                );
         return new VolunteerArticleDto(entity);
     }
 
@@ -116,7 +116,7 @@ public class VolunteerService {
     public Volunteer update(Long id, VolunteerUpdateRequestDto requestDto) {
         Volunteer entity = volunteerRepository.findById(id)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id)
+                        () -> new NoExistVolunteerException()
                 );
 
         entity.update(requestDto);
@@ -129,7 +129,7 @@ public class VolunteerService {
     public Volunteer delete(Long id) {
         Volunteer entity = volunteerRepository.findById(id)
                 .orElseThrow(
-                        () -> new IllegalArgumentException("해당 게시글이 없습니다 id =" + id)
+                        () -> new NoExistVolunteerException()
                 );
 
         volunteerRepository.delete(entity);
