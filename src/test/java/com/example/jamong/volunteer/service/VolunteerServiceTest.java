@@ -215,7 +215,13 @@ class VolunteerServiceTest {
     public void fromBiggerThanToExceptionTest() {
         assertThatThrownBy(
                 () -> volunteerService.findAll(11, 2, null)
-                ).isInstanceOf(FromBiggerThanToException.class);
+        ).isInstanceOf(FromBiggerThanToException.class);
     }
 
+    @Test
+    @DisplayName("to가 total-page보다 클떄는 total-page까지 만큼의 봉사를 조회한다.")
+    public void toBiggertThanTotal() {
+        List<VolunteerCardDto> volunteerList = volunteerService.findAll(null, 60, null).getBody();
+        assertThat(volunteerList.size()).isEqualTo(50);
+    }
 }
