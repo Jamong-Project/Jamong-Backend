@@ -25,10 +25,10 @@ public class VolunteerController {
     private final AwsS3Service awsS3Service;
 
     @GetMapping
-    public ResponseEntity<List<VolunteerCardDto>> findAll(@RequestParam(required = false) Integer to, @RequestParam(required = false) Integer from,
+    public ResponseEntity<List<VolunteerCardDto>> findAll(@RequestParam(required = false) Integer from, @RequestParam(required = false) Integer to,
                                                           @RequestParam(required = false) String ordering) {
 
-        return volunteerService.findAll(to, from, ordering);
+        return volunteerService.findAll(from, to, ordering);
     }
 
     @GetMapping("/{id}")
