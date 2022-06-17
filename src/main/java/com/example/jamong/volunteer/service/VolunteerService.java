@@ -39,10 +39,10 @@ public class VolunteerService {
         Direction sort = Direction.ASC;
 
         ordering = orderingEmptyChecker(ordering);
-        from = fromEmptyChecker(from);
-        to = toEmptyChecker(from, to);
 
         isFromBiggerThanTo(from, to);
+        from = fromEmptyChecker(from);
+        to = toEmptyChecker(from, to);
 
         if (sortOptionFinder(ordering)) {
             sort = Direction.DESC;
@@ -51,12 +51,12 @@ public class VolunteerService {
 
         List<Volunteer> volunteerList = volunteerRepository.findAll(Sort.by(sort, ordering));
 
-        return getSubList(from , to, volunteerList);
+        return getSubList(from, to, volunteerList);
     }
 
     private void isFromBiggerThanTo(Integer from, Integer to) {
-        if (from > to) {
-           throw new FromBiggerThanToException();
+        if (from != null && to != null && from > to) {
+            throw new FromBiggerThanToException();
         }
     }
 
@@ -94,12 +94,12 @@ public class VolunteerService {
             return getResponseEntity(volunteerList, from, totalPage, responseHeaders);
         }
 
-        return getResponseEntity(volunteerList, from, to, responseHeaders);
+        return getResponseEntity(volunteerList, from, to + 1, responseHeaders);
     }
 
     private ResponseEntity<List<VolunteerCardDto>> getResponseEntity(List<Volunteer> volunteerList, Integer from, Integer to, HttpHeaders responseHeaders) {
         List<VolunteerCardDto> dtos = new ArrayList<>();
-        for (Volunteer volunteer : volunteerList.subList(from, to + 1)) {
+        for (Volunteer volunteer : volunteerList.subList(from, to)) {
             dtos.add(new VolunteerCardDto(volunteer));
         }
         return ResponseEntity.ok()
