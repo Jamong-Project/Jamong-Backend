@@ -138,13 +138,18 @@ public class VolunteerControllerTest {
                 .maximumPeople(maximumPeople)
                 .build();
 
+        String request = new ObjectMapper().writeValueAsString(updated);
+        MockMultipartFile json = new MockMultipartFile("request", "jsondata", "application/json", request.getBytes(StandardCharsets.UTF_8));
+        MockMultipartFile image = new MockMultipartFile("file-data", "filename-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes());
+
         String url = "http://localhost:" + port + "/v1/volunteers/" + volunteer.getId();
 
-        String request = new ObjectMapper().writeValueAsString(updated);
-
-        mvc.perform(patch(url)
-                        .content(request)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+        mvc.perform(multipart(url)
+                        .file(json)
+                        .file(image)
+                        .contentType("application/json")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
