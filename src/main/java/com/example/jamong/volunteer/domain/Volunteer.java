@@ -48,7 +48,7 @@ public class Volunteer {
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
         this.maximumPeople = maximumPeople;
-        this. currentPeople = INITIAL_CURRENT_PERSON_VALUE;
+        this.currentPeople = INITIAL_CURRENT_PERSON_VALUE;
 
         if (currentPeople != null) {
             this.currentPeople = currentPeople;

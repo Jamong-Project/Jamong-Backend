@@ -10,8 +10,8 @@ public class JamongException extends RuntimeException {
         this.status = status;
     }
 
-    public JamongException(final String message, final Throwable cause,final HttpStatus status) {
-        super(message,cause);
+    public JamongException(final String message, final Throwable cause, final HttpStatus status) {
+        super(message, cause);
         this.status = status;
     }
 }
