@@ -10,7 +10,7 @@ import java.util.List;
 public class VolunteerUpdateRequestDto {
     private final String title;
     private final String content;
-    private final List<Picture> pictures;
+    private List<Picture> pictures;
     private final Long volunteerDate;
     private final Long applicationDate;
     private final Integer maximumPeople;
@@ -29,5 +29,9 @@ public class VolunteerUpdateRequestDto {
         this.applicationDate = applicationDate;
         this.maximumPeople = maximumPeople;
         this.currentPeople = currentPeople;
+    }
+
+    public void setPictures(List<Picture> pictures) {
+        this.pictures = pictures;
     }
 }

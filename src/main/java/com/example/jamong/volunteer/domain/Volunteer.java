@@ -1,5 +1,6 @@
 package com.example.jamong.volunteer.domain;
 
+import com.example.jamong.BaseTimeEntity;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import static javax.persistence.GenerationType.*;
 @Setter
 @NoArgsConstructor
 @Entity
-public class Volunteer {
+public class Volunteer extends BaseTimeEntity {
     private final static int INITIAL_CURRENT_PERSON_VALUE = 0;
     private final static int REPRESENTATIVE_IMAGE_INDEX = 0;
 
@@ -48,7 +49,7 @@ public class Volunteer {
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
         this.maximumPeople = maximumPeople;
-        this. currentPeople = INITIAL_CURRENT_PERSON_VALUE;
+        this.currentPeople = INITIAL_CURRENT_PERSON_VALUE;
 
         if (currentPeople != null) {
             this.currentPeople = currentPeople;

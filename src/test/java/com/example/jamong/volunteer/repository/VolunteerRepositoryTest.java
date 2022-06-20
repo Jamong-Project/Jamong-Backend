@@ -2,7 +2,6 @@ package com.example.jamong.volunteer.repository;
 
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
-import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

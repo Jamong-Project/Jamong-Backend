@@ -27,7 +27,7 @@ public class VolunteerSaveRequestDto {
         this.volunteerDate = volunteerDate;
         this.applicationDate = applicationDate;
         this.maximumPeople = maximumPeople;
-        this. currentPeople = INITIAL_CURRENT_PERSON_VALUE;
+        this.currentPeople = INITIAL_CURRENT_PERSON_VALUE;
 
         if (currentPeople != null) {
             this.currentPeople = currentPeople;
@@ -36,7 +36,7 @@ public class VolunteerSaveRequestDto {
     }
 
     public void setPictures(List<Picture> pictures) {
-       this.pictures = pictures;
+        this.pictures = pictures;
     }
 
     public Volunteer toEntity() {
