@@ -40,6 +40,22 @@ public class UserServiceTest {
         assertThat(info.getMobileE164()).isEqualTo("+821059137109");
         assertThat(info.getName()).isEqualTo("이민재");
     }
+
+    @Test
+    @DisplayName("이미 유저 정보가 있는 경우, 토큰을 주면 유저 프로필 정보를 반환")
+    public void getAlreadyExistsInfoTest() throws JsonProcessingException {
+        userService.getProfile(new TokenRequestDto("fake Token"));
+
+        User info = userService.getProfile(new TokenRequestDto("fake Token"));
+
+        assertThat(info.getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM");
+        assertThat(info.getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png");
+        assertThat(info.getGender()).isEqualTo("M");
+        assertThat(info.getEmail()).isEqualTo("lmj938@naver.com");
+        assertThat(info.getMobile()).isEqualTo("010-5913-7109");
+        assertThat(info.getMobileE164()).isEqualTo("+821059137109");
+        assertThat(info.getName()).isEqualTo("이민재");
+    }
 }
 
 @Service
