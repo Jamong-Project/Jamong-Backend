@@ -45,8 +45,11 @@ public class VolunteerController {
         return volunteerService.save(requestDto);
     }
 
-    @PatchMapping("/{id}")
-    public Volunteer update(@PathVariable Long id, @RequestBody VolunteerUpdateRequestDto requestDto) {
+    @PostMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public Volunteer update(@PathVariable Long id, @RequestPart(value = "request") VolunteerUpdateRequestDto requestDto, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFile) {
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            requestDto.setPictures(awsS3Service.uploadFile(multipartFile));
+        }
         return volunteerService.update(id, requestDto);
     }
 

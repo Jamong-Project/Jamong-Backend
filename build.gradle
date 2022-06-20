@@ -1,11 +1,11 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.7'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.6.7'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
 }
 
 jar {
-	enabled = false
+    enabled = false
 }
 
 group = 'com.example'
@@ -13,44 +13,46 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
-	maven { url 'https://repo.spring.io/libs-milestone'}
+    mavenCentral()
+    maven { url 'https://repo.spring.io/libs-milestone' }
 }
 
 dependencies {
-	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-	implementation 'org.springframework.boot:spring-boot-starter-mustache'
-	implementation('com.h2database:h2')
+    implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation 'org.springframework.boot:spring-boot-starter-mustache'
+    implementation('com.h2database:h2')
 
-	implementation('org.projectlombok:lombok')
-	annotationProcessor('org.projectlombok:lombok')
-	testImplementation('org.projectlombok:lombok')
-	testAnnotationProcessor('org.projectlombok:lombok')
+    implementation('org.projectlombok:lombok')
+    annotationProcessor('org.projectlombok:lombok')
+    testImplementation('org.projectlombok:lombok')
+    testAnnotationProcessor('org.projectlombok:lombok')
 
-	implementation('org.springframework.boot:spring-boot-starter-web')
-	testImplementation('org.springframework.boot:spring-boot-starter-test')
+    implementation('org.springframework.boot:spring-boot-starter-web')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
 
-	testImplementation 'org.junit.jupiter:junit-jupiter-api'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
-	implementation 'org.springframework.session:spring-session-jdbc'
-	implementation('org.mariadb.jdbc:mariadb-java-client')
+    implementation 'org.springframework.session:spring-session-jdbc'
+    implementation('org.mariadb.jdbc:mariadb-java-client')
 
-	implementation 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'org.mariadb.jdbc:mariadb-java-client'
 
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
-	implementation 'com.github.downgoon:marvin:1.5.5'
-	implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
-	implementation 'org.springframework:spring-test'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'com.github.downgoon:marvin:1.5.5'
+    implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
+    implementation 'org.springframework:spring-test'
+
+    implementation 'org.springframework.session:spring-session-jdbc'
 }
 
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

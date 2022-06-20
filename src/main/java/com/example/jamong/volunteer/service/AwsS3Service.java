@@ -12,15 +12,16 @@ import lombok.extern.slf4j.Slf4j;
 import marvin.image.MarvinImage;
 import org.marvinproject.image.transform.scale.Scale;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +31,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class AwsS3Service {
-    private static final  Integer IMAGE_TARGET_SIZE = 300;
+    private static final Integer IMAGE_TARGET_SIZE = 300;
     private static final String FILE_EXTENSION_SEPARATOR = ".";
 
     private final AmazonS3Client amazonS3Client;
@@ -40,8 +41,8 @@ public class AwsS3Service {
 
     public List<Picture> uploadFile(List<MultipartFile> multipartFiles) {
         List<Picture> pictureList = new ArrayList<>();
-        
-        for (MultipartFile multipartFile : multipartFiles){
+
+        for (MultipartFile multipartFile : multipartFiles) {
             addPictureToList(pictureList, multipartFile);
         }
         return pictureList;
@@ -51,7 +52,7 @@ public class AwsS3Service {
         String fileName = buildFileName(multipartFile.getOriginalFilename());
         String fileFormatName = getFileFormatName(multipartFile);
 
-        if (isImage(multipartFile)){
+        if (isImage(multipartFile)) {
             validateFileExists(multipartFile);
 
             MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, IMAGE_TARGET_SIZE);
@@ -105,7 +106,7 @@ public class AwsS3Service {
             int originWidth = image.getWidth();
             int originHeight = image.getHeight();
 
-            if(originWidth < targetWidth)
+            if (originWidth < targetWidth)
                 return originalImage;
 
             MarvinImage imageMarvin = new MarvinImage(image);
