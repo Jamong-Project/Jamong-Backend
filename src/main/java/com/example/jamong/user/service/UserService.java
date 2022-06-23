@@ -1,9 +1,11 @@
 package com.example.jamong.user.service;
 
+import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.NaverResponseDto;
 import com.example.jamong.user.dto.TokenRequestDto;
 import com.example.jamong.user.dto.UserSaveRequestDto;
+import com.example.jamong.user.dto.UserUpdateRequestDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,11 +36,10 @@ public class UserService {
 
     public User getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
+        List<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
 
-        Optional<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
-
-        if (user.isPresent()) {
-            return user.get();
+        if (user.size() > 0) {
+            return user.get(0);
         }
         return userRepository.save(userSaveRequestDto.toEntity());
     }
@@ -82,9 +84,9 @@ public class UserService {
 
 
             int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) { // 정상 호출
+            if (responseCode == HttpURLConnection.HTTP_OK) {
                 return readBody(con.getInputStream());
-            } else { // 에러 발생
+            } else {
                 return readBody(con.getErrorStream());
             }
         } catch (IOException e) {
@@ -106,24 +108,63 @@ public class UserService {
         }
     }
 
-
     private static String readBody(InputStream body) {
         InputStreamReader streamReader = new InputStreamReader(body);
 
-
         try (BufferedReader lineReader = new BufferedReader(streamReader)) {
             StringBuilder responseBody = new StringBuilder();
-
 
             String line;
             while ((line = lineReader.readLine()) != null) {
                 responseBody.append(line);
             }
 
-
             return responseBody.toString();
         } catch (IOException e) {
             throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);
         }
+    }
+
+    public List<User> findAll(String email, String name) {
+        if (email != null && name == null) {
+            return userRepository.findByEmail(email);
+        }
+
+        if (email == null && name != null) {
+            return userRepository.findByName(name);
+        }
+        return userRepository.findAll();
+    }
+
+    public User findById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (!user.isPresent()) {
+            throw new NoExistUserException();
+        }
+        return user.get();
+    }
+
+    public User update(Long id, UserUpdateRequestDto userUpdateRequestDto) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (!user.isPresent()) {
+            throw new NoExistUserException();
+        }
+
+        user.get().update(userUpdateRequestDto);
+        return userRepository.save(user.get());
+
+    }
+
+    public User delete(Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (!user.isPresent()) {
+            throw new NoExistUserException();
+        }
+
+        userRepository.delete(user.get());
+        return user.get();
     }
 }
