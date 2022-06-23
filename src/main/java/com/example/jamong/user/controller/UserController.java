@@ -19,11 +19,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/login")
-    public User login(@RequestBody TokenRequestDto tokenRequestDto) {
-        return userService.getProfile(tokenRequestDto);
-    }
-
     @GetMapping
     public List<User> findAll(@RequestParam(required = false) String email, @RequestParam(required = false) String name) {
         return userService.findAll(email, name);
