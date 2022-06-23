@@ -37,10 +37,10 @@ public class UserService {
     public User getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
 
-        Optional<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
+        List<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
 
-        if (user.isPresent()) {
-            return user.get();
+        if (user != null && user.size() > 0) {
+            return user.get(0);
         }
         return userRepository.save(userSaveRequestDto.toEntity());
     }
@@ -126,7 +126,14 @@ public class UserService {
         }
     }
 
-    public List<User> findAll() {
+    public List<User> findAll(String email, String name) {
+        if (email != null && name == null) {
+            return userRepository.findByEmail(email);
+        }
+
+        if (email == null && name != null) {
+            return userRepository.findByName(name);
+        }
         return userRepository.findAll();
     }
 
@@ -137,20 +144,6 @@ public class UserService {
             throw new NoExistUserException();
         }
         return user.get();
-    }
-
-    public User findByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-
-        if (!user.isPresent()) {
-            throw new NoExistUserException();
-        }
-        return user.get();
-    }
-
-    public List<User> findByName(String name) {
-        List<User> user = userRepository.findByName(name);
-        return user;
     }
 
     public User update(Long id, UserUpdateRequestDto userUpdateRequestDto) {

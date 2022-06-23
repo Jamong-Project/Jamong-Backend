@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @RestController
+@RequestMapping("/v1/users")
 public class UserController {
     private final UserService userService;
 
@@ -23,27 +24,17 @@ public class UserController {
         return userService.getProfile(tokenRequestDto);
     }
 
-    @GetMapping("/v1/users")
-    public List<User> findAll() {
-        return userService.findAll();
+    @GetMapping
+    public List<User> findAll(@RequestParam(required = false) String email, @RequestParam(required = false) String name) {
+        return userService.findAll(email, name);
     }
 
-    @GetMapping("/v1/users/id/{id}")
+    @GetMapping("/{id}")
     public User findById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
-    @GetMapping("/v1/users/email")
-    public User findByEmail(@RequestParam String email) {
-        return userService.findByEmail(email);
-    }
-
-    @GetMapping("/v1/users/name")
-    public List<User> findByName(@RequestParam String name) {
-        return userService.findByName(name);
-    }
-
-    @PatchMapping("/v1/users/{id}")
+    @PatchMapping("/{id}")
     public User update(@PathVariable Long id, @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
         return userService.update(id, userUpdateRequestDto);
     }
