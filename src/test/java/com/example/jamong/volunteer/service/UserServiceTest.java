@@ -1,72 +1,136 @@
 package com.example.jamong.volunteer.service;
 
+import com.example.jamong.exception.NoExistUserException;
+import com.example.jamong.user.domain.Role;
 import com.example.jamong.user.domain.User;
-import com.example.jamong.user.dto.NaverResponseDto;
-import com.example.jamong.user.dto.TokenRequestDto;
-import com.example.jamong.user.dto.UserSaveRequestDto;
+import com.example.jamong.user.dto.UserUpdateRequestDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.user.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @SpringBootTest
 public class UserServiceTest {
     @Autowired
-    StubUserService userService;
+    UserService userService;
 
-    @Test
-    @DisplayName("토큰을 주면 유저 프로필 정보를 반환")
-    public void getInfoTest() throws JsonProcessingException {
-        User info = userService.getProfile(new TokenRequestDto("fake Token"));
+    @Autowired
+    UserRepository userRepository;
 
-        assertThat(info.getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM");
-        assertThat(info.getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png");
-        assertThat(info.getGender()).isEqualTo("M");
-        assertThat(info.getEmail()).isEqualTo("lmj938@naver.com");
-        assertThat(info.getMobile()).isEqualTo("010-5913-7109");
-        assertThat(info.getMobileE164()).isEqualTo("+821059137109");
-        assertThat(info.getName()).isEqualTo("이민재");
+    @BeforeEach
+    public void makeDummyData() {
+        String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
+        String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
+        String gender = "M";
+        String email = "lmj938@naver.com";
+        String mobile = "010-0000-0000";
+        String mobileE164 = "+821000000000";
+        String name = "이민재";
+        Role role = Role.GUEST;
+
+        for (int i = 1; i < 51; i++) {
+            userRepository.save(
+                    User.builder()
+                            .naverId(naverId + i)
+                            .profileImage(profileImage + i)
+                            .gender(gender)
+                            .email(email + i)
+                            .mobile(mobile + i)
+                            .mobileE164(mobileE164 + i)
+                            .name(name + i)
+                            .role(role)
+                            .build()
+            );
+
+        }
+    }
+
+    @AfterEach
+    public void CleanUp() {
+        userRepository.deleteAll();
     }
 
     @Test
-    @DisplayName("이미 유저 정보가 있는 경우, 토큰을 주면 유저 프로필 정보를 반환")
-    public void getAlreadyExistsInfoTest() throws JsonProcessingException {
-        userService.getProfile(new TokenRequestDto("fake Token"));
-
-        User info = userService.getProfile(new TokenRequestDto("fake Token"));
-
-        assertThat(info.getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM");
-        assertThat(info.getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png");
-        assertThat(info.getGender()).isEqualTo("M");
-        assertThat(info.getEmail()).isEqualTo("lmj938@naver.com");
-        assertThat(info.getMobile()).isEqualTo("010-5913-7109");
-        assertThat(info.getMobileE164()).isEqualTo("+821059137109");
-        assertThat(info.getName()).isEqualTo("이민재");
-    }
-}
-
-@Service
-class StubUserService extends UserService {
-
-    public StubUserService(UserRepository userRepository) {
-        super(userRepository);
+    @DisplayName("유저 정보를 모두 조회한다.")
+    public void findAllTest() {
+        List<User> userList = userService.findAll(null, null);
+        assertThat(userList.size()).isEqualTo(50);
     }
 
-    @Override
-    protected String getJsonUserProfile(TokenRequestDto tokenRequestDto) {
-        return "{\"resultcode\":\"00\",\"message\":\"success\",\"response\":{\"id\":\"1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM\",\"profile_image\":\"https://ssl.pstatic.net/static/pwe/address/img_profile.png\",\"gender\":\"M\",\"email\":\"lmj938@naver.com\",\"mobile\":\"010-5913-7109\",\"mobile_e164\":\"+821059137109\",\"name\":\"이민재\"}}";
+    @Test
+    @DisplayName("유저를 이메일로 조회한다.")
+    public void findByEmailTest() {
+        User actualUser = userService.findAll("lmj938@naver.com1", null).get(0);
+
+        assertThat(actualUser.getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM1");
+        assertThat(actualUser.getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png1");
+        assertThat(actualUser.getGender()).isEqualTo("M");
+        assertThat(actualUser.getEmail()).isEqualTo("lmj938@naver.com1");
+        assertThat(actualUser.getMobile()).isEqualTo("010-0000-00001");
+        assertThat(actualUser.getMobileE164()).isEqualTo("+8210000000001");
+        assertThat(actualUser.getName()).isEqualTo("이민재1");
+        assertThat(actualUser.getRole()).isEqualTo(Role.GUEST);
+    }
+
+    @Test
+    @DisplayName("유저를 이름으로 조회한다.")
+    public void findByNameTest() {
+        List<User> actualUser = userService.findAll(null, "이민재1");
+
+        assertThat(actualUser.get(0).getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM1");
+        assertThat(actualUser.get(0).getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png1");
+        assertThat(actualUser.get(0).getGender()).isEqualTo("M");
+        assertThat(actualUser.get(0).getEmail()).isEqualTo("lmj938@naver.com1");
+    }
+
+    @Test
+    @DisplayName("유저의 정보를 변경한다.")
+    public void updateTest() {
+        String updatedProfileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.pngupdated";
+        String updatedEmail = "lmj938@naver.comupdated";
+        String updatedMobile = "010-0000-0000updated";
+        Role updatedRole = Role.USER;
+        User user = userService.findAll(null, null).get(0);
+
+        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.builder()
+                .email(updatedEmail)
+                .profileImage(updatedProfileImage)
+                .mobile(updatedMobile)
+                .role(updatedRole)
+                .build();
+
+        userService.update(user.getId(), userUpdateRequestDto);
+
+        assertThat(userService.findAll(updatedEmail, null).get(0).getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.pngupdated");
+        assertThat(userService.findAll(updatedEmail, null).get(0).getEmail()).isEqualTo("lmj938@naver.comupdated");
+        assertThat(userService.findAll(updatedEmail, null).get(0).getMobile()).isEqualTo("010-0000-0000updated");
+        assertThat(userService.findAll(updatedEmail, null).get(0).getMobileE164()).isEqualTo("+82100000000");
+        assertThat(userService.findAll(updatedEmail, null).get(0).getRole()).isEqualTo(Role.USER);
+    }
+
+    @Test
+    @DisplayName("유저를 삭제한다.")
+    public void deleteTest() {
+        User user = userService.findAll(null, null).get(0);
+        userService.delete(user.getId());
+        assertThat(userService.findAll(null, null).size()).isEqualTo(49);
+    }
+
+    @Test
+    @DisplayName("없는 유저를 찾을 시 NoExistUserException이 발생한다.")
+    public void noExistExceptionTest() {
+        assertThatThrownBy(() -> userService.findById(52L)).isInstanceOf(NoExistUserException.class);
+        assertThatThrownBy(() -> userService.delete(52L)).isInstanceOf(NoExistUserException.class);
     }
 }
