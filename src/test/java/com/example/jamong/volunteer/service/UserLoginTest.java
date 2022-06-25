@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,15 +24,15 @@ public class UserLoginTest {
     @Test
     @DisplayName("토큰을 주면 유저 프로필 정보를 반환")
     public void getInfoTest() throws JsonProcessingException {
-        User info = userService.getProfile(new TokenRequestDto("fake Token"));
+        ResponseEntity<User> info = userService.getProfile(new TokenRequestDto("fake Token"));
 
-        assertThat(info.getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM");
-        assertThat(info.getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png");
-        assertThat(info.getGender()).isEqualTo("M");
-        assertThat(info.getEmail()).isEqualTo("lmj938@naver.com");
-        assertThat(info.getMobile()).isEqualTo("010-5913-7109");
-        assertThat(info.getMobileE164()).isEqualTo("+821059137109");
-        assertThat(info.getName()).isEqualTo("이민재");
+        assertThat(info.getBody().getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM");
+        assertThat(info.getBody().getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png");
+        assertThat(info.getBody().getGender()).isEqualTo("M");
+        assertThat(info.getBody().getEmail()).isEqualTo("lmj938@naver.com");
+        assertThat(info.getBody().getMobile()).isEqualTo("010-5913-7109");
+        assertThat(info.getBody().getMobileE164()).isEqualTo("+821059137109");
+        assertThat(info.getBody().getName()).isEqualTo("이민재");
     }
 
     @Test
@@ -39,15 +40,15 @@ public class UserLoginTest {
     public void getAlreadyExistsInfoTest() throws JsonProcessingException {
         userService.getProfile(new TokenRequestDto("fake Token"));
 
-        User info = userService.getProfile(new TokenRequestDto("fake Token"));
+        ResponseEntity<User> info = userService.getProfile(new TokenRequestDto("fake Token"));
 
-        assertThat(info.getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM");
-        assertThat(info.getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png");
-        assertThat(info.getGender()).isEqualTo("M");
-        assertThat(info.getEmail()).isEqualTo("lmj938@naver.com");
-        assertThat(info.getMobile()).isEqualTo("010-5913-7109");
-        assertThat(info.getMobileE164()).isEqualTo("+821059137109");
-        assertThat(info.getName()).isEqualTo("이민재");
+        assertThat(info.getBody().getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM");
+        assertThat(info.getBody().getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png");
+        assertThat(info.getBody().getGender()).isEqualTo("M");
+        assertThat(info.getBody().getEmail()).isEqualTo("lmj938@naver.com");
+        assertThat(info.getBody().getMobile()).isEqualTo("010-5913-7109");
+        assertThat(info.getBody().getMobileE164()).isEqualTo("+821059137109");
+        assertThat(info.getBody().getName()).isEqualTo("이민재");
     }
 }
 

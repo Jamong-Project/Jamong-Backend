@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -19,6 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -34,14 +36,15 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User getProfile(TokenRequestDto tokenRequestDto) {
+    public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
         List<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
 
         if (user.size() > 0) {
-            return user.get(0);
+            return ResponseEntity.ok(user.get(0));
         }
-        return userRepository.save(userSaveRequestDto.toEntity());
+        User saved = userRepository.save(userSaveRequestDto.toEntity());
+        return ResponseEntity.created(URI.create("/v1/users/" + saved.getId())).body(saved);
     }
 
     protected UserSaveRequestDto getUserProfileFromNaver(TokenRequestDto tokenRequestDto) {
