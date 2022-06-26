@@ -1,6 +1,6 @@
 package com.example.jamong.user.domain;
 
-import com.example.jamong.BaseTimeEntity;
+import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;

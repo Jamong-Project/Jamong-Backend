@@ -1,6 +1,6 @@
 package com.example.jamong.volunteer.domain;
 
-import com.example.jamong.BaseTimeEntity;
+import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
