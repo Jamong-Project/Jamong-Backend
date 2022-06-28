@@ -70,7 +70,7 @@ public class VolunteerControllerTest {
     }
 
     @AfterEach
-    public void teadDown() {
+    public void tearDown() {
         volunteerRepository.deleteAll();
     }
 
