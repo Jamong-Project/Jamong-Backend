@@ -4,6 +4,7 @@ import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.TokenRequestDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.user.service.UserService;
+import com.example.jamong.volunteer.repository.ApplyListRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -55,8 +56,8 @@ public class UserLoginTest {
 @Service
 class StubUserService extends UserService {
 
-    public StubUserService(UserRepository userRepository) {
-        super(userRepository);
+    public StubUserService(UserRepository userRepository, ApplyListRepository applyListRepository) {
+        super(userRepository, applyListRepository);
     }
 
     @Override
