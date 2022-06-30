@@ -67,7 +67,7 @@ public class VolunteerController {
     @PostMapping("/{id}/apply")
     public ResponseEntity<Void> applyVolunteer(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
         volunteerService.addUser(id, requestDto);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.created(URI.create("/v1/volunteers/applicants")).build();
     }
 
     @GetMapping("/{id}/applicants")
