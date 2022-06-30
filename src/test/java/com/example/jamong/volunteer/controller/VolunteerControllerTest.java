@@ -70,7 +70,7 @@ public class VolunteerControllerTest {
     }
 
     @AfterEach
-    public void teadDown() {
+    public void tearDown() {
         volunteerRepository.deleteAll();
     }
 
@@ -115,7 +115,7 @@ public class VolunteerControllerTest {
                         .contentType("application/json")
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
     @Test
@@ -150,7 +150,7 @@ public class VolunteerControllerTest {
                         .contentType("application/json")
                         .accept(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8"))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 
     @Test
@@ -162,7 +162,7 @@ public class VolunteerControllerTest {
 
         mvc.perform(delete(url)
                         .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 }
 

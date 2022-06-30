@@ -1,12 +1,15 @@
 package com.example.jamong.volunteer.service;
 
 import com.example.jamong.exception.FromBiggerThanToException;
+import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.exception.NoExistVolunteerException;
+import com.example.jamong.user.domain.User;
+import com.example.jamong.user.dto.UserEmailRequestDto;
+import com.example.jamong.user.repository.UserRepository;
+import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Volunteer;
-import com.example.jamong.volunteer.dto.VolunteerArticleDto;
-import com.example.jamong.volunteer.dto.VolunteerCardDto;
-import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
-import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
+import com.example.jamong.volunteer.dto.*;
+import com.example.jamong.volunteer.repository.ApplyListRepository;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,8 @@ public class VolunteerService {
     private static final int DEFAULT_FROM_INDEX = 0;
 
     private final VolunteerRepository volunteerRepository;
+    private final ApplyListRepository applyListRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public ResponseEntity<List<VolunteerCardDto>> findAll(Integer from, Integer to, String ordering) {
@@ -143,4 +148,41 @@ public class VolunteerService {
         return entity;
     }
 
+    @Transactional
+    public void addUser(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
+        Volunteer volunteer = volunteerRepository.findById(volunteerId)
+                .orElseThrow(
+                        () -> new NoExistVolunteerException()
+                );
+        List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
+
+        if (user.isEmpty()) {
+            throw new NoExistVolunteerException();
+        }
+
+        ApplyList applyList = ApplyList.builder()
+                .volunteer(volunteer)
+                .user(user.get(0))
+                .build();
+
+        applyListRepository.save(applyList);
+
+    }
+
+    @Transactional
+    public List<User> findApplicants(Long id) {
+        Volunteer volunteer = volunteerRepository.findById(id)
+                .orElseThrow(
+                        () -> new NoExistUserException()
+                );
+
+        List<ApplyList> applyLists = applyListRepository.findByVolunteer(volunteer);
+        List<User> users = new ArrayList<>();
+
+        for (ApplyList applyList : applyLists) {
+            users.add(applyList.getUser());
+        }
+
+        return users;
+    }
 }

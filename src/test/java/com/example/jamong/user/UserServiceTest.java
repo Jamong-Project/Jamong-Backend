@@ -1,4 +1,4 @@
-package com.example.jamong.volunteer.service;
+package com.example.jamong.user;
 
 import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.user.domain.Role;

@@ -1,4 +1,4 @@
-package com.example.jamong;
+package com.example.jamong.config;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

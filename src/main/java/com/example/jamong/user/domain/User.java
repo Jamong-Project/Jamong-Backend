@@ -1,6 +1,6 @@
 package com.example.jamong.user.domain;
 
-import com.example.jamong.BaseTimeEntity;
+import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,7 +40,7 @@ public class User extends BaseTimeEntity {
     private String cardinalNumber;
 
     @Builder
-    public User(Long id, String naverId, String profileImage, String gender, String email, String mobile, String mobileE164, String name,Role role) {
+    public User(Long id, String naverId, String profileImage, String gender, String email, String mobile, String mobileE164, String name, Role role) {
         this.id = id;
         this.naverId = naverId;
         this.profileImage = profileImage;
