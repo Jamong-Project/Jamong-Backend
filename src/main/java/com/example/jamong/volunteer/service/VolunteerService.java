@@ -1,6 +1,7 @@
 package com.example.jamong.volunteer.service;
 
 import com.example.jamong.exception.FromBiggerThanToException;
+import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
@@ -172,7 +173,7 @@ public class VolunteerService {
     public List<User> findApplicants(Long id) {
         Volunteer volunteer = volunteerRepository.findById(id)
                 .orElseThrow(
-                        () -> new NoExistVolunteerException()
+                        () -> new NoExistUserException()
                 );
 
         List<ApplyList> applyLists = applyListRepository.findByVolunteer(volunteer);
@@ -181,6 +182,7 @@ public class VolunteerService {
         for (ApplyList applyList : applyLists) {
             users.add(applyList.getUser());
         }
+
         return users;
     }
 }

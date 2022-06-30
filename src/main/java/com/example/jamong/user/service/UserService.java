@@ -8,7 +8,9 @@ import com.example.jamong.user.dto.TokenRequestDto;
 import com.example.jamong.user.dto.UserSaveRequestDto;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
 import com.example.jamong.user.repository.UserRepository;
+import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Volunteer;
+import com.example.jamong.volunteer.repository.ApplyListRepository;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,10 +28,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class UserService {
     private final static String NAVER_LOGIN_HEADER_STRING = "Bearer ";
 
     private final UserRepository userRepository;
-    private final VolunteerRepository volunteerRepository;
+    private final ApplyListRepository applyListRepository;
 
     @Transactional
     public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
@@ -70,7 +69,6 @@ public class UserService {
         return responseBody;
     }
 
-
     private NaverResponseDto jsonProfileParser(String responseBody) {
         ObjectMapper objectMapper = new ObjectMapper();
         NaverResponseDto naverResponseDto = new NaverResponseDto();
@@ -84,7 +82,7 @@ public class UserService {
     }
 
     @Transactional
-    public static String get(String apiUrl, Map<String, String> requestHeaders) {
+    public String get(String apiUrl, Map<String, String> requestHeaders) {
         HttpURLConnection con = connect(apiUrl);
         try {
             con.setRequestMethod("GET");
@@ -106,9 +104,7 @@ public class UserService {
         }
     }
 
-
-    @Transactional
-    private static HttpURLConnection connect(String apiUrl) {
+    private HttpURLConnection connect(String apiUrl) {
         try {
             URL url = new URL(apiUrl);
             return (HttpURLConnection) url.openConnection();
@@ -119,8 +115,7 @@ public class UserService {
         }
     }
 
-    @Transactional
-    private static String readBody(InputStream body) {
+    private String readBody(InputStream body) {
         InputStreamReader streamReader = new InputStreamReader(body);
 
         try (BufferedReader lineReader = new BufferedReader(streamReader)) {
@@ -182,5 +177,23 @@ public class UserService {
 
         userRepository.delete(user.get());
         return user.get();
+    }
+
+    public List<Volunteer> findVolunteers(Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (!user.isPresent()) {
+            throw new NoExistUserException();
+        }
+
+        List<ApplyList> applyList = applyListRepository.findByUser(user.get());
+
+        List<Volunteer> volunteers = new ArrayList<>();
+
+        for (ApplyList apply : applyList) {
+            volunteers.add(apply.getVolunteer());
+        }
+
+        return volunteers;
     }
 }
