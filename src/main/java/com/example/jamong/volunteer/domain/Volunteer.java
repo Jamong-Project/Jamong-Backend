@@ -24,7 +24,6 @@ public class Volunteer extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "VOLUNTEER_ID")
     private Long id;
 
     private String title;
