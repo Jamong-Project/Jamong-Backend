@@ -17,11 +17,11 @@ public class ApplyList extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "VOLUNTEER_ID")
+    @JoinColumn
     private Volunteer volunteer;
 
     @Builder
