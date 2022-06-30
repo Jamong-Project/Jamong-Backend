@@ -1,6 +1,6 @@
 package com.example.jamong.volunteer.domain;
 
-import com.example.jamong.BaseTimeEntity;
+import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +24,7 @@ public class Volunteer extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "VOLUNTEER_ID")
     private Long id;
 
     private String title;
@@ -39,6 +40,7 @@ public class Volunteer extends BaseTimeEntity {
     private Long applicationDate;
 
     private int maximumPeople;
+
     private int currentPeople;
 
     @Builder
@@ -54,7 +56,6 @@ public class Volunteer extends BaseTimeEntity {
         if (currentPeople != null) {
             this.currentPeople = currentPeople;
         }
-
     }
 
     public Picture representPicture() {

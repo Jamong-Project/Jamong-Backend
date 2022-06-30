@@ -1,17 +1,24 @@
 package com.example.jamong.user.service;
 
 import com.example.jamong.exception.NoExistUserException;
+import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.NaverResponseDto;
 import com.example.jamong.user.dto.TokenRequestDto;
 import com.example.jamong.user.dto.UserSaveRequestDto;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
 import com.example.jamong.user.repository.UserRepository;
+import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Volunteer;
+import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.VolunteerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,11 +26,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,15 +38,18 @@ public class UserService {
     private final static String NAVER_LOGIN_HEADER_STRING = "Bearer ";
 
     private final UserRepository userRepository;
+    private final ApplyListRepository applyListRepository;
 
-    public User getProfile(TokenRequestDto tokenRequestDto) {
+    @Transactional
+    public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
         List<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
 
         if (user.size() > 0) {
-            return user.get(0);
+            return ResponseEntity.ok(user.get(0));
         }
-        return userRepository.save(userSaveRequestDto.toEntity());
+        User saved = userRepository.save(userSaveRequestDto.toEntity());
+        return ResponseEntity.created(URI.create("/v1/users/" + saved.getId())).body(saved);
     }
 
     protected UserSaveRequestDto getUserProfileFromNaver(TokenRequestDto tokenRequestDto) {
@@ -61,7 +69,6 @@ public class UserService {
         return responseBody;
     }
 
-
     private NaverResponseDto jsonProfileParser(String responseBody) {
         ObjectMapper objectMapper = new ObjectMapper();
         NaverResponseDto naverResponseDto = new NaverResponseDto();
@@ -74,7 +81,8 @@ public class UserService {
         return naverResponseDto;
     }
 
-    public static String get(String apiUrl, Map<String, String> requestHeaders) {
+    @Transactional
+    public String get(String apiUrl, Map<String, String> requestHeaders) {
         HttpURLConnection con = connect(apiUrl);
         try {
             con.setRequestMethod("GET");
@@ -96,8 +104,7 @@ public class UserService {
         }
     }
 
-
-    private static HttpURLConnection connect(String apiUrl) {
+    private HttpURLConnection connect(String apiUrl) {
         try {
             URL url = new URL(apiUrl);
             return (HttpURLConnection) url.openConnection();
@@ -108,7 +115,7 @@ public class UserService {
         }
     }
 
-    private static String readBody(InputStream body) {
+    private String readBody(InputStream body) {
         InputStreamReader streamReader = new InputStreamReader(body);
 
         try (BufferedReader lineReader = new BufferedReader(streamReader)) {
@@ -125,6 +132,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public List<User> findAll(String email, String name) {
         if (email != null && name == null) {
             return userRepository.findByEmail(email);
@@ -136,6 +144,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    @Transactional
     public User findById(Long id) {
         Optional<User> user = userRepository.findById(id);
 
@@ -145,6 +154,7 @@ public class UserService {
         return user.get();
     }
 
+    @Transactional
     public User update(Long id, UserUpdateRequestDto userUpdateRequestDto) {
         Optional<User> user = userRepository.findById(id);
 
@@ -157,6 +167,7 @@ public class UserService {
 
     }
 
+    @Transactional
     public User delete(Long id) {
         Optional<User> user = userRepository.findById(id);
 
@@ -166,5 +177,23 @@ public class UserService {
 
         userRepository.delete(user.get());
         return user.get();
+    }
+
+    public List<Volunteer> findVolunteers(Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (!user.isPresent()) {
+            throw new NoExistUserException();
+        }
+
+        List<ApplyList> applyList = applyListRepository.findByUser(user.get());
+
+        List<Volunteer> volunteers = new ArrayList<>();
+
+        for (ApplyList apply : applyList) {
+            volunteers.add(apply.getVolunteer());
+        }
+
+        return volunteers;
     }
 }
