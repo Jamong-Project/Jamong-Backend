@@ -1,5 +1,7 @@
 package com.example.jamong.volunteer.controller;
 
+import com.example.jamong.user.domain.User;
+import com.example.jamong.user.dto.UserEmailRequestDto;
 import com.example.jamong.volunteer.service.AwsS3Service;
 import com.example.jamong.volunteer.service.VolunteerService;
 import com.example.jamong.volunteer.domain.Volunteer;
@@ -60,5 +62,16 @@ public class VolunteerController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
        volunteerService.delete(id);
        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/apply")
+    public ResponseEntity<Void> applyVolunteer(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
+        volunteerService.addUser(id, requestDto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}/applicants")
+    public ResponseEntity<List<User>> findApplicants(@PathVariable Long id) {
+        return ResponseEntity.ok(volunteerService.findApplicants(id));
     }
 }

@@ -1,18 +1,22 @@
 package com.example.jamong.user.service;
 
 import com.example.jamong.exception.NoExistUserException;
+import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.NaverResponseDto;
 import com.example.jamong.user.dto.TokenRequestDto;
 import com.example.jamong.user.dto.UserSaveRequestDto;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
 import com.example.jamong.user.repository.UserRepository;
+import com.example.jamong.volunteer.domain.Volunteer;
+import com.example.jamong.volunteer.repository.VolunteerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +39,9 @@ public class UserService {
     private final static String NAVER_LOGIN_HEADER_STRING = "Bearer ";
 
     private final UserRepository userRepository;
+    private final VolunteerRepository volunteerRepository;
 
+    @Transactional
     public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
         List<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
@@ -77,6 +83,7 @@ public class UserService {
         return naverResponseDto;
     }
 
+    @Transactional
     public static String get(String apiUrl, Map<String, String> requestHeaders) {
         HttpURLConnection con = connect(apiUrl);
         try {
@@ -100,6 +107,7 @@ public class UserService {
     }
 
 
+    @Transactional
     private static HttpURLConnection connect(String apiUrl) {
         try {
             URL url = new URL(apiUrl);
@@ -111,6 +119,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     private static String readBody(InputStream body) {
         InputStreamReader streamReader = new InputStreamReader(body);
 
@@ -128,6 +137,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public List<User> findAll(String email, String name) {
         if (email != null && name == null) {
             return userRepository.findByEmail(email);
@@ -139,6 +149,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    @Transactional
     public User findById(Long id) {
         Optional<User> user = userRepository.findById(id);
 
@@ -148,6 +159,7 @@ public class UserService {
         return user.get();
     }
 
+    @Transactional
     public User update(Long id, UserUpdateRequestDto userUpdateRequestDto) {
         Optional<User> user = userRepository.findById(id);
 
@@ -160,6 +172,7 @@ public class UserService {
 
     }
 
+    @Transactional
     public User delete(Long id) {
         Optional<User> user = userRepository.findById(id);
 

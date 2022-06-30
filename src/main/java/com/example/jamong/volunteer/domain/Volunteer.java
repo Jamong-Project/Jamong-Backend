@@ -24,6 +24,7 @@ public class Volunteer extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "VOLUNTEER_ID")
     private Long id;
 
     private String title;
@@ -39,6 +40,7 @@ public class Volunteer extends BaseTimeEntity {
     private Long applicationDate;
 
     private int maximumPeople;
+
     private int currentPeople;
 
     @Builder
@@ -54,7 +56,6 @@ public class Volunteer extends BaseTimeEntity {
         if (currentPeople != null) {
             this.currentPeople = currentPeople;
         }
-
     }
 
     public Picture representPicture() {
