@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -116,7 +117,16 @@ public class VolunteerService {
                 .orElseThrow(
                         () -> new NoExistVolunteerException()
                 );
-        return new VolunteerArticleDto(entity);
+        List<ApplyList> applyLists = applyListRepository.findByVolunteer(entity);
+
+        List<User> applicants = applyLists.stream()
+                .map(ApplyList::getUser)
+                .collect(Collectors.toList());
+
+        return VolunteerArticleDto.builder()
+                .entity(entity)
+                .applicants(applicants)
+                .build();
     }
 
     @Transactional
@@ -130,7 +140,6 @@ public class VolunteerService {
                 .orElseThrow(
                         () -> new NoExistVolunteerException()
                 );
-
         entity.update(requestDto);
 
         return volunteerRepository.save(entity);
@@ -167,22 +176,5 @@ public class VolunteerService {
 
         applyListRepository.save(applyList);
 
-    }
-
-    @Transactional
-    public List<User> findApplicants(Long id) {
-        Volunteer volunteer = volunteerRepository.findById(id)
-                .orElseThrow(
-                        () -> new NoExistUserException()
-                );
-
-        List<ApplyList> applyLists = applyListRepository.findByVolunteer(volunteer);
-        List<User> users = new ArrayList<>();
-
-        for (ApplyList applyList : applyLists) {
-            users.add(applyList.getUser());
-        }
-
-        return users;
     }
 }

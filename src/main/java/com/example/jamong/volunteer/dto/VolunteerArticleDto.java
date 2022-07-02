@@ -1,5 +1,6 @@
 package com.example.jamong.volunteer.dto;
 
+import com.example.jamong.user.domain.User;
 import com.example.jamong.volunteer.domain.Picture;
 import com.example.jamong.volunteer.domain.Volunteer;
 import lombok.Builder;
@@ -17,9 +18,10 @@ public class VolunteerArticleDto {
     private final Long applicationDate;
     private final int maximumPeople;
     private final int currentPeople;
+    private final List<User> applicants;
 
     @Builder
-    public VolunteerArticleDto(Volunteer entity) {
+    public VolunteerArticleDto(Volunteer entity, List<User> applicants) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
@@ -28,6 +30,7 @@ public class VolunteerArticleDto {
         this.applicationDate = entity.getApplicationDate();
         this.maximumPeople = entity.getMaximumPeople();
         this.currentPeople = entity.getCurrentPeople();
+        this.applicants = applicants;
     }
 }
 

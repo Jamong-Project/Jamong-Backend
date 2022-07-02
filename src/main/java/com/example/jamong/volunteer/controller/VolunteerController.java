@@ -69,9 +69,4 @@ public class VolunteerController {
         volunteerService.addUser(id, requestDto);
         return ResponseEntity.created(URI.create("/v1/volunteers/applicants")).build();
     }
-
-    @GetMapping("/{id}/applicants")
-    public ResponseEntity<List<User>> findApplicants(@PathVariable Long id) {
-        return ResponseEntity.ok(volunteerService.findApplicants(id));
-    }
 }
