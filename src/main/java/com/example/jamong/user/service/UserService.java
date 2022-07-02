@@ -1,17 +1,12 @@
 package com.example.jamong.user.service;
 
 import com.example.jamong.exception.NoExistUserException;
-import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.User;
-import com.example.jamong.user.dto.NaverResponseDto;
-import com.example.jamong.user.dto.TokenRequestDto;
-import com.example.jamong.user.dto.UserSaveRequestDto;
-import com.example.jamong.user.dto.UserUpdateRequestDto;
+import com.example.jamong.user.dto.*;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
-import com.example.jamong.volunteer.repository.VolunteerRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -145,13 +140,24 @@ public class UserService {
     }
 
     @Transactional
-    public User findById(Long id) {
+    public UserResponseDto findById(Long id) {
         Optional<User> user = userRepository.findById(id);
 
         if (!user.isPresent()) {
             throw new NoExistUserException();
         }
-        return user.get();
+
+        List<ApplyList> applyLists = applyListRepository.findByUser(user.get());
+        List<Volunteer> volunteers = new ArrayList<>();
+
+        for (ApplyList apply : applyLists) {
+            volunteers.add(apply.getVolunteer());
+        }
+
+        return UserResponseDto.builder()
+                .entity(user.get())
+                .volunteers(volunteers)
+                .build();
     }
 
     @Transactional
@@ -177,23 +183,5 @@ public class UserService {
 
         userRepository.delete(user.get());
         return user.get();
-    }
-
-    public List<Volunteer> findVolunteers(Long id) {
-        Optional<User> user = userRepository.findById(id);
-
-        if (!user.isPresent()) {
-            throw new NoExistUserException();
-        }
-
-        List<ApplyList> applyList = applyListRepository.findByUser(user.get());
-
-        List<Volunteer> volunteers = new ArrayList<>();
-
-        for (ApplyList apply : applyList) {
-            volunteers.add(apply.getVolunteer());
-        }
-
-        return volunteers;
     }
 }
