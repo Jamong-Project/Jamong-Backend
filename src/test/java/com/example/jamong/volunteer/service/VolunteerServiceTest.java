@@ -267,7 +267,7 @@ class VolunteerServiceTest {
                 .email(user.getEmail())
                 .build();
 
-        volunteerService.addUser(volunteer.getId(), userEmailRequestDto);
+        volunteerService.applyVolunteer(volunteer.getId(), userEmailRequestDto);
 
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
 

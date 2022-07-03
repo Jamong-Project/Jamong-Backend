@@ -158,25 +158,15 @@ public class VolunteerService {
     }
 
     @Transactional
-    public ApplyList addUser(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
-        Volunteer volunteer = volunteerRepository.findById(volunteerId)
-                .orElseThrow(
-                        () -> new NoExistVolunteerException()
-                );
+    public ApplyList applyVolunteer(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
+
         List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
 
         if (user.isEmpty()) {
             throw new NoExistVolunteerException();
         }
 
-        int currentPeople = volunteer.getCurrentPeople();
-        int maximumPeople = volunteer.getMaximumPeople();
-
-        if (currentPeople + 1 > maximumPeople) {
-            throw new OverMaximumPeopleException();
-        }
-
-        volunteer.addUser();
+        Volunteer volunteer = addUser(volunteerId);
 
         ApplyList applyList = ApplyList.builder()
                 .volunteer(volunteer)
@@ -186,5 +176,22 @@ public class VolunteerService {
 
         return applyListRepository.save(applyList);
 
+    }
+
+    private Volunteer addUser(Long volunteerId) {
+        Volunteer volunteer = volunteerRepository.findById(volunteerId)
+                .orElseThrow(
+                        () -> new NoExistVolunteerException()
+                );
+
+        int currentPeople = volunteer.getCurrentPeople();
+        int maximumPeople = volunteer.getMaximumPeople();
+
+        if (currentPeople + 1 > maximumPeople) {
+            throw new OverMaximumPeopleException();
+        }
+
+        volunteer.addUser();
+        return volunteer;
     }
 }

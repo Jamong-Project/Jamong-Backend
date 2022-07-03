@@ -1,6 +1,5 @@
 package com.example.jamong.volunteer.controller;
 
-import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
 import com.example.jamong.volunteer.service.AwsS3Service;
 import com.example.jamong.volunteer.service.VolunteerService;
@@ -66,7 +65,7 @@ public class VolunteerController {
 
     @PostMapping("/{id}/apply")
     public ResponseEntity<Void> applyVolunteer(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
-        volunteerService.addUser(id, requestDto);
+        volunteerService.applyVolunteer(id, requestDto);
         return ResponseEntity.ok().build();
     }
 }
