@@ -1,5 +1,6 @@
 package com.example.jamong.user.service;
 
+import com.example.jamong.exception.NaverLoginFailException;
 import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.*;
@@ -38,20 +39,25 @@ public class UserService {
     @Transactional
     public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
-        List<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
+        List<User> users = userRepository.findByEmail(userSaveRequestDto.getEmail());
 
-        if (user.size() > 0) {
-            return ResponseEntity.ok(user.get(0));
+        if (users.size() <= 0) {
+            User saved = userRepository.save(userSaveRequestDto.toEntity());
+            return ResponseEntity.created(URI.create("/v1/users/" + saved.getId())).body(saved);
         }
-        User saved = userRepository.save(userSaveRequestDto.toEntity());
-        return ResponseEntity.created(URI.create("/v1/users/" + saved.getId())).body(saved);
+
+        return ResponseEntity.ok(users.get(0));
     }
 
     protected UserSaveRequestDto getUserProfileFromNaver(TokenRequestDto tokenRequestDto) {
         String jsonUserProfile = getJsonUserProfile(tokenRequestDto);
         NaverResponseDto naverResponseDto = jsonProfileParser(jsonUserProfile);
 
-        return naverResponseDto.getUserSaveRequestDto();
+        if (naverResponseDto.getResultCode().equals("00")) {
+            return naverResponseDto.getUserSaveRequestDto();
+        }
+
+        throw new NaverLoginFailException();
     }
 
     protected String getJsonUserProfile(TokenRequestDto tokenRequestDto) {
