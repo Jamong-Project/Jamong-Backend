@@ -39,4 +39,10 @@ public class UserController {
         User updated = userService.update(id, userUpdateRequestDto);
         return ResponseEntity.created(URI.create("/v1/users/" + updated.getId())).body(updated);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }
