@@ -4,7 +4,6 @@ import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserResponseDto;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
 import com.example.jamong.user.service.UserService;
-import com.example.jamong.volunteer.domain.Volunteer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

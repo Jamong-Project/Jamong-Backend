@@ -91,13 +91,13 @@ public class UserService {
                 con.setRequestProperty(header.getKey(), header.getValue());
             }
 
-
             int responseCode = con.getResponseCode();
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return readBody(con.getInputStream());
-            } else {
-                return readBody(con.getErrorStream());
             }
+            return readBody(con.getErrorStream());
+
         } catch (IOException e) {
             throw new RuntimeException("API 요청과 응답 실패", e);
         } finally {
@@ -110,9 +110,13 @@ public class UserService {
             URL url = new URL(apiUrl);
             return (HttpURLConnection) url.openConnection();
         } catch (MalformedURLException e) {
+
             throw new RuntimeException("API URL이 잘못되었습니다. : " + apiUrl, e);
+
         } catch (IOException e) {
+
             throw new RuntimeException("연결이 실패했습니다. : " + apiUrl, e);
+
         }
     }
 
@@ -147,7 +151,7 @@ public class UserService {
 
     @Transactional
     public UserResponseDto findById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(NoExistUserException :: new);
+        User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
 
         List<ApplyList> applyLists = applyListRepository.findByUser(user);
         List<Volunteer> volunteers = new ArrayList<>();
@@ -164,7 +168,7 @@ public class UserService {
 
     @Transactional
     public User update(Long id, UserUpdateRequestDto userUpdateRequestDto) {
-        User user = userRepository.findById(id).orElseThrow(NoExistUserException :: new);
+        User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
 
         user.update(userUpdateRequestDto);
         return userRepository.save(user);
@@ -173,7 +177,8 @@ public class UserService {
 
     @Transactional
     public User delete(Long id) {
-        User user = userRepository.findById(id).orElseThrow(NoExistUserException :: new);;
+        User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
+        ;
 
         userRepository.delete(user);
         return user;

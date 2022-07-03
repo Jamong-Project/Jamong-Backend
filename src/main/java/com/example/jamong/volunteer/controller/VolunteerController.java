@@ -1,17 +1,15 @@
 package com.example.jamong.volunteer.controller;
 
-import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.dto.UserEmailRequestDto;
-import com.example.jamong.volunteer.service.AwsS3Service;
-import com.example.jamong.volunteer.service.VolunteerService;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerArticleDto;
 import com.example.jamong.volunteer.dto.VolunteerCardDto;
 import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
+import com.example.jamong.volunteer.service.AwsS3Service;
+import com.example.jamong.volunteer.service.VolunteerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,8 +59,8 @@ public class VolunteerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-       volunteerService.delete(id);
-       return ResponseEntity.noContent().build();
+        volunteerService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/apply")
