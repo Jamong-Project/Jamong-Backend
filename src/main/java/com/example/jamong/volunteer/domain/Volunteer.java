@@ -42,6 +42,9 @@ public class Volunteer extends BaseTimeEntity {
 
     private int currentPeople;
 
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ApplyList> applyLists = new ArrayList<>();
+
     @Builder
     public Volunteer(String title, String content, List<Picture> pictures, Long volunteerDate, Long applicationDate, int maximumPeople, Integer currentPeople) {
         this.title = title;
@@ -93,5 +96,9 @@ public class Volunteer extends BaseTimeEntity {
             this.currentPeople = requestDto.getCurrentPeople();
         }
 
+    }
+
+    public void addUser() {
+        this.currentPeople++;
     }
 }

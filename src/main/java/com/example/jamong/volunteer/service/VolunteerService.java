@@ -1,8 +1,8 @@
 package com.example.jamong.volunteer.service;
 
 import com.example.jamong.exception.FromBiggerThanToException;
-import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.exception.NoExistVolunteerException;
+import com.example.jamong.exception.OverMaximumPeopleException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
 import com.example.jamong.user.repository.UserRepository;
@@ -158,7 +158,7 @@ public class VolunteerService {
     }
 
     @Transactional
-    public void addUser(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
+    public ApplyList addUser(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
         Volunteer volunteer = volunteerRepository.findById(volunteerId)
                 .orElseThrow(
                         () -> new NoExistVolunteerException()
@@ -169,12 +169,22 @@ public class VolunteerService {
             throw new NoExistVolunteerException();
         }
 
+        int currentPeople = volunteer.getCurrentPeople();
+        int maximumPeople = volunteer.getMaximumPeople();
+
+        if (currentPeople + 1 > maximumPeople) {
+            throw new OverMaximumPeopleException();
+        }
+
+        volunteer.addUser();
+
         ApplyList applyList = ApplyList.builder()
                 .volunteer(volunteer)
                 .user(user.get(0))
                 .build();
 
-        applyListRepository.save(applyList);
+
+        return applyListRepository.save(applyList);
 
     }
 }

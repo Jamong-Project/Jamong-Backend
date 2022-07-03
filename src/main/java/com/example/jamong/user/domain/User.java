@@ -2,11 +2,14 @@ package com.example.jamong.user.domain;
 
 import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
+import com.example.jamong.volunteer.domain.ApplyList;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -38,6 +41,9 @@ public class User extends BaseTimeEntity {
     private Role role;
 
     private String cardinalNumber;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ApplyList> applyLists = new ArrayList<>();
 
     @Builder
     public User(Long id, String naverId, String profileImage, String gender, String email, String mobile, String mobileE164, String name, Role role) {
