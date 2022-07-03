@@ -141,13 +141,9 @@ public class UserService {
 
     @Transactional
     public UserResponseDto findById(Long id) {
-        Optional<User> user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElseThrow(NoExistUserException :: new);
 
-        if (!user.isPresent()) {
-            throw new NoExistUserException();
-        }
-
-        List<ApplyList> applyLists = applyListRepository.findByUser(user.get());
+        List<ApplyList> applyLists = applyListRepository.findByUser(user);
         List<Volunteer> volunteers = new ArrayList<>();
 
         for (ApplyList apply : applyLists) {
@@ -155,33 +151,25 @@ public class UserService {
         }
 
         return UserResponseDto.builder()
-                .entity(user.get())
+                .entity(user)
                 .volunteers(volunteers)
                 .build();
     }
 
     @Transactional
     public User update(Long id, UserUpdateRequestDto userUpdateRequestDto) {
-        Optional<User> user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElseThrow(NoExistUserException :: new);
 
-        if (!user.isPresent()) {
-            throw new NoExistUserException();
-        }
-
-        user.get().update(userUpdateRequestDto);
-        return userRepository.save(user.get());
+        user.update(userUpdateRequestDto);
+        return userRepository.save(user);
 
     }
 
     @Transactional
     public User delete(Long id) {
-        Optional<User> user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElseThrow(NoExistUserException :: new);;
 
-        if (!user.isPresent()) {
-            throw new NoExistUserException();
-        }
-
-        userRepository.delete(user.get());
-        return user.get();
+        userRepository.delete(user);
+        return user;
     }
 }

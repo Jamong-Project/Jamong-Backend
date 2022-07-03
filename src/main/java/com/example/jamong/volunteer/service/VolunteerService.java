@@ -113,10 +113,7 @@ public class VolunteerService {
 
     @Transactional
     public VolunteerArticleDto findById(Long id) {
-        Volunteer entity = volunteerRepository.findById(id)
-                .orElseThrow(
-                        () -> new NoExistVolunteerException()
-                );
+        Volunteer entity = volunteerRepository.findById(id).orElseThrow(NoExistVolunteerException::new);
         List<ApplyList> applyLists = applyListRepository.findByVolunteer(entity);
 
         List<User> applicants = applyLists.stream()
@@ -136,10 +133,7 @@ public class VolunteerService {
 
     @Transactional
     public Volunteer update(Long id, VolunteerUpdateRequestDto requestDto) {
-        Volunteer entity = volunteerRepository.findById(id)
-                .orElseThrow(
-                        () -> new NoExistVolunteerException()
-                );
+        Volunteer entity = volunteerRepository.findById(id).orElseThrow(NoExistVolunteerException::new);
         entity.update(requestDto);
 
         return volunteerRepository.save(entity);
@@ -148,10 +142,7 @@ public class VolunteerService {
 
     @Transactional
     public Volunteer delete(Long id) {
-        Volunteer entity = volunteerRepository.findById(id)
-                .orElseThrow(
-                        () -> new NoExistVolunteerException()
-                );
+        Volunteer entity = volunteerRepository.findById(id).orElseThrow(NoExistVolunteerException::new);
 
         volunteerRepository.delete(entity);
         return entity;
@@ -166,7 +157,7 @@ public class VolunteerService {
             throw new NoExistVolunteerException();
         }
 
-        Volunteer volunteer = addUser(volunteerId);
+        Volunteer volunteer = apply(volunteerId);
 
         ApplyList applyList = ApplyList.builder()
                 .volunteer(volunteer)
@@ -178,11 +169,8 @@ public class VolunteerService {
 
     }
 
-    private Volunteer addUser(Long volunteerId) {
-        Volunteer volunteer = volunteerRepository.findById(volunteerId)
-                .orElseThrow(
-                        () -> new NoExistVolunteerException()
-                );
+    private Volunteer apply(Long volunteerId) {
+        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
         int currentPeople = volunteer.getCurrentPeople();
         int maximumPeople = volunteer.getMaximumPeople();
