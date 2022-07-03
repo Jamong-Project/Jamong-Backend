@@ -7,9 +7,11 @@ import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.*;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,7 @@ public class VolunteerService {
     private final VolunteerRepository volunteerRepository;
     private final ApplyListRepository applyListRepository;
     private final UserRepository userRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Transactional
     public ResponseEntity<List<VolunteerCardDto>> findAll(Integer from, Integer to, String ordering) {
@@ -103,9 +106,11 @@ public class VolunteerService {
 
     private ResponseEntity<List<VolunteerCardDto>> getResponseEntity(List<Volunteer> volunteerList, Integer from, Integer to, HttpHeaders responseHeaders) {
         List<VolunteerCardDto> dtos = new ArrayList<>();
+
         for (Volunteer volunteer : volunteerList.subList(from, to)) {
             dtos.add(new VolunteerCardDto(volunteer));
         }
+
         return ResponseEntity.ok()
                 .headers(responseHeaders)
                 .body(dtos);
@@ -115,14 +120,20 @@ public class VolunteerService {
     public VolunteerArticleDto findById(Long id) {
         Volunteer entity = volunteerRepository.findById(id).orElseThrow(NoExistVolunteerException::new);
         List<ApplyList> applyLists = applyListRepository.findByVolunteer(entity);
+        List<Favorite> favorites = favoriteRepository.findByVolunteer(entity);
 
         List<User> applicants = applyLists.stream()
                 .map(ApplyList::getUser)
                 .collect(Collectors.toList());
 
+        List<User> favoriteUsers = favorites.stream()
+                .map(Favorite::getUser)
+                .collect(Collectors.toList());
+
         return VolunteerArticleDto.builder()
                 .entity(entity)
                 .applicants(applicants)
+                .favoriteUsers(favoriteUsers)
                 .build();
     }
 
@@ -150,7 +161,6 @@ public class VolunteerService {
 
     @Transactional
     public ApplyList applyVolunteer(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
-
         List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
 
         if (user.isEmpty()) {
@@ -163,7 +173,6 @@ public class VolunteerService {
                 .volunteer(volunteer)
                 .user(user.get(0))
                 .build();
-
 
         return applyListRepository.save(applyList);
 
@@ -181,5 +190,23 @@ public class VolunteerService {
 
         volunteer.addUser();
         return volunteer;
+    }
+
+    @Transactional
+    public Favorite pressFavorite(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
+        List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
+
+        if (user.isEmpty()) {
+            throw new NoExistVolunteerException();
+        }
+
+        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
+
+        Favorite favorite = Favorite.builder()
+                .volunteer(volunteer)
+                .user(user.get(0))
+                .build();
+
+        return favoriteRepository.save(favorite);
     }
 }

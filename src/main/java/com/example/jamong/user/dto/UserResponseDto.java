@@ -2,6 +2,7 @@ package com.example.jamong.user.dto;
 
 import com.example.jamong.user.domain.Role;
 import com.example.jamong.user.domain.User;
+import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,8 +33,10 @@ public class UserResponseDto {
 
     private List<Volunteer> volunteers;
 
+    private List<Volunteer> favoriteVolunteers;
+
     @Builder
-    public UserResponseDto(User entity, List<Volunteer> volunteers) {
+    public UserResponseDto(User entity, List<Volunteer> volunteers, List<Volunteer> favoriteVolunteers) {
         this.profileImage = entity.getProfileImage();
         this.gender = entity.getGender();
         this.email = entity.getEmail();
@@ -42,5 +45,6 @@ public class UserResponseDto {
         this.role = entity.getRole();
         this.cardinalNumber = entity.getCardinalNumber();
         this.volunteers = volunteers;
+        this.favoriteVolunteers = favoriteVolunteers;
     }
 }

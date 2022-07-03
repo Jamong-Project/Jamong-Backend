@@ -68,4 +68,10 @@ public class VolunteerController {
         volunteerService.applyVolunteer(id, requestDto);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{id}/favorite")
+    public ResponseEntity<Void> pressFavorite(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
+        volunteerService.pressFavorite(id, requestDto);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -6,8 +6,10 @@ import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.*;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ApplyListRepository applyListRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Transactional
     public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
@@ -154,15 +157,23 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
 
         List<ApplyList> applyLists = applyListRepository.findByUser(user);
+        List<Favorite> favorites = favoriteRepository.findByUser(user);
+
         List<Volunteer> volunteers = new ArrayList<>();
+        List<Volunteer> favoriteVolunteers = new ArrayList<>();
 
         for (ApplyList apply : applyLists) {
             volunteers.add(apply.getVolunteer());
         }
 
+        for (Favorite favorite : favorites) {
+            favoriteVolunteers.add(favorite.getVolunteer());
+        }
+
         return UserResponseDto.builder()
                 .entity(user)
                 .volunteers(volunteers)
+                .favoriteVolunteers(favoriteVolunteers)
                 .build();
     }
 
@@ -178,8 +189,6 @@ public class UserService {
     @Transactional
     public User delete(Long id) {
         User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
-        ;
-
         userRepository.delete(user);
         return user;
     }

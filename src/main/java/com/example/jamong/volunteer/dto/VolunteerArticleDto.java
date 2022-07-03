@@ -19,9 +19,10 @@ public class VolunteerArticleDto {
     private final int maximumPeople;
     private final int currentPeople;
     private final List<User> applicants;
+    private final List<User> favoriteUsers;
 
     @Builder
-    public VolunteerArticleDto(Volunteer entity, List<User> applicants) {
+    public VolunteerArticleDto(Volunteer entity, List<User> applicants, List<User> favoriteUsers) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
@@ -31,6 +32,7 @@ public class VolunteerArticleDto {
         this.maximumPeople = entity.getMaximumPeople();
         this.currentPeople = entity.getCurrentPeople();
         this.applicants = applicants;
+        this.favoriteUsers = favoriteUsers;
     }
 }
 
