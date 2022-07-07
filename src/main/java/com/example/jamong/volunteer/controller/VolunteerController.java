@@ -1,6 +1,7 @@
 package com.example.jamong.volunteer.controller;
 
 import com.example.jamong.user.dto.UserEmailRequestDto;
+import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerArticleDto;
 import com.example.jamong.volunteer.dto.VolunteerCardDto;
@@ -54,7 +55,7 @@ public class VolunteerController {
             requestDto.setPictures(awsS3Service.uploadFile(multipartFile));
         }
         Volunteer updated = volunteerService.update(id, requestDto);
-        return ResponseEntity.created(URI.create("/v1/volunteers/" + updated.getId())).body(updated);
+        return ResponseEntity.ok().body(updated);
     }
 
     @DeleteMapping("/{id}")
@@ -65,13 +66,17 @@ public class VolunteerController {
 
     @PostMapping("/{id}/apply")
     public ResponseEntity<Void> applyVolunteer(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
-        volunteerService.applyVolunteer(id, requestDto);
-        return ResponseEntity.ok().build();
+        if (volunteerService.applyVolunteer(id, requestDto)){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/favorite")
     public ResponseEntity<Void> pressFavorite(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
-        volunteerService.pressFavorite(id, requestDto);
-        return ResponseEntity.ok().build();
+        if (volunteerService.pressFavorite(id, requestDto)){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.noContent().build();
     }
 }

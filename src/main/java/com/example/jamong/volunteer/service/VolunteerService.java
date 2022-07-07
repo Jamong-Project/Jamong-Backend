@@ -5,7 +5,6 @@ import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.exception.OverMaximumPeopleException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
-import com.example.jamong.user.dto.UserResponseDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Favorite;
@@ -164,22 +163,30 @@ public class VolunteerService {
     }
 
     @Transactional
-    public ApplyList applyVolunteer(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
+    public boolean applyVolunteer(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
         List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
 
         if (user.isEmpty()) {
             throw new NoExistVolunteerException();
         }
 
-        Volunteer volunteer = apply(volunteerId);
+        List<ApplyList> users = applyListRepository.findByUser(user.get(0));
 
-        ApplyList applyList = ApplyList.builder()
-                .volunteer(volunteer)
-                .user(user.get(0))
-                .build();
+        if (users.size() == 0) {
+            Volunteer volunteer = apply(volunteerId);
 
-        return applyListRepository.save(applyList);
+            ApplyList applyList = ApplyList.builder()
+                    .volunteer(volunteer)
+                    .user(user.get(0))
+                    .build();
 
+            applyListRepository.save(applyList);
+            return true;
+        }
+
+        cancel(volunteerId);
+        applyListRepository.deleteByUser(user.get(0));
+        return false;
     }
 
     private Volunteer apply(Long volunteerId) {
@@ -196,8 +203,15 @@ public class VolunteerService {
         return volunteer;
     }
 
+    private void cancel(Long volunteerId) {
+        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
+
+        volunteer.removeUser();
+        volunteerRepository.save(volunteer);
+    }
+
     @Transactional
-    public Favorite pressFavorite(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
+    public boolean pressFavorite(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
         List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
 
         if (user.isEmpty()) {
@@ -206,11 +220,19 @@ public class VolunteerService {
 
         Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
-        Favorite favorite = Favorite.builder()
-                .volunteer(volunteer)
-                .user(user.get(0))
-                .build();
+        List<Favorite> users = favoriteRepository.findByUser(user.get(0));
 
-        return favoriteRepository.save(favorite);
+        if (users.size() == 0) {
+            Favorite favorite = Favorite.builder()
+                    .volunteer(volunteer)
+                    .user(user.get(0))
+                    .build();
+
+            favoriteRepository.save(favorite);
+            return true;
+        }
+
+        favoriteRepository.deleteByUser(user.get(0));
+        return false;
     }
 }
