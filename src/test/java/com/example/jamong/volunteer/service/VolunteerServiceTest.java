@@ -300,4 +300,54 @@ class VolunteerServiceTest {
         assertThat(applyUser.getEmail()).isEqualTo(user.getEmail());
 
     }
+
+    @Test
+    @DisplayName("유저가 봉사를 신청하지 않은 상태에서는 봉사가 신청되고, 아니면 취소된다.")
+    void cancelApplyTest() {
+        Volunteer volunteer = volunteerRepository.findAll().get(0);
+        User user = userRepository.findAll().get(0);
+
+        UserEmailRequestDto userEmailRequestDto = UserEmailRequestDto.builder()
+                .email(user.getEmail())
+                .build();
+
+        volunteerService.applyVolunteer(volunteer.getId(), userEmailRequestDto);
+
+        Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
+
+        User applyUser = applyListRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
+
+        assertThat(updatedVolunteer.getCurrentPeople()).isEqualTo(1);
+        assertThat(applyUser.getEmail()).isEqualTo(user.getEmail()); //신청
+
+        volunteerService.applyVolunteer(volunteer.getId(), userEmailRequestDto);
+        updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
+
+        assertThat(updatedVolunteer.getCurrentPeople()).isEqualTo(0);
+        assertThat(applyListRepository.findByVolunteer(updatedVolunteer).size()).isEqualTo(0); // 취소
+    }
+
+    @Test
+    @DisplayName("유저가 좋아요를 누른 상태에서는 좋아요가 눌리고, 아니면 취소된다.")
+    void cancelFavorite() {
+        Volunteer volunteer = volunteerRepository.findAll().get(0);
+        User user = userRepository.findAll().get(0);
+
+        UserEmailRequestDto userEmailRequestDto = UserEmailRequestDto.builder()
+                .email(user.getEmail())
+                .build();
+
+        volunteerService.pressFavorite(volunteer.getId(), userEmailRequestDto);
+
+        Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
+
+        User pressUser = favoriteRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
+
+        assertThat(pressUser.getEmail()).isEqualTo(user.getEmail()); //신청
+
+        volunteerService.pressFavorite(volunteer.getId(), userEmailRequestDto);
+        updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
+
+        assertThat(applyListRepository.findByVolunteer(updatedVolunteer).size()).isEqualTo(0); // 취소
+    }
 }
