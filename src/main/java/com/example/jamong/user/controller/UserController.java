@@ -36,7 +36,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
         User updated = userService.update(id, userUpdateRequestDto);
-        return ResponseEntity.created(URI.create("/v1/users/" + updated.getId())).body(updated);
+        return ResponseEntity.ok().body(updated);
     }
 
     @DeleteMapping("/{id}")
