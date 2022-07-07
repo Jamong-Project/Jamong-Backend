@@ -32,7 +32,7 @@ public class Volunteer extends BaseTimeEntity {
     @Column(length = 1000)
     private String content;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Picture> pictures = new ArrayList<>();
 
     private Long volunteerDate;
@@ -44,7 +44,7 @@ public class Volunteer extends BaseTimeEntity {
     private int currentPeople;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "volunteer",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApplyList> applyLists = new ArrayList<>();
 
     @JsonBackReference

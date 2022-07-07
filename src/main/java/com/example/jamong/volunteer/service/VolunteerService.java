@@ -5,6 +5,7 @@ import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.exception.OverMaximumPeopleException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
+import com.example.jamong.user.dto.UserResponseDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Favorite;
@@ -119,15 +120,18 @@ public class VolunteerService {
     @Transactional
     public VolunteerArticleDto findById(Long id) {
         Volunteer entity = volunteerRepository.findById(id).orElseThrow(NoExistVolunteerException::new);
+
         List<ApplyList> applyLists = applyListRepository.findByVolunteer(entity);
         List<Favorite> favorites = favoriteRepository.findByVolunteer(entity);
 
         List<User> applicants = applyLists.stream()
-                .map(ApplyList::getUser)
+                .map(ApplyList::toDto)
+                .map(ApplyListResponseDto::getUser)
                 .collect(Collectors.toList());
 
         List<User> favoriteUsers = favorites.stream()
-                .map(Favorite::getUser)
+                .map(Favorite::toDto)
+                .map(FavoriteResponseDto::getUser)
                 .collect(Collectors.toList());
 
         return VolunteerArticleDto.builder()

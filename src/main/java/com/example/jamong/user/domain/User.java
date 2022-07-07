@@ -1,6 +1,7 @@
 package com.example.jamong.user.domain;
 
 import com.example.jamong.config.BaseTimeEntity;
+import com.example.jamong.user.dto.UserResponseDto;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
 import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Favorite;
@@ -45,15 +46,15 @@ public class User extends BaseTimeEntity {
     private String cardinalNumber;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<ApplyList> applyLists = new ArrayList<>();
 
     @JsonBackReference
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
     @Builder
-    public User(Long id, String naverId, String profileImage, String gender, String email, String mobile, String mobileE164, String name, Role role) {
+    public User(Long id, String naverId, String profileImage, String gender, String email, String mobile, String mobileE164, String name, Role role, String cardinalNumber) {
         this.id = id;
         this.naverId = naverId;
         this.profileImage = profileImage;
@@ -63,7 +64,11 @@ public class User extends BaseTimeEntity {
         this.mobileE164 = mobileE164;
         this.name = name;
         this.role = role;
-        this.cardinalNumber = "NEW";
+        this.cardinalNumber = "New";
+
+        if (cardinalNumber != null) {
+            this.cardinalNumber = cardinalNumber;
+        }
     }
 
     public void update(UserUpdateRequestDto requestDto) {
@@ -88,5 +93,11 @@ public class User extends BaseTimeEntity {
         if (requestDto.getCardinalNumber() != null) {
             this.cardinalNumber = requestDto.getCardinalNumber();
         }
+    }
+
+    public UserResponseDto toDto() {
+        return UserResponseDto.builder()
+                .entity(this)
+                .build();
     }
 }

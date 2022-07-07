@@ -5,11 +5,11 @@ import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.Role;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
+import com.example.jamong.user.dto.UserResponseDto;
 import com.example.jamong.user.repository.UserRepository;
+import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
-import com.example.jamong.volunteer.dto.VolunteerArticleDto;
-import com.example.jamong.volunteer.dto.VolunteerCardDto;
-import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
+import com.example.jamong.volunteer.dto.*;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
 import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
@@ -283,7 +283,7 @@ class VolunteerServiceTest {
 
     @Test
     @DisplayName("유저가 좋아요를 누른다")
-    void pressFavorite() {
+    void pressFavoriteTest() {
         Volunteer volunteer = volunteerRepository.findAll().get(0);
         User user = userRepository.findAll().get(0);
 
@@ -295,8 +295,9 @@ class VolunteerServiceTest {
 
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
 
-        User pressUser = favoriteRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
+        User applyUser = favoriteRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
 
-        assertThat(pressUser.getEmail()).isEqualTo(user.getEmail());
+        assertThat(applyUser.getEmail()).isEqualTo(user.getEmail());
+
     }
 }

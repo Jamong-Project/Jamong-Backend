@@ -2,6 +2,7 @@ package com.example.jamong.volunteer.domain;
 
 import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.user.domain.User;
+import com.example.jamong.volunteer.dto.ApplyListResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +26,14 @@ public class ApplyList extends BaseTimeEntity {
     private Volunteer volunteer;
 
     @Builder
-    public ApplyList(User user, Volunteer volunteer) {
-        this.id = id;
+    public ApplyList (User user, Volunteer volunteer) {
         this.user = user;
         this.volunteer = volunteer;
+    }
+
+    public ApplyListResponseDto toDto() {
+        return ApplyListResponseDto.builder()
+                .entity(this)
+                .build();
     }
 }

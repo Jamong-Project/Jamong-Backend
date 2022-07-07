@@ -95,7 +95,7 @@ public class VolunteerControllerTest {
         Integer maximumPeople = 20;
         Integer currentPeople = 0;
 
-        VolunteerSaveRequestDto saved = VolunteerSaveRequestDto.builder()
+        Volunteer entity = Volunteer.builder()
                 .title(title)
                 .content(content)
                 .volunteerDate(volunteerDate)
@@ -103,9 +103,14 @@ public class VolunteerControllerTest {
                 .maximumPeople(maximumPeople)
                 .build();
 
+        VolunteerSaveRequestDto saved = VolunteerSaveRequestDto.builder()
+                .entity(entity)
+                .build();
+
         String url = "http://localhost:" + port + "/v1/volunteers";
 
         String request = new ObjectMapper().writeValueAsString(saved);
+        log.info(request);
         MockMultipartFile json = new MockMultipartFile("request", "jsondata", "application/json", request.getBytes(StandardCharsets.UTF_8));
         MockMultipartFile image = new MockMultipartFile("file-data", "filename-1.jpeg", "image/jpeg", "<<jpeg data>>".getBytes());
 
@@ -130,12 +135,16 @@ public class VolunteerControllerTest {
         Integer maximumPeople = 10;
         Integer currentPeople = 0;
 
-        VolunteerSaveRequestDto updated = VolunteerSaveRequestDto.builder()
+        Volunteer entity = Volunteer.builder()
                 .title(title)
                 .content(content)
                 .volunteerDate(volunteerDate)
                 .applicationDate(applicationDate)
                 .maximumPeople(maximumPeople)
+                .build();
+
+        VolunteerSaveRequestDto updated = VolunteerSaveRequestDto.builder()
+                .entity(entity)
                 .build();
 
         String request = new ObjectMapper().writeValueAsString(updated);

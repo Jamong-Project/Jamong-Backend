@@ -8,6 +8,8 @@ import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
+import com.example.jamong.volunteer.dto.ApplyListResponseDto;
+import com.example.jamong.volunteer.dto.FavoriteResponseDto;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
 import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -159,22 +162,23 @@ public class UserService {
         List<ApplyList> applyLists = applyListRepository.findByUser(user);
         List<Favorite> favorites = favoriteRepository.findByUser(user);
 
-        List<Volunteer> volunteers = new ArrayList<>();
-        List<Volunteer> favoriteVolunteers = new ArrayList<>();
+        List<Volunteer> apply = applyLists.stream()
+                .map(ApplyList::toDto)
+                .map(ApplyListResponseDto::getVolunteer)
+                .collect(Collectors.toList());
 
-        for (ApplyList apply : applyLists) {
-            volunteers.add(apply.getVolunteer());
-        }
+        List<Volunteer> favoriteVolunteers = favorites.stream()
+                .map(Favorite::toDto)
+                .map(FavoriteResponseDto::getVolunteer)
+                .collect(Collectors.toList());
 
-        for (Favorite favorite : favorites) {
-            favoriteVolunteers.add(favorite.getVolunteer());
-        }
-
-        return UserResponseDto.builder()
+        UserResponseDto dto = UserResponseDto.builder()
                 .entity(user)
-                .volunteers(volunteers)
                 .favoriteVolunteers(favoriteVolunteers)
+                .volunteers(apply)
                 .build();
+
+        return dto;
     }
 
     @Transactional
