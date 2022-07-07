@@ -1,12 +1,17 @@
 package com.example.jamong.user.service;
 
+import com.example.jamong.exception.NaverLoginFailException;
 import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.*;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
+import com.example.jamong.volunteer.dto.ApplyListResponseDto;
+import com.example.jamong.volunteer.dto.FavoriteResponseDto;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,24 +40,30 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ApplyListRepository applyListRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Transactional
     public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
-        List<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
+        List<User> users = userRepository.findByEmail(userSaveRequestDto.getEmail());
 
-        if (user.size() > 0) {
-            return ResponseEntity.ok(user.get(0));
+        if (users.size() <= 0) {
+            User saved = userRepository.save(userSaveRequestDto.toEntity());
+            return ResponseEntity.created(URI.create("/v1/users/" + saved.getId())).body(saved);
         }
-        User saved = userRepository.save(userSaveRequestDto.toEntity());
-        return ResponseEntity.created(URI.create("/v1/users/" + saved.getId())).body(saved);
+
+        return ResponseEntity.ok(users.get(0));
     }
 
     protected UserSaveRequestDto getUserProfileFromNaver(TokenRequestDto tokenRequestDto) {
         String jsonUserProfile = getJsonUserProfile(tokenRequestDto);
         NaverResponseDto naverResponseDto = jsonProfileParser(jsonUserProfile);
 
-        return naverResponseDto.getUserSaveRequestDto();
+        if (naverResponseDto.getResultCode().equals("00")) {
+            return naverResponseDto.getUserSaveRequestDto();
+        }
+
+        throw new NaverLoginFailException();
     }
 
     protected String getJsonUserProfile(TokenRequestDto tokenRequestDto) {
@@ -85,13 +97,13 @@ public class UserService {
                 con.setRequestProperty(header.getKey(), header.getValue());
             }
 
-
             int responseCode = con.getResponseCode();
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 return readBody(con.getInputStream());
-            } else {
-                return readBody(con.getErrorStream());
             }
+            return readBody(con.getErrorStream());
+
         } catch (IOException e) {
             throw new RuntimeException("API 요청과 응답 실패", e);
         } finally {
@@ -104,9 +116,13 @@ public class UserService {
             URL url = new URL(apiUrl);
             return (HttpURLConnection) url.openConnection();
         } catch (MalformedURLException e) {
+
             throw new RuntimeException("API URL이 잘못되었습니다. : " + apiUrl, e);
+
         } catch (IOException e) {
+
             throw new RuntimeException("연결이 실패했습니다. : " + apiUrl, e);
+
         }
     }
 
@@ -141,47 +157,43 @@ public class UserService {
 
     @Transactional
     public UserResponseDto findById(Long id) {
-        Optional<User> user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
 
-        if (!user.isPresent()) {
-            throw new NoExistUserException();
-        }
+        List<ApplyList> applyLists = applyListRepository.findByUser(user);
+        List<Favorite> favorites = favoriteRepository.findByUser(user);
 
-        List<ApplyList> applyLists = applyListRepository.findByUser(user.get());
-        List<Volunteer> volunteers = new ArrayList<>();
+        List<Volunteer> apply = applyLists.stream()
+                .map(ApplyList::toDto)
+                .map(ApplyListResponseDto::getVolunteer)
+                .collect(Collectors.toList());
 
-        for (ApplyList apply : applyLists) {
-            volunteers.add(apply.getVolunteer());
-        }
+        List<Volunteer> favoriteVolunteers = favorites.stream()
+                .map(Favorite::toDto)
+                .map(FavoriteResponseDto::getVolunteer)
+                .collect(Collectors.toList());
 
-        return UserResponseDto.builder()
-                .entity(user.get())
-                .volunteers(volunteers)
+        UserResponseDto dto = UserResponseDto.builder()
+                .entity(user)
+                .favoriteVolunteers(favoriteVolunteers)
+                .volunteers(apply)
                 .build();
+
+        return dto;
     }
 
     @Transactional
     public User update(Long id, UserUpdateRequestDto userUpdateRequestDto) {
-        Optional<User> user = userRepository.findById(id);
+        User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
 
-        if (!user.isPresent()) {
-            throw new NoExistUserException();
-        }
-
-        user.get().update(userUpdateRequestDto);
-        return userRepository.save(user.get());
+        user.update(userUpdateRequestDto);
+        return userRepository.save(user);
 
     }
 
     @Transactional
     public User delete(Long id) {
-        Optional<User> user = userRepository.findById(id);
-
-        if (!user.isPresent()) {
-            throw new NoExistUserException();
-        }
-
-        userRepository.delete(user.get());
-        return user.get();
+        User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
+        userRepository.delete(user);
+        return user;
     }
 }

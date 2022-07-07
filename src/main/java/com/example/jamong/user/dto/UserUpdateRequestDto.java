@@ -1,7 +1,6 @@
 package com.example.jamong.user.dto;
 
 import com.example.jamong.user.domain.Role;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 

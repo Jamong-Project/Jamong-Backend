@@ -2,10 +2,16 @@ package com.example.jamong.volunteer.service;
 
 import com.example.jamong.exception.FromBiggerThanToException;
 import com.example.jamong.exception.NoExistVolunteerException;
+import com.example.jamong.user.domain.Role;
+import com.example.jamong.user.domain.User;
+import com.example.jamong.user.dto.UserEmailRequestDto;
+import com.example.jamong.user.dto.UserResponseDto;
+import com.example.jamong.user.repository.UserRepository;
+import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
-import com.example.jamong.volunteer.dto.VolunteerArticleDto;
-import com.example.jamong.volunteer.dto.VolunteerCardDto;
-import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
+import com.example.jamong.volunteer.dto.*;
+import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +34,15 @@ class VolunteerServiceTest {
 
     @Autowired
     private VolunteerRepository volunteerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ApplyListRepository applyListRepository;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     @AfterEach
     public void CleanUp() {
@@ -54,6 +69,28 @@ class VolunteerServiceTest {
                             .build()
             );
         }
+
+        String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
+        String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
+        String gender = "M";
+        String email = "lmj938@naver.com";
+        String mobile = "010-0000-0000";
+        String mobileE164 = "+821000000000";
+        String name = "이민재";
+        Role role = Role.GUEST;
+
+        userRepository.save(
+                User.builder()
+                        .naverId(naverId)
+                        .profileImage(profileImage)
+                        .gender(gender)
+                        .email(email)
+                        .mobile(mobile)
+                        .mobileE164(mobileE164)
+                        .name(name)
+                        .role(role)
+                        .build()
+        );
     }
 
     @Test
@@ -222,5 +259,45 @@ class VolunteerServiceTest {
     public void toBiggertThanTotal() {
         List<VolunteerCardDto> volunteerList = volunteerService.findAll(null, 60, null).getBody();
         assertThat(volunteerList.size()).isEqualTo(50);
+    }
+
+    @Test
+    @DisplayName("유저가 봉사를 신청한다.")
+    void addUser() {
+        Volunteer volunteer = volunteerRepository.findAll().get(0);
+        User user = userRepository.findAll().get(0);
+
+        UserEmailRequestDto userEmailRequestDto = UserEmailRequestDto.builder()
+                .email(user.getEmail())
+                .build();
+
+        volunteerService.applyVolunteer(volunteer.getId(), userEmailRequestDto);
+
+        Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
+
+        User applyUser = applyListRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
+
+        assertThat(updatedVolunteer.getCurrentPeople()).isEqualTo(1);
+        assertThat(applyUser.getEmail()).isEqualTo(user.getEmail());
+    }
+
+    @Test
+    @DisplayName("유저가 좋아요를 누른다")
+    void pressFavoriteTest() {
+        Volunteer volunteer = volunteerRepository.findAll().get(0);
+        User user = userRepository.findAll().get(0);
+
+        UserEmailRequestDto userEmailRequestDto = UserEmailRequestDto.builder()
+                .email(user.getEmail())
+                .build();
+
+        volunteerService.pressFavorite(volunteer.getId(), userEmailRequestDto);
+
+        Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
+
+        User applyUser = favoriteRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
+
+        assertThat(applyUser.getEmail()).isEqualTo(user.getEmail());
+
     }
 }

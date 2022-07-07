@@ -1,14 +1,13 @@
 package com.example.jamong.volunteer.controller;
 
-import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
-import com.example.jamong.volunteer.service.AwsS3Service;
-import com.example.jamong.volunteer.service.VolunteerService;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerArticleDto;
 import com.example.jamong.volunteer.dto.VolunteerCardDto;
 import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
+import com.example.jamong.volunteer.service.AwsS3Service;
+import com.example.jamong.volunteer.service.VolunteerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -60,13 +59,19 @@ public class VolunteerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-       volunteerService.delete(id);
-       return ResponseEntity.noContent().build();
+        volunteerService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/apply")
     public ResponseEntity<Void> applyVolunteer(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
-        volunteerService.addUser(id, requestDto);
-        return ResponseEntity.created(URI.create("/v1/volunteers/applicants")).build();
+        volunteerService.applyVolunteer(id, requestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/favorite")
+    public ResponseEntity<Void> pressFavorite(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
+        volunteerService.pressFavorite(id, requestDto);
+        return ResponseEntity.ok().build();
     }
 }

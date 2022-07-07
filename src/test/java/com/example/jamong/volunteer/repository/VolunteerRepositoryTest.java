@@ -69,13 +69,16 @@ class VolunteerRepositoryTest {
         Long applicationDate = 1674121200000L;
         Integer maximumPeople = 20;
 
-
-        VolunteerSaveRequestDto savedVolunteer = VolunteerSaveRequestDto.builder()
+        Volunteer entity = Volunteer.builder()
                 .title(title)
                 .content(content)
                 .volunteerDate(volunteerDate)
                 .applicationDate(applicationDate)
                 .maximumPeople(maximumPeople)
+                .build();
+
+        VolunteerSaveRequestDto savedVolunteer = VolunteerSaveRequestDto.builder()
+                .entity(entity)
                 .build();
 
         log.info(savedVolunteer.getTitle());

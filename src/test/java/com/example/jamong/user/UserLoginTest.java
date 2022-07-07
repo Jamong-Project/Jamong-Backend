@@ -5,6 +5,7 @@ import com.example.jamong.user.dto.TokenRequestDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.user.service.UserService;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,8 +58,8 @@ public class UserLoginTest {
 @Service
 class StubUserService extends UserService {
 
-    public StubUserService(UserRepository userRepository, ApplyListRepository applyListRepository) {
-        super(userRepository, applyListRepository);
+    public StubUserService(UserRepository userRepository, ApplyListRepository applyListRepository, FavoriteRepository favoriteRepository) {
+        super(userRepository, applyListRepository, favoriteRepository);
     }
 
     @Override
