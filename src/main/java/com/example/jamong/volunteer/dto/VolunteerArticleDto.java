@@ -1,6 +1,7 @@
 package com.example.jamong.volunteer.dto;
 
 import com.example.jamong.user.domain.User;
+import com.example.jamong.volunteer.domain.Comment;
 import com.example.jamong.volunteer.domain.Picture;
 import com.example.jamong.volunteer.domain.Volunteer;
 import lombok.Builder;
@@ -20,9 +21,10 @@ public class VolunteerArticleDto {
     private final int currentPeople;
     private final List<User> applicants;
     private final List<User> favoriteUsers;
+    private final List<CommentResponseDto> comments;
 
     @Builder
-    public VolunteerArticleDto(Volunteer entity, List<User> applicants, List<User> favoriteUsers) {
+    public VolunteerArticleDto(Volunteer entity, List<User> applicants, List<User> favoriteUsers, List<CommentResponseDto> comments) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
@@ -33,6 +35,7 @@ public class VolunteerArticleDto {
         this.currentPeople = entity.getCurrentPeople();
         this.applicants = applicants;
         this.favoriteUsers = favoriteUsers;
+        this.comments = comments;
     }
 }
 

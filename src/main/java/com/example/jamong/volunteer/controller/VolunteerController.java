@@ -1,12 +1,8 @@
 package com.example.jamong.volunteer.controller;
 
 import com.example.jamong.user.dto.UserEmailRequestDto;
-import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Volunteer;
-import com.example.jamong.volunteer.dto.VolunteerArticleDto;
-import com.example.jamong.volunteer.dto.VolunteerCardDto;
-import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
-import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
+import com.example.jamong.volunteer.dto.*;
 import com.example.jamong.volunteer.service.AwsS3Service;
 import com.example.jamong.volunteer.service.VolunteerService;
 import lombok.RequiredArgsConstructor;
@@ -78,5 +74,11 @@ public class VolunteerController {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<Void> addComment(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto) {
+        volunteerService.addComment(id, commentRequestDto);
+        return ResponseEntity.created(URI.create("/v1/volunteers/" + id)).build();
     }
 }

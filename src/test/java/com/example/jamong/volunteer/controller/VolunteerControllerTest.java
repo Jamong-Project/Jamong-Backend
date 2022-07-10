@@ -1,6 +1,10 @@
 package com.example.jamong.volunteer.controller;
 
+import com.example.jamong.user.domain.Role;
+import com.example.jamong.user.domain.User;
+import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.Volunteer;
+import com.example.jamong.volunteer.dto.CommentRequestDto;
 import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +27,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @Slf4j
@@ -35,6 +41,9 @@ public class VolunteerControllerTest {
 
     @Autowired
     private VolunteerRepository volunteerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private WebApplicationContext context;
@@ -67,6 +76,29 @@ public class VolunteerControllerTest {
                             .build()
             );
         }
+
+        String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
+        String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
+        String gender = "M";
+        String email = "lmj938@naver.com";
+        String mobile = "010-0000-0000";
+        String mobileE164 = "+821000000000";
+        String name = "이민재";
+        Role role = Role.GUEST;
+
+
+        userRepository.save(
+                User.builder()
+                        .naverId(naverId)
+                        .profileImage(profileImage)
+                        .gender(gender)
+                        .email(email)
+                        .mobile(mobile)
+                        .mobileE164(mobileE164)
+                        .name(name)
+                        .role(role)
+                        .build()
+        );
     }
 
     @AfterEach
@@ -80,7 +112,7 @@ public class VolunteerControllerTest {
         String url = "http://localhost:" + port + "/v1/volunteers";
 
         mvc.perform(get(url)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
     }
@@ -118,7 +150,7 @@ public class VolunteerControllerTest {
                         .file(json)
                         .file(image)
                         .contentType("application/json")
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
                         .characterEncoding("UTF-8"))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
     }
@@ -157,9 +189,9 @@ public class VolunteerControllerTest {
                         .file(json)
                         .file(image)
                         .contentType("application/json")
-                        .accept(MediaType.APPLICATION_JSON)
+                        .accept(APPLICATION_JSON)
                         .characterEncoding("UTF-8"))
-                .andExpect(MockMvcResultMatchers.status().isCreated());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -170,8 +202,28 @@ public class VolunteerControllerTest {
         String url = "http://localhost:" + port + "/v1/volunteers/" + volunteer.getId();
 
         mvc.perform(delete(url)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("봉사 댓글 작성")
+    public void volunteerCommentTest() throws Exception {
+        Volunteer volunteer = volunteerRepository.findAll().get(0);
+
+        String url = "http://localhost:" + port + "/v1/volunteers/" + volunteer.getId() + "/comments";
+
+        String request = new ObjectMapper().writeValueAsString(
+                CommentRequestDto.builder()
+                        .content("봉사 댓글")
+                        .email("lmj938@naver.com")
+                        .build()
+        );
+
+        mvc.perform(post(url)
+                        .content(request)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
     }
 }
 

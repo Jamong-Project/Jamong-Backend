@@ -5,12 +5,12 @@ import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.Role;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
-import com.example.jamong.user.dto.UserResponseDto;
 import com.example.jamong.user.repository.UserRepository;
-import com.example.jamong.volunteer.domain.Favorite;
+import com.example.jamong.volunteer.domain.Comment;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.*;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.CommentRepository;
 import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +43,9 @@ class VolunteerServiceTest {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @AfterEach
     public void CleanUp() {
@@ -349,5 +352,24 @@ class VolunteerServiceTest {
         updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
 
         assertThat(applyListRepository.findByVolunteer(updatedVolunteer).size()).isEqualTo(0); // 취소
+    }
+
+    @Test
+    @DisplayName("유저가 댓글을 등록한다.")
+    void addCommentTest() {
+        Volunteer volunteer = volunteerRepository.findAll().get(0);
+        User user = userRepository.findAll().get(0);
+
+        CommentRequestDto commentRequestDto = CommentRequestDto.builder()
+                .content("댓글")
+                .email("lmj938@naver.com")
+                .build();
+
+        volunteerService.addComment(volunteer.getId(), commentRequestDto);
+
+        Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
+        Comment comment = commentRepository.findByVolunteer(updatedVolunteer).get(0);
+        assertThat(comment.getUser().getEmail()).isEqualTo(user.getEmail());
+        assertThat(comment.getContent()).isEqualTo("댓글");
     }
 }
