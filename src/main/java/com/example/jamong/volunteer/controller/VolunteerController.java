@@ -68,7 +68,7 @@ public class VolunteerController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/favorite")
+    @PostMapping("/{id}/favorites")
     public ResponseEntity<Void> pressFavorite(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
         if (volunteerService.pressFavorite(id, requestDto)){
             return ResponseEntity.ok().build();
