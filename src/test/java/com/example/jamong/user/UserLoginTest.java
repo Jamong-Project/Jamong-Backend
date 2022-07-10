@@ -5,14 +5,17 @@ import com.example.jamong.user.dto.TokenRequestDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.user.service.UserService;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,6 +25,13 @@ public class UserLoginTest {
     @Autowired
     StubUserService userService;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @BeforeEach
+    public void setUp() {
+        userRepository.deleteAll();
+    }
     @Test
     @DisplayName("토큰을 주면 유저 프로필 정보를 반환")
     public void getInfoTest() throws JsonProcessingException {
@@ -56,8 +66,8 @@ public class UserLoginTest {
 @Service
 class StubUserService extends UserService {
 
-    public StubUserService(UserRepository userRepository, ApplyListRepository applyListRepository) {
-        super(userRepository, applyListRepository);
+    public StubUserService(UserRepository userRepository, ApplyListRepository applyListRepository, FavoriteRepository favoriteRepository) {
+        super(userRepository, applyListRepository, favoriteRepository);
     }
 
     @Override

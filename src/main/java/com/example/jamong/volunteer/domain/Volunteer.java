@@ -2,6 +2,7 @@ package com.example.jamong.volunteer.domain;
 
 import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,7 @@ public class Volunteer extends BaseTimeEntity {
     @Column(length = 1000)
     private String content;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Picture> pictures = new ArrayList<>();
 
     private Long volunteerDate;
@@ -41,6 +42,18 @@ public class Volunteer extends BaseTimeEntity {
     private int maximumPeople;
 
     private int currentPeople;
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "volunteer",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ApplyList> applyLists = new ArrayList<>();
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @Builder
     public Volunteer(String title, String content, List<Picture> pictures, Long volunteerDate, Long applicationDate, int maximumPeople, Integer currentPeople) {
@@ -92,6 +105,17 @@ public class Volunteer extends BaseTimeEntity {
         if (requestDto.getCurrentPeople() != null) {
             this.currentPeople = requestDto.getCurrentPeople();
         }
+    }
 
+    public void addUser() {
+        this.currentPeople++;
+    }
+
+    public void removeUser() {
+        this.currentPeople--;
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
     }
 }

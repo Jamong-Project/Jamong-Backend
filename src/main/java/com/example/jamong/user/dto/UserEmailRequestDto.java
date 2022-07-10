@@ -6,9 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserEmailRequestDto {
     private String email;
+
+    @Builder
+    public UserEmailRequestDto(String email) {
+        this.email = email;
+    }
 }

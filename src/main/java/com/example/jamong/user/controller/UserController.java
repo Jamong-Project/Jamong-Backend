@@ -4,7 +4,6 @@ import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserResponseDto;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
 import com.example.jamong.user.service.UserService;
-import com.example.jamong.volunteer.domain.Volunteer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +36,12 @@ public class UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<User> update(@PathVariable Long id, @RequestBody UserUpdateRequestDto userUpdateRequestDto) {
         User updated = userService.update(id, userUpdateRequestDto);
-        return ResponseEntity.created(URI.create("/v1/users/" + updated.getId())).body(updated);
+        return ResponseEntity.ok().body(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

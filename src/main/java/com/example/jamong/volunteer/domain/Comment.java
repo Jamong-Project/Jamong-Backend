@@ -1,8 +1,7 @@
 package com.example.jamong.volunteer.domain;
 
-import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.user.domain.User;
-import com.example.jamong.volunteer.dto.ApplyListResponseDto;
+import com.example.jamong.volunteer.dto.CommentResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,28 +11,32 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
-public class ApplyList extends BaseTimeEntity {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn
     private User user;
 
     @ManyToOne
-    @JoinColumn
     private Volunteer volunteer;
 
+    @Column(length = 500)
+    private String content;
+
     @Builder
-    public ApplyList (User user, Volunteer volunteer) {
+    public Comment(User user, Volunteer volunteer, String content) {
         this.user = user;
         this.volunteer = volunteer;
+        this.content = content;
     }
 
-    public ApplyListResponseDto toDto() {
-        return ApplyListResponseDto.builder()
-                .entity(this)
+    public CommentResponseDto toDto() {
+        return CommentResponseDto.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .content(content)
                 .build();
     }
 }

@@ -1,14 +1,10 @@
 package com.example.jamong.volunteer.controller;
 
-import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
+import com.example.jamong.volunteer.domain.Volunteer;
+import com.example.jamong.volunteer.dto.*;
 import com.example.jamong.volunteer.service.AwsS3Service;
 import com.example.jamong.volunteer.service.VolunteerService;
-import com.example.jamong.volunteer.domain.Volunteer;
-import com.example.jamong.volunteer.dto.VolunteerArticleDto;
-import com.example.jamong.volunteer.dto.VolunteerCardDto;
-import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
-import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -55,18 +51,34 @@ public class VolunteerController {
             requestDto.setPictures(awsS3Service.uploadFile(multipartFile));
         }
         Volunteer updated = volunteerService.update(id, requestDto);
-        return ResponseEntity.created(URI.create("/v1/volunteers/" + updated.getId())).body(updated);
+        return ResponseEntity.ok().body(updated);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-       volunteerService.delete(id);
-       return ResponseEntity.noContent().build();
+        volunteerService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/apply")
     public ResponseEntity<Void> applyVolunteer(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
-        volunteerService.addUser(id, requestDto);
-        return ResponseEntity.created(URI.create("/v1/volunteers/applicants")).build();
+        if (volunteerService.applyVolunteer(id, requestDto)){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/favorite")
+    public ResponseEntity<Void> pressFavorite(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
+        if (volunteerService.pressFavorite(id, requestDto)){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<Void> addComment(@PathVariable Long id, @RequestBody CommentRequestDto commentRequestDto) {
+        volunteerService.addComment(id, commentRequestDto);
+        return ResponseEntity.created(URI.create("/v1/volunteers/" + id)).build();
     }
 }
