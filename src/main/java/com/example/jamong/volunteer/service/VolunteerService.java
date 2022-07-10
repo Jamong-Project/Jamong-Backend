@@ -5,12 +5,15 @@ import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.exception.OverMaximumPeopleException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
+import com.example.jamong.user.dto.UserSaveRequestDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Comment;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.*;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.CommentRepository;
 import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +43,7 @@ public class VolunteerService {
     private final ApplyListRepository applyListRepository;
     private final UserRepository userRepository;
     private final FavoriteRepository favoriteRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public ResponseEntity<List<VolunteerCardDto>> findAll(Integer from, Integer to, String ordering) {
@@ -122,6 +126,7 @@ public class VolunteerService {
 
         List<ApplyList> applyLists = applyListRepository.findByVolunteer(entity);
         List<Favorite> favorites = favoriteRepository.findByVolunteer(entity);
+        List<Comment> commentList = commentRepository.findByVolunteer(entity);
 
         List<User> applicants = applyLists.stream()
                 .map(ApplyList::toDto)
@@ -133,10 +138,15 @@ public class VolunteerService {
                 .map(FavoriteResponseDto::getUser)
                 .collect(Collectors.toList());
 
+        List<CommentResponseDto> commentListDto = commentList.stream()
+                .map(Comment::toDto)
+                .collect(Collectors.toList());
+
         return VolunteerArticleDto.builder()
                 .entity(entity)
                 .applicants(applicants)
                 .favoriteUsers(favoriteUsers)
+                .comments(commentListDto)
                 .build();
     }
 
@@ -234,5 +244,27 @@ public class VolunteerService {
 
         favoriteRepository.deleteByUser(user.get(0));
         return false;
+    }
+
+    @Transactional
+    public Volunteer addComment(Long volunteerId, CommentRequestDto requestDto) {
+        List<User> users = userRepository.findByEmail(requestDto.getEmail());
+
+        if (users.isEmpty()) {
+            throw new NoExistVolunteerException();
+        }
+
+        User user = users.get(0);
+        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
+
+        Comment comment = Comment.builder()
+                .user(user)
+                .volunteer(volunteer)
+                .content(requestDto.getContent())
+                .build();
+
+        volunteer.addComment(comment);
+
+        return volunteerRepository.save(volunteer);
     }
 }

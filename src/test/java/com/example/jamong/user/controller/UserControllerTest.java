@@ -111,7 +111,7 @@ public class UserControllerTest {
             mvc.perform(patch(url)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(updated)))
-                    .andExpect(MockMvcResultMatchers.status().isCreated());
+                    .andExpect(MockMvcResultMatchers.status().isOk());
         }
 
         @Test

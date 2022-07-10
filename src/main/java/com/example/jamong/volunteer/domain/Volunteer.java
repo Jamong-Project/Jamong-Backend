@@ -51,6 +51,10 @@ public class Volunteer extends BaseTimeEntity {
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
+    @JsonBackReference
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
     @Builder
     public Volunteer(String title, String content, List<Picture> pictures, Long volunteerDate, Long applicationDate, int maximumPeople, Integer currentPeople) {
         this.title = title;
@@ -109,5 +113,9 @@ public class Volunteer extends BaseTimeEntity {
 
     public void removeUser() {
         this.currentPeople--;
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
     }
 }
