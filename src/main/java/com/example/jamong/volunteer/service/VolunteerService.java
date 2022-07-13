@@ -181,9 +181,9 @@ public class VolunteerService {
         }
 
         List<ApplyList> users = applyListRepository.findByUser(user.get(0));
+        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
         if (users.size() == 0) {
-            Volunteer volunteer = apply(volunteerId);
 
             ApplyList applyList = ApplyList.builder()
                     .volunteer(volunteer)
@@ -191,32 +191,20 @@ public class VolunteerService {
                     .build();
 
             applyListRepository.save(applyList);
+            updateCurrentUser(volunteer);
             return true;
         }
 
-        cancel(volunteerId);
         applyListRepository.deleteByUser(user.get(0));
+        updateCurrentUser(volunteer);
         return false;
     }
 
-    private Volunteer apply(Long volunteerId) {
-        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
+    private void updateCurrentUser(Volunteer volunteer) {
+        List<ApplyList> userList = applyListRepository.findByVolunteer(volunteer);
+        int size = userList.size();
 
-        int currentPeople = volunteer.getCurrentPeople();
-        int maximumPeople = volunteer.getMaximumPeople();
-
-        if (currentPeople + 1 > maximumPeople) {
-            throw new OverMaximumPeopleException();
-        }
-
-        volunteer.addUser();
-        return volunteer;
-    }
-
-    private void cancel(Long volunteerId) {
-        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
-
-        volunteer.removeUser();
+        volunteer.setCurrentPeople(size);
         volunteerRepository.save(volunteer);
     }
 

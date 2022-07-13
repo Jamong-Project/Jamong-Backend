@@ -107,14 +107,6 @@ public class Volunteer extends BaseTimeEntity {
         }
     }
 
-    public void addUser() {
-        this.currentPeople++;
-    }
-
-    public void removeUser() {
-        this.currentPeople--;
-    }
-
     public void addComment(Comment comment) {
         comments.add(comment);
     }
