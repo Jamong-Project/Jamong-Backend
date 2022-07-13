@@ -77,6 +77,21 @@ public class Volunteer extends BaseTimeEntity {
         return pictures.get(0);
     }
 
+    public List<Picture> detailPicture() {
+        if (pictures == null || pictures.isEmpty()) {
+            return null;
+        }
+
+        List<Picture> detailPictures = new ArrayList<>();
+
+        for (int i = 0; i < pictures.size(); i++) {
+            if (i % 2 != 0) {
+                detailPictures.add(pictures.get(i));
+            }
+        }
+        return detailPictures;
+    }
+
     public void update(VolunteerUpdateRequestDto requestDto) {
         if (requestDto.getTitle() != null) {
             this.title = requestDto.getTitle();

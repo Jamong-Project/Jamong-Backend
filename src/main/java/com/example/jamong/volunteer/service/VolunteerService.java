@@ -2,10 +2,8 @@ package com.example.jamong.volunteer.service;
 
 import com.example.jamong.exception.FromBiggerThanToException;
 import com.example.jamong.exception.NoExistVolunteerException;
-import com.example.jamong.exception.OverMaximumPeopleException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
-import com.example.jamong.user.dto.UserSaveRequestDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.ApplyList;
 import com.example.jamong.volunteer.domain.Comment;
@@ -144,6 +142,7 @@ public class VolunteerService {
 
         return VolunteerArticleDto.builder()
                 .entity(entity)
+                .pictures(entity.detailPicture())
                 .applicants(applicants)
                 .favoriteUsers(favoriteUsers)
                 .comments(commentListDto)

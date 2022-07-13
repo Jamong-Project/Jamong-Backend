@@ -14,6 +14,7 @@ import org.marvinproject.image.transform.scale.Scale;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -32,6 +33,7 @@ import java.util.UUID;
 @Service
 public class AwsS3Service {
     private static final Integer IMAGE_TARGET_SIZE = 300;
+    private static final Integer DETAIL_IMAGE_TARGET_SIZE = 1200;
     private static final String FILE_EXTENSION_SEPARATOR = ".";
 
     private final AmazonS3Client amazonS3Client;
@@ -39,23 +41,25 @@ public class AwsS3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
+    @Transactional
     public List<Picture> uploadFile(List<MultipartFile> multipartFiles) {
         List<Picture> pictureList = new ArrayList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
-            addPictureToList(pictureList, multipartFile);
+            addPictureToList(pictureList, multipartFile, IMAGE_TARGET_SIZE);
+            addPictureToList(pictureList, multipartFile, DETAIL_IMAGE_TARGET_SIZE);
         }
         return pictureList;
     }
 
-    private void addPictureToList(List<Picture> pictureList, MultipartFile multipartFile) {
+    private void addPictureToList(List<Picture> pictureList, MultipartFile multipartFile, int targetSize) {
         String fileName = buildFileName(multipartFile.getOriginalFilename());
         String fileFormatName = getFileFormatName(multipartFile);
 
         if (isImage(multipartFile)) {
             validateFileExists(multipartFile);
 
-            MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, IMAGE_TARGET_SIZE);
+            MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, targetSize);
 
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentType(resizedFile.getContentType());
