@@ -34,6 +34,7 @@ public class Comment {
 
     public CommentResponseDto toDto() {
         return CommentResponseDto.builder()
+                .id(this.id)
                 .email(user.getEmail())
                 .name(user.getName())
                 .content(content)
