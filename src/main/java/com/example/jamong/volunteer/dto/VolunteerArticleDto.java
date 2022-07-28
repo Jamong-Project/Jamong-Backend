@@ -24,11 +24,11 @@ public class VolunteerArticleDto {
     private final List<CommentResponseDto> comments;
 
     @Builder
-    public VolunteerArticleDto(Volunteer entity, List<User> applicants, List<User> favoriteUsers, List<CommentResponseDto> comments) {
+    public VolunteerArticleDto(Volunteer entity, List<Picture> pictures, List<User> applicants, List<User> favoriteUsers, List<CommentResponseDto> comments) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
-        this.pictures = entity.getPictures();
+        this.pictures = pictures;
         this.volunteerDate = entity.getVolunteerDate();
         this.applicationDate = entity.getApplicationDate();
         this.maximumPeople = entity.getMaximumPeople();
