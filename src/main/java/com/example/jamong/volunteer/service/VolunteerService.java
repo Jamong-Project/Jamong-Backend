@@ -179,10 +179,9 @@ public class VolunteerService {
             throw new NoExistVolunteerException();
         }
 
-        List<ApplyList> users = applyListRepository.findByUser(user.get(0));
         Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
-        if (users.size() == 0) {
+        if (!volunteer.getApplyLists().contains(user.get(0))) {
 
             ApplyList applyList = ApplyList.builder()
                     .volunteer(volunteer)
