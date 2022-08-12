@@ -13,6 +13,8 @@ public interface ApplyListRepository extends JpaRepository<ApplyList, Long> {
 
     List<ApplyList> findByUser(User user);
 
-    void deleteByUser(User user);
+    void deleteByUserAndVolunteer(User user, Volunteer volunteer);
+
+    List<ApplyList> findByUserAndVolunteer(User user, Volunteer volunteer);
 }
 

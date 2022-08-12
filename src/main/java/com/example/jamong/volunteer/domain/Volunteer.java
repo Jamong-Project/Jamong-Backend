@@ -44,7 +44,7 @@ public class Volunteer extends BaseTimeEntity {
     private int currentPeople;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "volunteer",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "volunteer", orphanRemoval = true)
     private List<ApplyList> applyLists = new ArrayList<>();
 
     @JsonBackReference

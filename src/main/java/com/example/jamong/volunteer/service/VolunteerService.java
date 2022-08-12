@@ -181,7 +181,13 @@ public class VolunteerService {
 
         Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
-        if (!volunteer.getApplyLists().contains(user.get(0))) {
+        List<String> userList = volunteer.getApplyLists().stream()
+                .map(ApplyList::toDto)
+                .map(ApplyListResponseDto::getUser)
+                .map(User::toString)
+                .collect(Collectors.toList());
+
+        if (!userList.contains(user.get(0).toString())) {
 
             ApplyList applyList = ApplyList.builder()
                     .volunteer(volunteer)
@@ -193,7 +199,8 @@ public class VolunteerService {
             return true;
         }
 
-        applyListRepository.deleteByUser(user.get(0));
+        volunteer.getApplyLists().remove(applyListRepository.findByUserAndVolunteer(user.get(0), volunteer).get(0));
+        applyListRepository.deleteByUserAndVolunteer(user.get(0), volunteer);
         updateCurrentUser(volunteer);
         return false;
     }
@@ -216,19 +223,27 @@ public class VolunteerService {
 
         Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
-        List<Favorite> users = favoriteRepository.findByUser(user.get(0));
+        List<String> userList = volunteer.getFavorites().stream()
+                .map(Favorite::toDto)
+                .map(FavoriteResponseDto::getUser)
+                .map(User::toString)
+                .collect(Collectors.toList());
 
-        if (users.size() == 0) {
+        if (!userList.contains(user.get(0).toString())) {
+
             Favorite favorite = Favorite.builder()
                     .volunteer(volunteer)
                     .user(user.get(0))
                     .build();
 
             favoriteRepository.save(favorite);
+            updateCurrentUser(volunteer);
             return true;
         }
 
-        favoriteRepository.deleteByUser(user.get(0));
+        volunteer.getFavorites().remove(favoriteRepository.findByUserAndVolunteer(user.get(0), volunteer).get(0));
+        favoriteRepository.deleteByUserAndVolunteer(user.get(0), volunteer);
+        updateCurrentUser(volunteer);
         return false;
     }
 

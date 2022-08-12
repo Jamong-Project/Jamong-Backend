@@ -100,4 +100,22 @@ public class User extends BaseTimeEntity {
                 .entity(this)
                 .build();
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", naverId='" + naverId + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                ", gender='" + gender + '\'' +
+                ", email='" + email + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", mobileE164='" + mobileE164 + '\'' +
+                ", name='" + name + '\'' +
+                ", role=" + role +
+                ", cardinalNumber='" + cardinalNumber + '\'' +
+                ", applyLists=" + applyLists +
+                ", favorites=" + favorites +
+                '}';
+    }
 }
