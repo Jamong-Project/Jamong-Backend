@@ -47,13 +47,15 @@ public class VolunteerService {
     public ResponseEntity<List<VolunteerCardDto>> findAll(Integer from, Integer to, String ordering) {
         Direction sort = Direction.ASC;
 
-        ordering = orderingEmptyChecker(ordering);
+        ordering = setDefaultOrderingOption(ordering);
 
-        isFromBiggerThanTo(from, to);
-        from = fromEmptyChecker(from);
-        to = toEmptyChecker(from, to);
+        if (isFromBiggerThanTo(from, to)) {
+            throw new FromBiggerThanToException();
+        }
+        from = setDefaultFromValue(from);
+        to = setDefaultToValue(from, to);
 
-        if (sortOptionFinder(ordering)) {
+        if (sortingOptionFinder(ordering)) {
             sort = Direction.DESC;
             ordering = ordering.substring(1);
         }
@@ -63,34 +65,35 @@ public class VolunteerService {
         return getSubList(from, to, volunteerList);
     }
 
-    private void isFromBiggerThanTo(Integer from, Integer to) {
+    private boolean isFromBiggerThanTo(Integer from, Integer to) {
         if (from != null && to != null && from > to) {
-            throw new FromBiggerThanToException();
+            return true;
         }
+        return false;
     }
 
-    private String orderingEmptyChecker(String ordering) {
+    private String setDefaultOrderingOption(String ordering) {
         if (ordering == null) {
             ordering = DEFAULT_ORDERING_OPTION;
         }
         return ordering;
     }
 
-    private Integer toEmptyChecker(Integer from, Integer to) {
+    private Integer setDefaultToValue(Integer from, Integer to) {
         if (to == null) {
             to = from + 11;
         }
         return to;
     }
 
-    private Integer fromEmptyChecker(Integer from) {
+    private Integer setDefaultFromValue(Integer from) {
         if (from == null) {
             from = DEFAULT_FROM_INDEX;
         }
         return from;
     }
 
-    private boolean sortOptionFinder(String ordering) {
+    private boolean sortingOptionFinder(String ordering) {
         return ordering.charAt(DESC_OPTION_CHARACTER_INDEX) == DESC_OPTION_CHARACTER;
     }
 
