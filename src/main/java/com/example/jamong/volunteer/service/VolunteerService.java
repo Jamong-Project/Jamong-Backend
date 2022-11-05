@@ -36,6 +36,7 @@ public class VolunteerService {
     private static final int DESC_OPTION_CHARACTER_INDEX = 0;
     private static final char DESC_OPTION_CHARACTER = '-';
     private static final int DEFAULT_FROM_INDEX = 0;
+    private static final int DEFAULT_TO_INDEX = 11;
 
     private final VolunteerRepository volunteerRepository;
     private final ApplyListRepository applyListRepository;
@@ -81,7 +82,7 @@ public class VolunteerService {
 
     private Integer setDefaultToValue(Integer from, Integer to) {
         if (to == null) {
-            to = from + 11;
+            to = from + DEFAULT_TO_INDEX;
         }
         return to;
     }
