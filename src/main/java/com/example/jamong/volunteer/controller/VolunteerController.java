@@ -25,13 +25,13 @@ public class VolunteerController {
     private final AwsS3Service awsS3Service;
 
     @GetMapping
-    public ResponseEntity<List<VolunteerCardDto>> findAll(Pageable pageable) {
+    public ResponseEntity<List<VolunteerCardResponseDto>> findAll(Pageable pageable) {
 
         return volunteerService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
-    public VolunteerArticleDto findById(@PathVariable Long id) {
+    public VolunteerArticleResponseDto findById(@PathVariable Long id) {
         return volunteerService.findById(id);
     }
 

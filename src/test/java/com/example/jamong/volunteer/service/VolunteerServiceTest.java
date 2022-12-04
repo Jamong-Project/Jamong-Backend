@@ -101,9 +101,9 @@ class VolunteerServiceTest {
     @DisplayName("모든 봉사를 조회한다")
     void findAll() {
         Pageable paging = PageRequest.of(0, 12);
-        ResponseEntity<List<VolunteerCardDto>> volunteerResponseEntity = volunteerService.findAll(paging);
+        ResponseEntity<List<VolunteerCardResponseDto>> volunteerResponseEntity = volunteerService.findAll(paging);
 
-        VolunteerCardDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
+        VolunteerCardResponseDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
 
         assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(12);
         assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목1");
@@ -117,7 +117,7 @@ class VolunteerServiceTest {
     @DisplayName("특정 봉사를 조회한다.")
     void findById() {
         Volunteer volunteer = volunteerRepository.findAll().get(0);
-        VolunteerArticleDto actualVolunteer = volunteerService.findById(volunteer.getId());
+        VolunteerArticleResponseDto actualVolunteer = volunteerService.findById(volunteer.getId());
 
         assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목1");
         assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);

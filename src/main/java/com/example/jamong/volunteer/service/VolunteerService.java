@@ -36,9 +36,9 @@ public class VolunteerService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public ResponseEntity<List<VolunteerCardDto>> findAll(Pageable pageable) {
+    public ResponseEntity<List<VolunteerCardResponseDto>> findAll(Pageable pageable) {
         List<Volunteer> volunteerList = volunteerRepository.findAll(pageable).getContent();
-        List<VolunteerCardDto> volunteerCardDtoList = volunteerList.stream()
+        List<VolunteerCardResponseDto> volunteerCardResponseDtoList = volunteerList.stream()
                 .map(Volunteer::toCardDto)
                 .collect(Collectors.toList());
 
@@ -48,11 +48,11 @@ public class VolunteerService {
 
         return ResponseEntity.ok()
                 .headers(responseHeaders)
-                .body(volunteerCardDtoList);
+                .body(volunteerCardResponseDtoList);
     }
 
     @Transactional
-    public VolunteerArticleDto findById(Long id) {
+    public VolunteerArticleResponseDto findById(Long id) {
         Volunteer entity = volunteerRepository.findById(id).orElseThrow(NoExistVolunteerException::new);
 
         List<ApplyList> applyLists = applyListRepository.findByVolunteer(entity);
@@ -73,7 +73,7 @@ public class VolunteerService {
                 .map(Comment::toDto)
                 .collect(Collectors.toList());
 
-        return VolunteerArticleDto.builder()
+        return VolunteerArticleResponseDto.builder()
                 .entity(entity)
                 .pictures(entity.detailPicture())
                 .applicants(applicants)
