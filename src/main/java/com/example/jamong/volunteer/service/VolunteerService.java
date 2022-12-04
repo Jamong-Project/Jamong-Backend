@@ -19,8 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +35,7 @@ public class VolunteerService {
     private final FavoriteRepository favoriteRepository;
     private final CommentRepository commentRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseEntity<List<VolunteerCardResponseDto>> findAll(Pageable pageable) {
         List<Volunteer> volunteerList = volunteerRepository.findAll(pageable).getContent();
         List<VolunteerCardResponseDto> volunteerCardResponseDtoList = volunteerList.stream()
@@ -51,7 +51,7 @@ public class VolunteerService {
                 .body(volunteerCardResponseDtoList);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public VolunteerArticleResponseDto findById(Long id) {
         Volunteer entity = volunteerRepository.findById(id).orElseThrow(NoExistVolunteerException::new);
 

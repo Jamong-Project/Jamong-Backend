@@ -42,7 +42,7 @@ public class UserService {
     private final ApplyListRepository applyListRepository;
     private final FavoriteRepository favoriteRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
         List<User> users = userRepository.findByEmail(userSaveRequestDto.getEmail());
@@ -88,7 +88,7 @@ public class UserService {
         return naverResponseDto;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String get(String apiUrl, Map<String, String> requestHeaders) {
         HttpURLConnection con = connect(apiUrl);
         try {
@@ -143,7 +143,7 @@ public class UserService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<User> findAll(String email, String name) {
         if (email != null && name == null) {
             return userRepository.findByEmail(email);
@@ -155,7 +155,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
 
