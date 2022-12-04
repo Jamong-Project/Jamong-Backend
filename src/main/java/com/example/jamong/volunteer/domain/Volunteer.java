@@ -1,6 +1,7 @@
 package com.example.jamong.volunteer.domain;
 
 import com.example.jamong.config.BaseTimeEntity;
+import com.example.jamong.volunteer.dto.VolunteerCardDto;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
@@ -124,5 +125,11 @@ public class Volunteer extends BaseTimeEntity {
 
     public void addComment(Comment comment) {
         comments.add(comment);
+    }
+
+    public VolunteerCardDto toCardDto() {
+        return VolunteerCardDto.builder()
+                .entity(this)
+                .build();
     }
 }

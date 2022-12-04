@@ -1,6 +1,5 @@
 package com.example.jamong.volunteer.service;
 
-import com.example.jamong.exception.FromBiggerThanToException;
 import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.Role;
 import com.example.jamong.user.domain.User;
@@ -20,6 +19,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -99,57 +100,13 @@ class VolunteerServiceTest {
     @Test
     @DisplayName("모든 봉사를 조회한다")
     void findAll() {
-        ResponseEntity<List<VolunteerCardDto>> volunteerResponseEntity = volunteerService.findAll(null, null, null);
+        Pageable paging = PageRequest.of(0, 12);
+        ResponseEntity<List<VolunteerCardDto>> volunteerResponseEntity = volunteerService.findAll(paging);
 
         VolunteerCardDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
 
         assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(12);
         assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목1");
-        assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);
-        assertThat(actualVolunteer.getApplicationDate()).isEqualTo(1674121200000L);
-        assertThat(actualVolunteer.getMaximumPeople()).isEqualTo(20);
-        assertThat(actualVolunteer.getCurrentPeople()).isEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("to 쿼리 옵션을 추가하면 처음부터 to 까지의 게시물을 조회한다.")
-    void findOnlyTo() {
-        ResponseEntity<List<VolunteerCardDto>> volunteerResponseEntity = volunteerService.findAll(null, 2, null);
-
-        VolunteerCardDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
-
-        assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(3);
-        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목1");
-        assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);
-        assertThat(actualVolunteer.getApplicationDate()).isEqualTo(1674121200000L);
-        assertThat(actualVolunteer.getMaximumPeople()).isEqualTo(20);
-        assertThat(actualVolunteer.getCurrentPeople()).isEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("from 쿼리 옵션을 추가하면 from 부터 12개의 게시물을 조회한다.")
-    void findOnlyFrom() {
-        ResponseEntity<List<VolunteerCardDto>> volunteerResponseEntity = volunteerService.findAll(2, null, null);
-
-        VolunteerCardDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
-
-        assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(12);
-        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목3");
-        assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);
-        assertThat(actualVolunteer.getApplicationDate()).isEqualTo(1674121200000L);
-        assertThat(actualVolunteer.getMaximumPeople()).isEqualTo(20);
-        assertThat(actualVolunteer.getCurrentPeople()).isEqualTo(0);
-    }
-
-    @Test
-    @DisplayName("from과 To 옵션을 추가하면 from 부터 to까지의 게시물을 조회한다.")
-    void findToAndFrom() {
-        ResponseEntity<List<VolunteerCardDto>> volunteerResponseEntity = volunteerService.findAll(2, 4, null);
-
-        VolunteerCardDto actualVolunteer = volunteerResponseEntity.getBody().get(0);
-
-        assertThat(volunteerResponseEntity.getBody().size()).isEqualTo(3);
-        assertThat(actualVolunteer.getTitle()).isEqualTo("테스트 봉사 제목3");
         assertThat(actualVolunteer.getVolunteerDate()).isEqualTo(1660112000000L);
         assertThat(actualVolunteer.getApplicationDate()).isEqualTo(1674121200000L);
         assertThat(actualVolunteer.getMaximumPeople()).isEqualTo(20);
@@ -247,21 +204,6 @@ class VolunteerServiceTest {
                         () -> {
                             volunteerService.findById(55L);
                         });
-    }
-
-    @Test
-    @DisplayName("from이 to보다 클 경우 예외 발생")
-    public void fromBiggerThanToExceptionTest() {
-        assertThatThrownBy(
-                () -> volunteerService.findAll(11, 2, null)
-        ).isInstanceOf(FromBiggerThanToException.class);
-    }
-
-    @Test
-    @DisplayName("to가 total-page보다 클떄는 total-page까지 만큼의 봉사를 조회한다.")
-    public void toBiggertThanTotal() {
-        List<VolunteerCardDto> volunteerList = volunteerService.findAll(null, 60, null).getBody();
-        assertThat(volunteerList.size()).isEqualTo(50);
     }
 
     @Test

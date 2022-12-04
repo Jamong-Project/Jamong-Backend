@@ -1,6 +1,5 @@
 package com.example.jamong.volunteer.service;
 
-import com.example.jamong.exception.FromBiggerThanToException;
 import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
@@ -16,14 +15,12 @@ import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,12 +29,6 @@ import java.util.stream.Collectors;
 @Service
 public class VolunteerService {
 
-    private static final String DEFAULT_ORDERING_OPTION = "id";
-    private static final int DESC_OPTION_CHARACTER_INDEX = 0;
-    private static final char DESC_OPTION_CHARACTER = '-';
-    private static final int DEFAULT_FROM_INDEX = 0;
-    private static final int DEFAULT_TO_INDEX = 11;
-
     private final VolunteerRepository volunteerRepository;
     private final ApplyListRepository applyListRepository;
     private final UserRepository userRepository;
@@ -45,81 +36,19 @@ public class VolunteerService {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public ResponseEntity<List<VolunteerCardDto>> findAll(Integer from, Integer to, String ordering) {
-        Direction sort = Direction.ASC;
+    public ResponseEntity<List<VolunteerCardDto>> findAll(Pageable pageable) {
+        List<Volunteer> volunteerList = volunteerRepository.findAll(pageable).getContent();
+        List<VolunteerCardDto> volunteerCardDtoList = volunteerList.stream()
+                .map(Volunteer::toCardDto)
+                .collect(Collectors.toList());
 
-        ordering = setDefaultOrderingOption(ordering);
-
-        if (isFromBiggerThanTo(from, to)) {
-            throw new FromBiggerThanToException();
-        }
-        from = setDefaultFromValue(from);
-        to = setDefaultToValue(from, to);
-
-        if (sortingOptionFinder(ordering)) {
-            sort = Direction.DESC;
-            ordering = ordering.substring(1);
-        }
-
-        List<Volunteer> volunteerList = volunteerRepository.findAll(Sort.by(sort, ordering));
-
-        return getSubList(from, to, volunteerList);
-    }
-
-    private boolean isFromBiggerThanTo(Integer from, Integer to) {
-        if (from != null && to != null && from > to) {
-            return true;
-        }
-        return false;
-    }
-
-    private String setDefaultOrderingOption(String ordering) {
-        if (ordering == null) {
-            ordering = DEFAULT_ORDERING_OPTION;
-        }
-        return ordering;
-    }
-
-    private Integer setDefaultToValue(Integer from, Integer to) {
-        if (to == null) {
-            to = from + DEFAULT_TO_INDEX;
-        }
-        return to;
-    }
-
-    private Integer setDefaultFromValue(Integer from) {
-        if (from == null) {
-            from = DEFAULT_FROM_INDEX;
-        }
-        return from;
-    }
-
-    private boolean sortingOptionFinder(String ordering) {
-        return ordering.charAt(DESC_OPTION_CHARACTER_INDEX) == DESC_OPTION_CHARACTER;
-    }
-
-    private ResponseEntity<List<VolunteerCardDto>> getSubList(Integer from, Integer to, List<Volunteer> volunteerList) {
         final int totalPage = volunteerList.size();
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("total-page", String.valueOf(totalPage));
 
-        if (to > totalPage) {
-            return getResponseEntity(volunteerList, from, totalPage, responseHeaders);
-        }
-
-        return getResponseEntity(volunteerList, from, to + 1, responseHeaders);
-    }
-
-    private ResponseEntity<List<VolunteerCardDto>> getResponseEntity(List<Volunteer> volunteerList, Integer from, Integer to, HttpHeaders responseHeaders) {
-        List<VolunteerCardDto> dtos = new ArrayList<>();
-
-        for (Volunteer volunteer : volunteerList.subList(from, to)) {
-            dtos.add(new VolunteerCardDto(volunteer));
-        }
-
         return ResponseEntity.ok()
                 .headers(responseHeaders)
-                .body(dtos);
+                .body(volunteerCardDtoList);
     }
 
     @Transactional
