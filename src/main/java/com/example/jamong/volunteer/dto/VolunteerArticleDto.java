@@ -4,12 +4,14 @@ import com.example.jamong.user.domain.User;
 import com.example.jamong.volunteer.domain.Comment;
 import com.example.jamong.volunteer.domain.Picture;
 import com.example.jamong.volunteer.domain.Volunteer;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VolunteerArticleDto {
     private final Long id;
     private final String title;
