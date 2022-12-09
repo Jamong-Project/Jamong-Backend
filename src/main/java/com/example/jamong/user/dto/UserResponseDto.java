@@ -4,6 +4,7 @@ import com.example.jamong.user.domain.Role;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponseDto {
     private String profileImage;
     private String gender;

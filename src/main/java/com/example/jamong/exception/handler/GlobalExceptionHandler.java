@@ -29,11 +29,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(exception.getStatus()).body(new ErrorResponseDto(exception.getMessage()));
     }
 
-    @ExceptionHandler(FromBiggerThanToException.class)
-    public ResponseEntity<ErrorResponseDto> FromBiggerThanToException(FromBiggerThanToException exception) {
-        return ResponseEntity.status(exception.getStatus()).body(new ErrorResponseDto(exception.getMessage()));
-    }
-
     @ExceptionHandler(NaverLoginFailException.class)
     public ResponseEntity<ErrorResponseDto> NaverLoginFailException(NaverLoginFailException exception) {
         return ResponseEntity.status(exception.getStatus()).body(new ErrorResponseDto(exception.getMessage()));

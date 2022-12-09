@@ -7,6 +7,7 @@ import com.example.jamong.volunteer.service.AwsS3Service;
 import com.example.jamong.volunteer.service.VolunteerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +25,13 @@ public class VolunteerController {
     private final AwsS3Service awsS3Service;
 
     @GetMapping
-    public ResponseEntity<List<VolunteerCardDto>> findAll(@RequestParam(required = false) Integer from, @RequestParam(required = false) Integer to,
-                                                          @RequestParam(required = false) String ordering) {
+    public ResponseEntity<List<VolunteerCardResponseDto>> findAll(Pageable pageable) {
 
-        return volunteerService.findAll(from, to, ordering);
+        return volunteerService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
-    public VolunteerArticleDto findById(@PathVariable Long id) {
+    public VolunteerArticleResponseDto findById(@PathVariable Long id) {
         return volunteerService.findById(id);
     }
 
