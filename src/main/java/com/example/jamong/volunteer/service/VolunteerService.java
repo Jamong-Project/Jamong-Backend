@@ -38,11 +38,12 @@ public class VolunteerService {
     @Transactional(readOnly = true)
     public ResponseEntity<List<VolunteerCardResponseDto>> findAll(Pageable pageable) {
         List<Volunteer> volunteerList = volunteerRepository.findAll(pageable).getContent();
+        List<Volunteer> allVolunteerList = volunteerRepository.findAll();
         List<VolunteerCardResponseDto> volunteerCardResponseDtoList = volunteerList.stream()
                 .map(Volunteer::toCardDto)
                 .collect(Collectors.toList());
 
-        final int totalPage = volunteerList.size();
+        final int totalPage = allVolunteerList.size();
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set("total-page", String.valueOf(totalPage));
 
