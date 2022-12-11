@@ -1,7 +1,7 @@
 package com.example.jamong.volunteer.dto;
 
 import com.example.jamong.user.domain.User;
-import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Apply;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -11,12 +11,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ApplyListResponseDto {
+public class ApplyResponseDto {
     private User user;
     private Volunteer volunteer;
 
     @Builder
-    public ApplyListResponseDto(ApplyList entity) {
+    public ApplyResponseDto(Apply entity) {
         this.user = entity.getUser();
         this.volunteer = entity.getVolunteer();
     }

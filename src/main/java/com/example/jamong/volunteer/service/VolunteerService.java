@@ -4,7 +4,7 @@ import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
 import com.example.jamong.user.repository.UserRepository;
-import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Apply;
 import com.example.jamong.volunteer.domain.Comment;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
@@ -56,13 +56,13 @@ public class VolunteerService {
     public VolunteerArticleResponseDto findById(Long id) {
         Volunteer entity = volunteerRepository.findById(id).orElseThrow(NoExistVolunteerException::new);
 
-        List<ApplyList> applyLists = applyListRepository.findByVolunteer(entity);
+        List<Apply> applies = applyListRepository.findByVolunteer(entity);
         List<Favorite> favorites = favoriteRepository.findByVolunteer(entity);
         List<Comment> commentList = commentRepository.findByVolunteer(entity);
 
-        List<User> applicants = applyLists.stream()
-                .map(ApplyList::toDto)
-                .map(ApplyListResponseDto::getUser)
+        List<User> applicants = applies.stream()
+                .map(Apply::toDto)
+                .map(ApplyResponseDto::getUser)
                 .collect(Collectors.toList());
 
         List<User> favoriteUsers = favorites.stream()
@@ -108,6 +108,8 @@ public class VolunteerService {
     @Transactional
     public boolean applyVolunteer(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
         List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
+        log.info("user : {}", user);
+        log.info("volunteerId : {}", volunteerId);
 
         if (user.isEmpty()) {
             throw new NoExistVolunteerException();
@@ -115,32 +117,32 @@ public class VolunteerService {
 
         Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
-        List<String> userList = volunteer.getApplyLists().stream()
-                .map(ApplyList::toDto)
-                .map(ApplyListResponseDto::getUser)
-                .map(User::toString)
+        List<User> applyUserList = volunteer.getApplies().stream()
+                .map(Apply::toDto)
+                .map(ApplyResponseDto::getUser)
                 .collect(Collectors.toList());
 
-        if (!userList.contains(user.get(0).toString())) {
+        log.info("userList : {}", applyUserList);
+        if (!applyUserList.contains(user.get(0))) {
 
-            ApplyList applyList = ApplyList.builder()
+            Apply apply = Apply.builder()
                     .volunteer(volunteer)
                     .user(user.get(0))
                     .build();
 
-            applyListRepository.save(applyList);
+            applyListRepository.save(apply);
             updateCurrentUser(volunteer);
             return true;
         }
 
-        volunteer.getApplyLists().remove(applyListRepository.findByUserAndVolunteer(user.get(0), volunteer).get(0));
+        volunteer.getApplies().remove(applyListRepository.findByUserAndVolunteer(user.get(0), volunteer).get(0));
         applyListRepository.deleteByUserAndVolunteer(user.get(0), volunteer);
         updateCurrentUser(volunteer);
         return false;
     }
 
     private void updateCurrentUser(Volunteer volunteer) {
-        List<ApplyList> userList = applyListRepository.findByVolunteer(volunteer);
+        List<Apply> userList = applyListRepository.findByVolunteer(volunteer);
         int size = userList.size();
 
         volunteer.setCurrentPeople(size);
