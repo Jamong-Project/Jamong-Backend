@@ -108,8 +108,6 @@ public class VolunteerService {
     @Transactional
     public boolean applyVolunteer(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
         List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
-        log.info("user : {}", user);
-        log.info("volunteerId : {}", volunteerId);
 
         if (user.isEmpty()) {
             throw new NoExistVolunteerException();
@@ -122,7 +120,6 @@ public class VolunteerService {
                 .map(ApplyResponseDto::getUser)
                 .collect(Collectors.toList());
 
-        log.info("userList : {}", applyUserList);
         if (!applyUserList.contains(user.get(0))) {
 
             Apply apply = Apply.builder()
@@ -159,13 +156,12 @@ public class VolunteerService {
 
         Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
-        List<String> userList = volunteer.getFavorites().stream()
+        List<User> userList = volunteer.getFavorites().stream()
                 .map(Favorite::toDto)
                 .map(FavoriteResponseDto::getUser)
-                .map(User::toString)
                 .collect(Collectors.toList());
 
-        if (!userList.contains(user.get(0).toString())) {
+        if (!userList.contains(user.get(0))) {
 
             Favorite favorite = Favorite.builder()
                     .volunteer(volunteer)
