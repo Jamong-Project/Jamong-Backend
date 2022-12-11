@@ -47,7 +47,7 @@ public class UserService {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
         List<User> users = userRepository.findByEmail(userSaveRequestDto.getEmail());
 
-        if (users.size() <= 0) {
+        if (users.isEmpty()) {
             User saved = userRepository.save(userSaveRequestDto.toEntity());
             return ResponseEntity.created(URI.create("/v1/users/" + saved.getId())).body(saved);
         }
