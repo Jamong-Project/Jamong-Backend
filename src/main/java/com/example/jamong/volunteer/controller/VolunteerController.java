@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("v1/volunteers")
+@RequestMapping("/v1/volunteers")
 public class VolunteerController {
     private final VolunteerService volunteerService;
     private final AwsS3Service awsS3Service;

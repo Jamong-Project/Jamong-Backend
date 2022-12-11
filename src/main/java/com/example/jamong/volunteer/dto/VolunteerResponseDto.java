@@ -1,20 +1,15 @@
 package com.example.jamong.volunteer.dto;
 
-import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Apply;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Picture;
 import com.example.jamong.volunteer.domain.Volunteer;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 @Getter
 @NoArgsConstructor
@@ -28,7 +23,7 @@ public class VolunteerResponseDto {
     private Long applicationDate;
     private int maximumPeople;
     private int currentPeople;
-    private List<ApplyList> applyLists;
+    private List<Apply> applies;
     private List<Favorite> favorites;
 
     @Builder
@@ -41,7 +36,7 @@ public class VolunteerResponseDto {
         this.applicationDate = entity.getApplicationDate();
         this.maximumPeople = entity.getMaximumPeople();
         this.currentPeople = entity.getCurrentPeople();
-        this.applyLists = entity.getApplyLists();
+        this.applies = entity.getApplies();
         this.favorites = entity.getFavorites();
     }
 

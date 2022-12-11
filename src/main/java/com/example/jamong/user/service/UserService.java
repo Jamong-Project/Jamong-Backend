@@ -5,10 +5,10 @@ import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.*;
 import com.example.jamong.user.repository.UserRepository;
-import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Apply;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
-import com.example.jamong.volunteer.dto.ApplyListResponseDto;
+import com.example.jamong.volunteer.dto.ApplyResponseDto;
 import com.example.jamong.volunteer.dto.FavoriteResponseDto;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
 import com.example.jamong.volunteer.repository.FavoriteRepository;
@@ -47,7 +47,7 @@ public class UserService {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
         List<User> users = userRepository.findByEmail(userSaveRequestDto.getEmail());
 
-        if (users.size() <= 0) {
+        if (users.isEmpty()) {
             User saved = userRepository.save(userSaveRequestDto.toEntity());
             return ResponseEntity.created(URI.create("/v1/users/" + saved.getId())).body(saved);
         }
@@ -159,12 +159,12 @@ public class UserService {
     public UserResponseDto findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
 
-        List<ApplyList> applyLists = applyListRepository.findByUser(user);
+        List<Apply> applies = applyListRepository.findByUser(user);
         List<Favorite> favorites = favoriteRepository.findByUser(user);
 
-        List<Volunteer> apply = applyLists.stream()
-                .map(ApplyList::toDto)
-                .map(ApplyListResponseDto::getVolunteer)
+        List<Volunteer> apply = applies.stream()
+                .map(Apply::toDto)
+                .map(ApplyResponseDto::getVolunteer)
                 .collect(Collectors.toList());
 
         List<Volunteer> favoriteVolunteers = favorites.stream()
