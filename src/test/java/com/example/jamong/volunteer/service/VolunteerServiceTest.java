@@ -6,6 +6,7 @@ import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
 import com.example.jamong.user.repository.UserRepository;
 import com.example.jamong.volunteer.domain.Comment;
+import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.*;
 import com.example.jamong.volunteer.repository.ApplyListRepository;
@@ -13,10 +14,7 @@ import com.example.jamong.volunteer.repository.CommentRepository;
 import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +27,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VolunteerServiceTest {
     @Autowired
     private VolunteerService volunteerService;
@@ -53,27 +52,8 @@ class VolunteerServiceTest {
         volunteerRepository.deleteAll();
     }
 
-    @BeforeEach
-    public void makeDummyData() {
-        String title = "테스트 봉사 제목";
-        String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
-        Long volunteerDate = 1660112000000L;
-        Long applicationDate = 1674121200000L;
-        Integer maximumPeople = 20;
-        Integer currentPeople = 0;
-
-        for (int i = 1; i < 51; i++) {
-            volunteerRepository.save(
-                    Volunteer.builder()
-                            .title(title + i)
-                            .content(content + i)
-                            .volunteerDate(volunteerDate)
-                            .applicationDate(applicationDate)
-                            .maximumPeople(maximumPeople)
-                            .build()
-            );
-        }
-
+    @BeforeAll
+    public void setUp() {
         String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
         String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
         String gender = "M";
@@ -95,6 +75,29 @@ class VolunteerServiceTest {
                         .role(role)
                         .build()
         );
+    }
+
+    @BeforeEach
+    public void makeDummyData() {
+        String title = "테스트 봉사 제목";
+        String content = "테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.";
+        Long volunteerDate = 1660112000000L;
+        Long applicationDate = 1674121200000L;
+        Integer maximumPeople = 20;
+        Integer currentPeople = 0;
+
+        for (int i = 1; i < 51; i++) {
+            volunteerRepository.save(
+                    Volunteer.builder()
+                            .title(title + i)
+                            .content(content + i)
+                            .volunteerDate(volunteerDate)
+                            .applicationDate(applicationDate)
+                            .maximumPeople(maximumPeople)
+                            .build()
+            );
+        }
+
     }
 
     @Test
@@ -216,7 +219,7 @@ class VolunteerServiceTest {
                 .email(user.getEmail())
                 .build();
 
-        volunteerService.applyVolunteer(volunteer.getId(), userEmailRequestDto);
+        volunteerService.isApplyVolunteer(volunteer.getId(), userEmailRequestDto);
 
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
 
@@ -243,7 +246,6 @@ class VolunteerServiceTest {
         User applyUser = favoriteRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
 
         assertThat(applyUser.getEmail()).isEqualTo(user.getEmail());
-
     }
 
     @Test
@@ -256,7 +258,7 @@ class VolunteerServiceTest {
                 .email(user.getEmail())
                 .build();
 
-        volunteerService.applyVolunteer(volunteer.getId(), userEmailRequestDto);
+        volunteerService.isApplyVolunteer(volunteer.getId(), userEmailRequestDto);
 
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
 
@@ -265,7 +267,7 @@ class VolunteerServiceTest {
         assertThat(updatedVolunteer.getCurrentPeople()).isEqualTo(1);
         assertThat(applyUser.getEmail()).isEqualTo(user.getEmail()); //신청
 
-        volunteerService.applyVolunteer(volunteer.getId(), userEmailRequestDto);
+        volunteerService.isApplyVolunteer(volunteer.getId(), userEmailRequestDto);
         updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
 
         assertThat(updatedVolunteer.getCurrentPeople()).isEqualTo(0);
@@ -283,17 +285,14 @@ class VolunteerServiceTest {
                 .build();
 
         volunteerService.pressFavorite(volunteer.getId(), userEmailRequestDto);
-
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
-
-        User pressUser = favoriteRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
-
+        User pressUser = favoriteRepository.findByUserAndVolunteer(user, updatedVolunteer).get(0).getUser();
         assertThat(pressUser.getEmail()).isEqualTo(user.getEmail()); //신청
 
         volunteerService.pressFavorite(volunteer.getId(), userEmailRequestDto);
         updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
-
-        assertThat(applyListRepository.findByVolunteer(updatedVolunteer).size()).isEqualTo(0); // 취소
+        List<Favorite> pressTwiceUser = favoriteRepository.findByUserAndVolunteer(user, updatedVolunteer);
+        assertThat(pressTwiceUser.size()).isEqualTo(0); // 취소
     }
 
     @Test

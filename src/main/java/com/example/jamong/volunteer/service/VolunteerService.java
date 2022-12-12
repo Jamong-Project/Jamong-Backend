@@ -1,5 +1,6 @@
 package com.example.jamong.volunteer.service;
 
+import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.UserEmailRequestDto;
@@ -98,44 +99,10 @@ public class VolunteerService {
     }
 
     @Transactional
-    public Volunteer delete(Long id) {
+    public void delete(Long id) {
         Volunteer entity = volunteerRepository.findById(id).orElseThrow(NoExistVolunteerException::new);
 
         volunteerRepository.delete(entity);
-        return entity;
-    }
-
-    @Transactional
-    public boolean applyVolunteer(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
-        List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
-
-        if (user.isEmpty()) {
-            throw new NoExistVolunteerException();
-        }
-
-        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
-
-        List<User> applyUserList = volunteer.getApplies().stream()
-                .map(Apply::toDto)
-                .map(ApplyResponseDto::getUser)
-                .collect(Collectors.toList());
-
-        if (!applyUserList.contains(user.get(0))) {
-
-            Apply apply = Apply.builder()
-                    .volunteer(volunteer)
-                    .user(user.get(0))
-                    .build();
-
-            applyListRepository.save(apply);
-            updateCurrentUser(volunteer);
-            return true;
-        }
-
-        volunteer.getApplies().remove(applyListRepository.findByUserAndVolunteer(user.get(0), volunteer).get(0));
-        applyListRepository.deleteByUserAndVolunteer(user.get(0), volunteer);
-        updateCurrentUser(volunteer);
-        return false;
     }
 
     private void updateCurrentUser(Volunteer volunteer) {
@@ -147,13 +114,37 @@ public class VolunteerService {
     }
 
     @Transactional
-    public boolean pressFavorite(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
-        List<User> user = userRepository.findByEmail(userEmailRequestDto.getEmail());
+    public boolean isApplyVolunteer(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
+        User user = userRepository.findByEmail(userEmailRequestDto.getEmail()).orElseThrow(NoExistUserException::new);
 
-        if (user.isEmpty()) {
-            throw new NoExistVolunteerException();
+        Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
+
+        List<User> userList = volunteer.getApplies().stream()
+                .map(Apply::toDto)
+                .map(ApplyResponseDto::getUser)
+                .collect(Collectors.toList());
+
+        if (!userList.contains(user)) {
+
+            Apply applyList = Apply.builder()
+                    .volunteer(volunteer)
+                    .user(user)
+                    .build();
+
+            applyListRepository.save(applyList);
+            updateCurrentUser(volunteer);
+            return true;
         }
+        volunteer.getApplies().remove(applyListRepository.findByUserAndVolunteer(user, volunteer).get(0));
+        applyListRepository.deleteByUserAndVolunteer(user, volunteer);
+        updateCurrentUser(volunteer);
+        return false;
+    }
 
+
+    @Transactional
+    public boolean isPressFavorite(Long volunteerId, UserEmailRequestDto userEmailRequestDto) {
+        User user = userRepository.findByEmail(userEmailRequestDto.getEmail()).orElseThrow(NoExistUserException::new);
         Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
         List<User> userList = volunteer.getFavorites().stream()
@@ -161,11 +152,11 @@ public class VolunteerService {
                 .map(FavoriteResponseDto::getUser)
                 .collect(Collectors.toList());
 
-        if (!userList.contains(user.get(0))) {
+        if (!userList.contains(user)) {
 
             Favorite favorite = Favorite.builder()
                     .volunteer(volunteer)
-                    .user(user.get(0))
+                    .user(user)
                     .build();
 
             favoriteRepository.save(favorite);
@@ -173,21 +164,15 @@ public class VolunteerService {
             return true;
         }
 
-        volunteer.getFavorites().remove(favoriteRepository.findByUserAndVolunteer(user.get(0), volunteer).get(0));
-        favoriteRepository.deleteByUserAndVolunteer(user.get(0), volunteer);
+        volunteer.getFavorites().remove(favoriteRepository.findByUserAndVolunteer(user, volunteer).get(0));
+        favoriteRepository.deleteByUserAndVolunteer(user, volunteer);
         updateCurrentUser(volunteer);
         return false;
     }
 
     @Transactional
-    public Volunteer addComment(Long volunteerId, CommentRequestDto requestDto) {
-        List<User> users = userRepository.findByEmail(requestDto.getEmail());
-
-        if (users.isEmpty()) {
-            throw new NoExistVolunteerException();
-        }
-
-        User user = users.get(0);
+    public void addComment(Long volunteerId, CommentRequestDto requestDto) {
+        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(NoExistUserException::new);
         Volunteer volunteer = volunteerRepository.findById(volunteerId).orElseThrow(NoExistVolunteerException::new);
 
         Comment comment = Comment.builder()
@@ -197,7 +182,6 @@ public class VolunteerService {
                 .build();
 
         volunteer.addComment(comment);
-
-        return volunteerRepository.save(volunteer);
+        volunteerRepository.save(volunteer);
     }
 }

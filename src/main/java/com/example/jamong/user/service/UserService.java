@@ -45,14 +45,14 @@ public class UserService {
     @Transactional(readOnly = true)
     public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
-        List<User> users = userRepository.findByEmail(userSaveRequestDto.getEmail());
+        Optional<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
 
-        if (users.isEmpty()) {
+        if (!user.isPresent()) {
             User saved = userRepository.save(userSaveRequestDto.toEntity());
             return ResponseEntity.created(URI.create("/v1/users/" + saved.getId())).body(saved);
         }
 
-        return ResponseEntity.ok(users.get(0));
+        return ResponseEntity.ok(user.get());
     }
 
     protected UserSaveRequestDto getUserProfileFromNaver(TokenRequestDto tokenRequestDto) {
@@ -146,7 +146,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<User> findAll(String email, String name) {
         if (email != null && name == null) {
-            return userRepository.findByEmail(email);
+            return userRepository.findAllByEmail(email);
         }
 
         if (email == null && name != null) {
