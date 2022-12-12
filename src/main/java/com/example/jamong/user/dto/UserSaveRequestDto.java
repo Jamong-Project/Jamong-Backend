@@ -22,17 +22,8 @@ public class UserSaveRequestDto {
     @JsonProperty("profile_image")
     private String profileImage;
 
-    @JsonProperty("gender")
-    private String gender;
-
     @JsonProperty("email")
     private String email;
-
-    @JsonProperty("mobile")
-    private String mobile;
-
-    @JsonProperty("mobile_e164")
-    private String mobileE164;
 
     @JsonProperty("name")
     private String name;
@@ -41,10 +32,7 @@ public class UserSaveRequestDto {
         return User.builder()
                 .naverId(naverId)
                 .profileImage(profileImage)
-                .gender(gender)
                 .email(email)
-                .mobile(mobile)
-                .mobileE164(mobileE164)
                 .name(name)
                 .role(Role.GUEST)
                 .build();

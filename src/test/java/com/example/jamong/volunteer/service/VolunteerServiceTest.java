@@ -56,10 +56,7 @@ class VolunteerServiceTest {
     public void setUp() {
         String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
         String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
-        String gender = "M";
         String email = "lmj938@naver.com";
-        String mobile = "010-0000-0000";
-        String mobileE164 = "+821000000000";
         String name = "이민재";
         Role role = Role.GUEST;
 
@@ -67,10 +64,7 @@ class VolunteerServiceTest {
                 User.builder()
                         .naverId(naverId)
                         .profileImage(profileImage)
-                        .gender(gender)
                         .email(email)
-                        .mobile(mobile)
-                        .mobileE164(mobileE164)
                         .name(name)
                         .role(role)
                         .build()
@@ -239,7 +233,7 @@ class VolunteerServiceTest {
                 .email(user.getEmail())
                 .build();
 
-        volunteerService.pressFavorite(volunteer.getId(), userEmailRequestDto);
+        volunteerService.isPressFavorite(volunteer.getId(), userEmailRequestDto);
 
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
 
@@ -284,12 +278,12 @@ class VolunteerServiceTest {
                 .email(user.getEmail())
                 .build();
 
-        volunteerService.pressFavorite(volunteer.getId(), userEmailRequestDto);
+        volunteerService.isPressFavorite(volunteer.getId(), userEmailRequestDto);
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
         User pressUser = favoriteRepository.findByUserAndVolunteer(user, updatedVolunteer).get(0).getUser();
         assertThat(pressUser.getEmail()).isEqualTo(user.getEmail()); //신청
 
-        volunteerService.pressFavorite(volunteer.getId(), userEmailRequestDto);
+        volunteerService.isPressFavorite(volunteer.getId(), userEmailRequestDto);
         updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
         List<Favorite> pressTwiceUser = favoriteRepository.findByUserAndVolunteer(user, updatedVolunteer);
         assertThat(pressTwiceUser.size()).isEqualTo(0); // 취소
