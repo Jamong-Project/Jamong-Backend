@@ -32,10 +32,7 @@ public class UserServiceTest {
     public void makeDummyData() {
         String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
         String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
-        String gender = "M";
         String email = "lmj938@naver.com";
-        String mobile = "010-0000-0000";
-        String mobileE164 = "+821000000000";
         String name = "이민재";
         Role role = Role.GUEST;
 
@@ -44,10 +41,7 @@ public class UserServiceTest {
                     User.builder()
                             .naverId(naverId + i)
                             .profileImage(profileImage + i)
-                            .gender(gender)
                             .email(email + i)
-                            .mobile(mobile + i)
-                            .mobileE164(mobileE164 + i)
                             .name(name + i)
                             .role(role)
                             .build()
@@ -75,10 +69,7 @@ public class UserServiceTest {
 
         assertThat(actualUser.getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM1");
         assertThat(actualUser.getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png1");
-        assertThat(actualUser.getGender()).isEqualTo("M");
         assertThat(actualUser.getEmail()).isEqualTo("lmj938@naver.com1");
-        assertThat(actualUser.getMobile()).isEqualTo("010-0000-00001");
-        assertThat(actualUser.getMobileE164()).isEqualTo("+8210000000001");
         assertThat(actualUser.getName()).isEqualTo("이민재1");
         assertThat(actualUser.getRole()).isEqualTo(Role.GUEST);
     }
@@ -90,7 +81,6 @@ public class UserServiceTest {
 
         assertThat(actualUser.get(0).getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM1");
         assertThat(actualUser.get(0).getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png1");
-        assertThat(actualUser.get(0).getGender()).isEqualTo("M");
         assertThat(actualUser.get(0).getEmail()).isEqualTo("lmj938@naver.com1");
     }
 
@@ -99,14 +89,12 @@ public class UserServiceTest {
     public void updateTest() {
         String updatedProfileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.pngupdated";
         String updatedEmail = "lmj938@naver.comupdated";
-        String updatedMobile = "010-0000-0000updated";
         Role updatedRole = Role.USER;
         User user = userService.findAll(null, null).get(0);
 
         UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.builder()
                 .email(updatedEmail)
                 .profileImage(updatedProfileImage)
-                .mobile(updatedMobile)
                 .role(updatedRole)
                 .build();
 
@@ -114,8 +102,6 @@ public class UserServiceTest {
 
         assertThat(userService.findAll(updatedEmail, null).get(0).getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.pngupdated");
         assertThat(userService.findAll(updatedEmail, null).get(0).getEmail()).isEqualTo("lmj938@naver.comupdated");
-        assertThat(userService.findAll(updatedEmail, null).get(0).getMobile()).isEqualTo("010-0000-0000updated");
-        assertThat(userService.findAll(updatedEmail, null).get(0).getMobileE164()).isEqualTo("+82100000000");
         assertThat(userService.findAll(updatedEmail, null).get(0).getRole()).isEqualTo(Role.USER);
     }
 

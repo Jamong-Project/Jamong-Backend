@@ -62,7 +62,7 @@ public class VolunteerController {
 
     @PostMapping("/{id}/apply")
     public ResponseEntity<Void> applyVolunteer(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
-        if (volunteerService.applyVolunteer(id, requestDto)){
+        if (volunteerService.isApplyVolunteer(id, requestDto)){
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.noContent().build();
@@ -70,7 +70,7 @@ public class VolunteerController {
 
     @PostMapping("/{id}/favorites")
     public ResponseEntity<Void> pressFavorite(@PathVariable Long id, @RequestBody UserEmailRequestDto requestDto) {
-        if (volunteerService.pressFavorite(id, requestDto)){
+        if (volunteerService.isPressFavorite(id, requestDto)){
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.noContent().build();
