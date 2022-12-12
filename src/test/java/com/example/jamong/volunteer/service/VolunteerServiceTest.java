@@ -27,7 +27,6 @@ import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class VolunteerServiceTest {
     @Autowired
     private VolunteerService volunteerService;
@@ -46,30 +45,6 @@ class VolunteerServiceTest {
 
     @Autowired
     private CommentRepository commentRepository;
-
-    @AfterEach
-    public void CleanUp() {
-        volunteerRepository.deleteAll();
-    }
-
-    @BeforeAll
-    public void setUp() {
-        String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
-        String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
-        String email = "lmj938@naver.com";
-        String name = "이민재";
-        Role role = Role.GUEST;
-
-        userRepository.save(
-                User.builder()
-                        .naverId(naverId)
-                        .profileImage(profileImage)
-                        .email(email)
-                        .name(name)
-                        .role(role)
-                        .build()
-        );
-    }
 
     @BeforeEach
     public void makeDummyData() {
@@ -92,6 +67,28 @@ class VolunteerServiceTest {
             );
         }
 
+        String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
+        String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
+        String email = "lmj938@naver.com";
+        String name = "이민재";
+        Role role = Role.GUEST;
+
+        userRepository.save(
+                User.builder()
+                        .naverId(naverId)
+                        .profileImage(profileImage)
+                        .email(email)
+                        .name(name)
+                        .role(role)
+                        .build()
+        );
+
+    }
+
+    @AfterEach
+    public void CleanUp() {
+        volunteerRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
