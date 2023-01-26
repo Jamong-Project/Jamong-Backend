@@ -39,7 +39,7 @@
 
 [GitBook](https://app.gitbook.com/s/XIqeHA5LAScfjyZIjwM2/reference/api-reference/user)
 
-## 프로젝트 사용 기술 🛠
+## 프로젝트 사용 기술 
 
 - SpringBoot
 - Docker
@@ -47,7 +47,7 @@
 - RDS
 - EC2
 
-## 프로젝트 기록 📑
+## 프로젝트 기록 
 
 [[Spring] 프로젝트 준비](https://learnote-dev.com/java/Spring-프로젝트-준비/)
 
