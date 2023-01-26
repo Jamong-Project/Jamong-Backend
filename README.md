@@ -1,6 +1,6 @@
 # 연합 봉사 동아리 - 자몽
 
-## 프로젝트 소개 💻
+## 프로젝트 소개 
 
 ---
 
@@ -15,9 +15,6 @@
 [프로젝트 자몽](https://github.com/Jamong-Project)
 
 ## 주요 기능
-
----
-
 ### 봉사 등록
 
 - 자몽의 일원이라면 누구나 함께 하고 싶은 봉사를 등록 할 수 있습니다.
@@ -38,15 +35,13 @@
 - 지원자들에게 쉽게 공지 사항을 카카오톡으로 전송 가능합니다.
 
 ## 프로젝트 아키텍쳐 
-
+<img width="751" alt="CICD_graph" src="https://user-images.githubusercontent.com/85595510/214743372-e497fb93-9b28-4ab8-801a-7e08b31fa2ad.png">
 
 ### API 문서
 
 [GitBook](https://app.gitbook.com/s/XIqeHA5LAScfjyZIjwM2/reference/api-reference/user)
 
 ## 프로젝트 사용 기술 🛠
-
----
 
 - SpringBoot
 - Docker
@@ -55,8 +50,6 @@
 - EC2
 
 ## 프로젝트 기록 📑
-
----
 
 [[Spring] 프로젝트 준비](https://learnote-dev.com/java/Spring-프로젝트-준비/)
 
