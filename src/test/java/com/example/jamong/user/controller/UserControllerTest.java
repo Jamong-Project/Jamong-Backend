@@ -48,10 +48,7 @@ public class UserControllerTest {
 
             String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
             String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
-            String gender = "M";
             String email = "lmj938@naver.com";
-            String mobile = "010-0000-0000";
-            String mobileE164 = "+821000000000";
             String name = "이민재";
             Role role = Role.GUEST;
 
@@ -60,10 +57,7 @@ public class UserControllerTest {
                         User.builder()
                                 .naverId(naverId + i)
                                 .profileImage(profileImage + i)
-                                .gender(gender)
                                 .email(email + i)
-                                .mobile(mobile + i)
-                                .mobileE164(mobileE164 + i)
                                 .name(name + i)
                                 .role(role)
                                 .build()
@@ -94,12 +88,10 @@ public class UserControllerTest {
 
             String profileImage = "변경된 https://ssl.pstatic.net/static/pwe/address/img_profile.png";
             String email = "lmj938@naver.com";
-            String mobile = "010-0000-0000";
 
             UserUpdateRequestDto updated = UserUpdateRequestDto.builder()
                     .profileImage(profileImage)
                     .email(email)
-                    .mobile(mobile)
                     .role(Role.ADMIN)
                     .cardinalNumber("32")
                     .build();

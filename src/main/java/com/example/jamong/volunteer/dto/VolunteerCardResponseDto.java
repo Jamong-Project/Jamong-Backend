@@ -2,11 +2,13 @@ package com.example.jamong.volunteer.dto;
 
 import com.example.jamong.volunteer.domain.Picture;
 import com.example.jamong.volunteer.domain.Volunteer;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class VolunteerCardDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class VolunteerCardResponseDto {
 
     private final Long id;
     private final String title;
@@ -17,7 +19,7 @@ public class VolunteerCardDto {
     private final int currentPeople;
 
     @Builder
-    public VolunteerCardDto(Volunteer entity) {
+    public VolunteerCardResponseDto(Volunteer entity) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.picture = entity.representPicture();

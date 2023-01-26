@@ -1,16 +1,17 @@
 package com.example.jamong.volunteer.dto;
 
 import com.example.jamong.user.domain.User;
-import com.example.jamong.volunteer.domain.Comment;
 import com.example.jamong.volunteer.domain.Picture;
 import com.example.jamong.volunteer.domain.Volunteer;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-public class VolunteerArticleDto {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class VolunteerArticleResponseDto {
     private final Long id;
     private final String title;
     private final String content;
@@ -24,7 +25,7 @@ public class VolunteerArticleDto {
     private final List<CommentResponseDto> comments;
 
     @Builder
-    public VolunteerArticleDto(Volunteer entity, List<Picture> pictures, List<User> applicants, List<User> favoriteUsers, List<CommentResponseDto> comments) {
+    public VolunteerArticleResponseDto(Volunteer entity, List<Picture> pictures, List<User> applicants, List<User> favoriteUsers, List<CommentResponseDto> comments) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();

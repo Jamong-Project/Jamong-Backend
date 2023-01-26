@@ -4,6 +4,7 @@ import com.example.jamong.user.domain.Role;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,12 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponseDto {
     private String profileImage;
-    private String gender;
     private String email;
-    private String mobile;
-    private String mobileE164;
     private String name;
     private Role role;
     private String cardinalNumber;
@@ -29,10 +28,7 @@ public class UserResponseDto {
     @Builder
     public UserResponseDto(User entity, List<Volunteer> volunteers, List<Volunteer> favoriteVolunteers) {
         this.profileImage = entity.getProfileImage();
-        this.gender = entity.getGender();
         this.email = entity.getEmail();
-        this.mobile = entity.getMobile();
-        this.mobileE164 = entity.getMobileE164();
         this.name = entity.getName();
         this.role = entity.getRole();
         this.cardinalNumber = entity.getCardinalNumber();
@@ -52,8 +48,6 @@ public class UserResponseDto {
         return User.builder()
                 .profileImage(profileImage)
                 .email(email)
-                .mobile(mobile)
-                .mobileE164(mobileE164)
                 .name(name)
                 .role(role)
                 .cardinalNumber(cardinalNumber)

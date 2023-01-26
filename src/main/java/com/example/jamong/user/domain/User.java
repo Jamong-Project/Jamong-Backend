@@ -3,7 +3,7 @@ package com.example.jamong.user.domain;
 import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.user.dto.UserResponseDto;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
-import com.example.jamong.volunteer.domain.ApplyList;
+import com.example.jamong.volunteer.domain.Apply;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
@@ -26,16 +26,8 @@ public class User extends BaseTimeEntity {
 
     private String profileImage;
 
-    private String gender;
-
     @Column(nullable = false)
     private String email;
-
-    @Column(nullable = false)
-    private String mobile;
-
-    @Column(nullable = false)
-    private String mobileE164;
 
     private String name;
 
@@ -47,21 +39,18 @@ public class User extends BaseTimeEntity {
 
     @JsonBackReference
     @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<ApplyList> applyLists = new ArrayList<>();
+    private List<Apply> applies = new ArrayList<>();
 
     @JsonBackReference
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
     @Builder
-    public User(Long id, String naverId, String profileImage, String gender, String email, String mobile, String mobileE164, String name, Role role, String cardinalNumber) {
+    public User(Long id, String naverId, String profileImage, String email, String name, Role role, String cardinalNumber) {
         this.id = id;
         this.naverId = naverId;
         this.profileImage = profileImage;
-        this.gender = gender;
         this.email = email;
-        this.mobile = mobile;
-        this.mobileE164 = mobileE164;
         this.name = name;
         this.role = role;
         this.cardinalNumber = "New";
@@ -78,12 +67,6 @@ public class User extends BaseTimeEntity {
 
         if (requestDto.getEmail() != null) {
             this.email = requestDto.getEmail();
-        }
-
-        if (requestDto.getMobile() != null) {
-            String mobileNumber = requestDto.getMobile();
-            this.mobile = mobileNumber;
-            this.mobileE164 = "+82" + mobileNumber.replace("-", "").substring(1, 10);
         }
 
         if (requestDto.getRole() != null) {
@@ -107,14 +90,11 @@ public class User extends BaseTimeEntity {
                 "id=" + id +
                 ", naverId='" + naverId + '\'' +
                 ", profileImage='" + profileImage + '\'' +
-                ", gender='" + gender + '\'' +
                 ", email='" + email + '\'' +
-                ", mobile='" + mobile + '\'' +
-                ", mobileE164='" + mobileE164 + '\'' +
                 ", name='" + name + '\'' +
                 ", role=" + role +
                 ", cardinalNumber='" + cardinalNumber + '\'' +
-                ", applyLists=" + applyLists +
+                ", applyLists=" + applies +
                 ", favorites=" + favorites +
                 '}';
     }

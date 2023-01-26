@@ -39,10 +39,7 @@ public class UserLoginTest {
 
         assertThat(info.getBody().getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM");
         assertThat(info.getBody().getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png");
-        assertThat(info.getBody().getGender()).isEqualTo("M");
         assertThat(info.getBody().getEmail()).isEqualTo("lmj938@naver.com");
-        assertThat(info.getBody().getMobile()).isEqualTo("010-5913-7109");
-        assertThat(info.getBody().getMobileE164()).isEqualTo("+821059137109");
         assertThat(info.getBody().getName()).isEqualTo("이민재");
     }
 
@@ -55,10 +52,7 @@ public class UserLoginTest {
 
         assertThat(info.getBody().getNaverId()).isEqualTo("1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM");
         assertThat(info.getBody().getProfileImage()).isEqualTo("https://ssl.pstatic.net/static/pwe/address/img_profile.png");
-        assertThat(info.getBody().getGender()).isEqualTo("M");
         assertThat(info.getBody().getEmail()).isEqualTo("lmj938@naver.com");
-        assertThat(info.getBody().getMobile()).isEqualTo("010-5913-7109");
-        assertThat(info.getBody().getMobileE164()).isEqualTo("+821059137109");
         assertThat(info.getBody().getName()).isEqualTo("이민재");
     }
 }
@@ -72,6 +66,6 @@ class StubUserService extends UserService {
 
     @Override
     protected String getJsonUserProfile(TokenRequestDto tokenRequestDto) {
-        return "{\"resultcode\":\"00\",\"message\":\"success\",\"response\":{\"id\":\"1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM\",\"profile_image\":\"https://ssl.pstatic.net/static/pwe/address/img_profile.png\",\"gender\":\"M\",\"email\":\"lmj938@naver.com\",\"mobile\":\"010-5913-7109\",\"mobile_e164\":\"+821059137109\",\"name\":\"이민재\"}}";
+        return "{\"resultcode\":\"00\",\"message\":\"success\",\"response\":{\"id\":\"1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM\",\"profile_image\":\"https://ssl.pstatic.net/static/pwe/address/img_profile.png\",\"email\":\"lmj938@naver.com\",\"name\":\"이민재\"}}";
     }
 }

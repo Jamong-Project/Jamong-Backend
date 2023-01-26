@@ -1,6 +1,7 @@
 package com.example.jamong.volunteer.domain;
 
 import com.example.jamong.config.BaseTimeEntity;
+import com.example.jamong.volunteer.dto.VolunteerCardResponseDto;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
@@ -44,8 +45,8 @@ public class Volunteer extends BaseTimeEntity {
     private int currentPeople;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "volunteer", orphanRemoval = true)
-    private List<ApplyList> applyLists = new ArrayList<>();
+    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Apply> applies = new ArrayList<>();
 
     @JsonBackReference
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -124,5 +125,11 @@ public class Volunteer extends BaseTimeEntity {
 
     public void addComment(Comment comment) {
         comments.add(comment);
+    }
+
+    public VolunteerCardResponseDto toCardDto() {
+        return VolunteerCardResponseDto.builder()
+                .entity(this)
+                .build();
     }
 }

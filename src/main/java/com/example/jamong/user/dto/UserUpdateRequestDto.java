@@ -9,7 +9,6 @@ import lombok.Getter;
 public class UserUpdateRequestDto {
     private String profileImage;
     private String email;
-    private String mobile;
     private Role role;
     private String cardinalNumber;
 }

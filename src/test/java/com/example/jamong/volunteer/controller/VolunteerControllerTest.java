@@ -79,10 +79,7 @@ public class VolunteerControllerTest {
 
         String naverId = "1lOmnoQs0-GTI3XEOxmUOn1Fjm91IjLpyb4K7_kxzSM";
         String profileImage = "https://ssl.pstatic.net/static/pwe/address/img_profile.png";
-        String gender = "M";
         String email = "lmj938@naver.com";
-        String mobile = "010-0000-0000";
-        String mobileE164 = "+821000000000";
         String name = "이민재";
         Role role = Role.GUEST;
 
@@ -91,10 +88,7 @@ public class VolunteerControllerTest {
                 User.builder()
                         .naverId(naverId)
                         .profileImage(profileImage)
-                        .gender(gender)
                         .email(email)
-                        .mobile(mobile)
-                        .mobileE164(mobileE164)
                         .name(name)
                         .role(role)
                         .build()
@@ -104,6 +98,7 @@ public class VolunteerControllerTest {
     @AfterEach
     public void tearDown() {
         volunteerRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test

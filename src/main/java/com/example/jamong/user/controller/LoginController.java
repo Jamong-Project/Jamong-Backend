@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
     private final UserService userService;
 
-    @PostMapping("/login")
+    @PostMapping("/v1/login")
     public ResponseEntity<User> login(@RequestBody TokenRequestDto tokenRequestDto) {
         return userService.getProfile(tokenRequestDto);
     }
