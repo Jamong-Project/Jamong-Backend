@@ -1,7 +1,7 @@
 package com.example.jamong.volunteer.dto;
 
 import com.example.jamong.user.domain.User;
-import com.example.jamong.volunteer.domain.Apply;
+import com.example.jamong.volunteer.domain.Application;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -16,7 +16,7 @@ public class ApplyResponseDto {
     private Volunteer volunteer;
 
     @Builder
-    public ApplyResponseDto(Apply entity) {
+    public ApplyResponseDto(Application entity) {
         this.user = entity.getUser();
         this.volunteer = entity.getVolunteer();
     }

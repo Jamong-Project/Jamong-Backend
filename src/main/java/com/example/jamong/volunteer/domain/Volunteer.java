@@ -1,6 +1,7 @@
 package com.example.jamong.volunteer.domain;
 
 import com.example.jamong.config.BaseTimeEntity;
+import com.example.jamong.user.domain.User;
 import com.example.jamong.volunteer.dto.VolunteerCardResponseDto;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -45,8 +46,8 @@ public class Volunteer extends BaseTimeEntity {
     private int currentPeople;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Apply> applies = new ArrayList<>();
+    @OneToMany(mappedBy = "volunteer")
+    private List<Application> applications = new ArrayList<>();
 
     @JsonBackReference
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -131,5 +132,23 @@ public class Volunteer extends BaseTimeEntity {
         return VolunteerCardResponseDto.builder()
                 .entity(this)
                 .build();
+    }
+
+    public void addApplication(Application application) {
+        applications.add(application);
+        currentPeople = applications.size();
+    }
+
+    public void removeApplication(Application application) {
+        applications.remove(application);
+        currentPeople = applications.size();
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        favorites.remove(favorite);
     }
 }

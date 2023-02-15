@@ -8,25 +8,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class Apply extends BaseTimeEntity {
+public class Application extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Volunteer volunteer;
 
     @Builder
-    public Apply(User user, Volunteer volunteer) {
+    public Application(User user, Volunteer volunteer) {
         this.user = user;
         this.volunteer = volunteer;
     }
@@ -35,5 +36,21 @@ public class Apply extends BaseTimeEntity {
         return ApplyResponseDto.builder()
                 .entity(this)
                 .build();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Application that = (Application) obj;
+
+        if(!user.equals(that.user)) return false;
+        return Objects.equals(volunteer, that.volunteer);
     }
 }
