@@ -5,12 +5,12 @@ import com.example.jamong.exception.NoExistUserException;
 import com.example.jamong.user.domain.User;
 import com.example.jamong.user.dto.*;
 import com.example.jamong.user.repository.UserRepository;
-import com.example.jamong.volunteer.domain.Apply;
+import com.example.jamong.volunteer.domain.Application;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.ApplyResponseDto;
 import com.example.jamong.volunteer.dto.FavoriteResponseDto;
-import com.example.jamong.volunteer.repository.ApplyListRepository;
+import com.example.jamong.volunteer.repository.ApplicationRepository;
 import com.example.jamong.volunteer.repository.FavoriteRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,10 +39,13 @@ public class UserService {
     private final static String NAVER_LOGIN_HEADER_STRING = "Bearer ";
 
     private final UserRepository userRepository;
-    private final ApplyListRepository applyListRepository;
+    private final ApplicationRepository applyListRepository;
     private final FavoriteRepository favoriteRepository;
 
-    @Transactional(readOnly = true)
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(NoExistUserException::new);
+    }
+
     public ResponseEntity<User> getProfile(TokenRequestDto tokenRequestDto) {
         UserSaveRequestDto userSaveRequestDto = getUserProfileFromNaver(tokenRequestDto);
         Optional<User> user = userRepository.findByEmail(userSaveRequestDto.getEmail());
@@ -88,7 +91,6 @@ public class UserService {
         return naverResponseDto;
     }
 
-    @Transactional(readOnly = true)
     public String get(String apiUrl, Map<String, String> requestHeaders) {
         HttpURLConnection con = connect(apiUrl);
         try {
@@ -143,7 +145,6 @@ public class UserService {
         }
     }
 
-    @Transactional(readOnly = true)
     public List<User> findAll(String email, String name) {
         if (email != null && name == null) {
             return userRepository.findAllByEmail(email);
@@ -155,15 +156,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
     public UserResponseDto findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
 
-        List<Apply> applies = applyListRepository.findByUser(user);
+        List<Application> applies = applyListRepository.findByUser(user);
         List<Favorite> favorites = favoriteRepository.findByUser(user);
 
         List<Volunteer> apply = applies.stream()
-                .map(Apply::toDto)
+                .map(Application::toDto)
                 .map(ApplyResponseDto::getVolunteer)
                 .collect(Collectors.toList());
 
@@ -181,7 +181,6 @@ public class UserService {
         return dto;
     }
 
-    @Transactional
     public User update(Long id, UserUpdateRequestDto userUpdateRequestDto) {
         User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
 
@@ -190,10 +189,13 @@ public class UserService {
 
     }
 
-    @Transactional
     public User delete(Long id) {
         User user = userRepository.findById(id).orElseThrow(NoExistUserException::new);
         userRepository.delete(user);
         return user;
+    }
+
+    public User findByEmail(String email) {
+       return userRepository.findByEmail(email).orElseThrow(NoExistUserException::new);
     }
 }

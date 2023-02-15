@@ -12,9 +12,9 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     List<Favorite> findByUser(User user);
 
-    void deleteByUser(User user);
+    Favorite findByUserAndVolunteer(User user, Volunteer volunteer);
 
-    List<Favorite> findByUserAndVolunteer(User user, Volunteer volunteer);
+    boolean existsByVolunteerIdAndUserEmail(Long volunteerId, String email);
 
     void deleteByUserAndVolunteer(User user, Volunteer volunteer);
 }

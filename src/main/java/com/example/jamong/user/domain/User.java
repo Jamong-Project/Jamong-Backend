@@ -3,7 +3,7 @@ package com.example.jamong.user.domain;
 import com.example.jamong.config.BaseTimeEntity;
 import com.example.jamong.user.dto.UserResponseDto;
 import com.example.jamong.user.dto.UserUpdateRequestDto;
-import com.example.jamong.volunteer.domain.Apply;
+import com.example.jamong.volunteer.domain.Application;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
@@ -38,8 +38,8 @@ public class User extends BaseTimeEntity {
     private String cardinalNumber;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<Apply> applies = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<Application> applications = new ArrayList<>();
 
     @JsonBackReference
     @OneToMany(mappedBy = "user", orphanRemoval = true)
@@ -94,8 +94,12 @@ public class User extends BaseTimeEntity {
                 ", name='" + name + '\'' +
                 ", role=" + role +
                 ", cardinalNumber='" + cardinalNumber + '\'' +
-                ", applyLists=" + applies +
+                ", applyLists=" + applications +
                 ", favorites=" + favorites +
                 '}';
+    }
+
+    public void removeApplication() {
+
     }
 }

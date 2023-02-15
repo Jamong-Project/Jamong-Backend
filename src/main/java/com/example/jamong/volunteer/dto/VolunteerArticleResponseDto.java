@@ -1,6 +1,7 @@
 package com.example.jamong.volunteer.dto;
 
 import com.example.jamong.user.domain.User;
+import com.example.jamong.volunteer.domain.Comment;
 import com.example.jamong.volunteer.domain.Picture;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,10 +23,10 @@ public class VolunteerArticleResponseDto {
     private final int currentPeople;
     private final List<User> applicants;
     private final List<User> favoriteUsers;
-    private final List<CommentResponseDto> comments;
+    private final List<Comment> comments;
 
     @Builder
-    public VolunteerArticleResponseDto(Volunteer entity, List<Picture> pictures, List<User> applicants, List<User> favoriteUsers, List<CommentResponseDto> comments) {
+    public VolunteerArticleResponseDto(Volunteer entity, List<Picture> pictures, List<User> applicants, List<User> favoriteUsers, List<Comment> comments) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.content = entity.getContent();
