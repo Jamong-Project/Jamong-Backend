@@ -50,6 +50,8 @@ dependencies {
     implementation 'org.springframework:spring-test'
 
     implementation 'org.springframework.session:spring-session-jdbc'
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
 }
 
 
