@@ -9,6 +9,10 @@ import com.example.jamong.volunteer.domain.Comment;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.*;
+import com.example.jamong.volunteer.facade.VolunteerApplicationFacade;
+import com.example.jamong.volunteer.facade.VolunteerCommentFacade;
+import com.example.jamong.volunteer.facade.VolunteerFacade;
+import com.example.jamong.volunteer.facade.VolunteerFavoriteFacade;
 import com.example.jamong.volunteer.repository.ApplicationRepository;
 import com.example.jamong.volunteer.repository.CommentRepository;
 import com.example.jamong.volunteer.repository.FavoriteRepository;
@@ -35,6 +39,15 @@ class VolunteerIntegrationTest {
 
     @Autowired
     private VolunteerFacade volunteerFacade;
+
+    @Autowired
+    private VolunteerFavoriteFacade volunteerFavoriteFacade;
+
+    @Autowired
+    private VolunteerApplicationFacade volunteerApplicationFacade;
+
+    @Autowired
+    private VolunteerCommentFacade volunteerCommentFacade;
 
     @Autowired
     private VolunteerRepository volunteerRepository;
@@ -225,7 +238,7 @@ class VolunteerIntegrationTest {
                 .email(user.getEmail())
                 .build();
 
-        volunteerFacade.applyVolunteer(volunteer.getId(), userEmailRequestDto);
+        volunteerApplicationFacade.applyVolunteer(volunteer.getId(), userEmailRequestDto);
 
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
         User applyUser = applicationRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
@@ -245,7 +258,7 @@ class VolunteerIntegrationTest {
                 .email(user.getEmail())
                 .build();
 
-        volunteerFacade.applyVolunteer(volunteer.getId(), userEmailRequestDto);
+        volunteerApplicationFacade.applyVolunteer(volunteer.getId(), userEmailRequestDto);
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
 
         User applyUser = applicationRepository.findByVolunteer(updatedVolunteer).get(0).getUser();
@@ -253,7 +266,7 @@ class VolunteerIntegrationTest {
         assertThat(updatedVolunteer.getCurrentPeople()).isEqualTo(1);
         assertThat(applyUser.getEmail()).isEqualTo(user.getEmail()); //신청
 
-        volunteerFacade.applyVolunteer(volunteer.getId(), userEmailRequestDto);
+        volunteerApplicationFacade.applyVolunteer(volunteer.getId(), userEmailRequestDto);
         updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
 
         assertThat(updatedVolunteer.getCurrentPeople()).isEqualTo(0);
@@ -270,12 +283,12 @@ class VolunteerIntegrationTest {
                 .email(user.getEmail())
                 .build();
 
-        volunteerFacade.pressFavorite(volunteer.getId(), userEmailRequestDto);
+        volunteerFavoriteFacade.pressFavorite(volunteer.getId(), userEmailRequestDto);
         Favorite favorite = favoriteRepository.findByUserAndVolunteer(user, volunteer);
         assertThat(favorite).isNotNull(); //좋아요
 
 
-        volunteerFacade.pressFavorite(volunteer.getId(), userEmailRequestDto);
+        volunteerFavoriteFacade.pressFavorite(volunteer.getId(), userEmailRequestDto);
         favorite = favoriteRepository.findByUserAndVolunteer(user, volunteer);
         assertThat(favorite).isNull();
         //취소
@@ -292,7 +305,7 @@ class VolunteerIntegrationTest {
                 .email("lmj938@naver.com")
                 .build();
 
-        volunteerFacade.addComment(volunteer.getId(), commentRequestDto);
+        volunteerCommentFacade.addComment(volunteer.getId(), commentRequestDto);
 
         Volunteer updatedVolunteer = volunteerRepository.findById(volunteer.getId()).get();
         Comment comment = commentRepository.findByVolunteer(updatedVolunteer).get(0);

@@ -8,6 +8,9 @@ import com.example.jamong.volunteer.domain.Application;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerCardResponseDto;
+import com.example.jamong.volunteer.facade.VolunteerApplicationFacade;
+import com.example.jamong.volunteer.facade.VolunteerFacade;
+import com.example.jamong.volunteer.facade.VolunteerFavoriteFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +34,12 @@ public class VolunteerFacadeTest {
 
     @InjectMocks
     private VolunteerFacade volunteerFacade;
+
+    @InjectMocks
+    private VolunteerApplicationFacade volunteerApplicationFacade;
+
+    @InjectMocks
+    private VolunteerFavoriteFacade volunteerFavoriteFacade;
 
     @Mock
     private VolunteerService volunteerService;
@@ -126,7 +135,7 @@ public class VolunteerFacadeTest {
         given(applicationService.isAppliedVolunteer(any(), any())).willReturn(false);
 
         //when
-        volunteerFacade.applyVolunteer(1L, userEmailRequestDto);
+        volunteerApplicationFacade.applyVolunteer(1L, userEmailRequestDto);
         verify(applicationService).applyVolunteer(any());
     }
 
@@ -141,7 +150,7 @@ public class VolunteerFacadeTest {
         given(applicationService.isAppliedVolunteer(any(), any())).willReturn(true);
 
         //when
-        volunteerFacade.applyVolunteer(1L, userEmailRequestDto);
+        volunteerApplicationFacade.applyVolunteer(1L, userEmailRequestDto);
         verify(applicationService).deleteByUserAndVolunteer(any(), any());
     }
 
@@ -152,7 +161,7 @@ public class VolunteerFacadeTest {
 
         given(volunteerService.getVolunteerById(any())).willReturn(volunteer);
 
-        volunteerFacade.pressFavorite(1L, userEmailRequestDto);
+        volunteerFavoriteFacade.pressFavorite(1L, userEmailRequestDto);
         verify(favoriteService).save(any());
     }
 }

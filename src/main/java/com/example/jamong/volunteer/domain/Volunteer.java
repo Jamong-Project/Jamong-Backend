@@ -1,7 +1,6 @@
 package com.example.jamong.volunteer.domain;
 
 import com.example.jamong.config.BaseTimeEntity;
-import com.example.jamong.user.domain.User;
 import com.example.jamong.volunteer.dto.VolunteerCardResponseDto;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -79,7 +78,7 @@ public class Volunteer extends BaseTimeEntity {
         return pictures.get(0);
     }
 
-    public List<Picture> detailPicture() {
+    public List<Picture> getDetailPicture() {
         if (pictures == null || pictures.isEmpty()) {
             return null;
         }
