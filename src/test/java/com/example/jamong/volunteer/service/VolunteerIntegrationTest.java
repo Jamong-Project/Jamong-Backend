@@ -196,7 +196,7 @@ class VolunteerIntegrationTest {
                 .build();
 
         Volunteer volunteer = volunteerRepository.findAll().get(0);
-        Volunteer updatedVolunteer = volunteerFacade.update(volunteer.getId(), requestDto);
+        VolunteerResponseDto updatedVolunteer = volunteerFacade.update(volunteer.getId(), requestDto);
 
         assertThat(updatedVolunteer.getTitle()).isEqualTo("변경된 테스트 봉사 제목");
         assertThat(updatedVolunteer.getContent()).isEqualTo("변경된 테스트 봉사 내용, 이번 봉사는 한강 플로깅 봉사입니다.");

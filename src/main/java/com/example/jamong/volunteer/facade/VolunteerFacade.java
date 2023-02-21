@@ -6,6 +6,7 @@ import com.example.jamong.volunteer.domain.Comment;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.*;
+import com.example.jamong.volunteer.mapper.VolunteerMapper;
 import com.example.jamong.volunteer.service.ApplicationService;
 import com.example.jamong.volunteer.service.CommentService;
 import com.example.jamong.volunteer.service.FavoriteService;
@@ -28,6 +29,7 @@ public class VolunteerFacade {
     private final FavoriteService favoriteService;
     private final CommentService commentService;
     private final ApplicationService applicationService;
+    private final VolunteerMapper volunteerMapper;
 
     @Transactional(readOnly = true)
     public VolunteerArticleResponseDto getVolunteerArticleById(Long id) {
@@ -62,7 +64,10 @@ public class VolunteerFacade {
 
     @Transactional(readOnly = true)
     public List<VolunteerCardResponseDto> getVolunteerCards(Pageable pageable) {
-        return volunteerService.findAll(pageable);
+        List<Volunteer> volunteers = volunteerService.findAll(pageable);
+        return volunteers.stream()
+                .map(volunteerMapper::toCardResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
@@ -71,13 +76,15 @@ public class VolunteerFacade {
     }
 
     @Transactional
-    public Volunteer save(VolunteerSaveRequestDto requestDto) {
-        return volunteerService.save(requestDto);
+    public VolunteerResponseDto save(VolunteerSaveRequestDto requestDto) {
+        Volunteer save = volunteerService.save(requestDto);
+        return volunteerMapper.toResponseDto(save);
     }
 
     @Transactional
-    public Volunteer update(Long id, VolunteerUpdateRequestDto requestDto) {
-        return volunteerService.update(id, requestDto);
+    public VolunteerResponseDto update(Long id, VolunteerUpdateRequestDto requestDto) {
+        Volunteer update = volunteerService.update(id, requestDto);
+        return volunteerMapper.toResponseDto(update);
     }
 
     @Transactional

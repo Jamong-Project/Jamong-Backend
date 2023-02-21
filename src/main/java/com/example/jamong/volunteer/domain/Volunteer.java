@@ -127,12 +127,6 @@ public class Volunteer extends BaseTimeEntity {
         comments.add(comment);
     }
 
-    public VolunteerCardResponseDto toCardDto() {
-        return VolunteerCardResponseDto.builder()
-                .entity(this)
-                .build();
-    }
-
     public void addApplication(Application application) {
         applications.add(application);
         currentPeople = applications.size();

@@ -1,12 +1,10 @@
 package com.example.jamong.volunteer.controller;
 
 import com.example.jamong.user.dto.UserEmailRequestDto;
-import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.*;
 import com.example.jamong.volunteer.facade.VolunteerApplicationFacade;
 import com.example.jamong.volunteer.facade.VolunteerCommentFacade;
 import com.example.jamong.volunteer.facade.VolunteerFavoriteFacade;
-import com.example.jamong.volunteer.service.ApplicationService;
 import com.example.jamong.volunteer.service.AwsS3Service;
 import com.example.jamong.volunteer.facade.VolunteerFacade;
 import lombok.RequiredArgsConstructor;
@@ -45,21 +43,21 @@ public class VolunteerController {
     }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Volunteer> save(@RequestPart(value = "request") VolunteerSaveRequestDto requestDto, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFile) {
+    public ResponseEntity<VolunteerResponseDto> save(@RequestPart(value = "request") VolunteerSaveRequestDto requestDto, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFile) {
 
         if (multipartFile != null && !multipartFile.isEmpty()) {
             requestDto.setPictures(awsS3Service.uploadFile(multipartFile));
         }
-        Volunteer saved = volunteerFacade.save(requestDto);
+        VolunteerResponseDto saved = volunteerFacade.save(requestDto);
         return ResponseEntity.created(URI.create("/v1/volunteers/" + saved.getId())).body(saved);
     }
 
     @PostMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Volunteer> update(@PathVariable Long id, @RequestPart(value = "request") VolunteerUpdateRequestDto requestDto, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFile) {
+    public ResponseEntity<VolunteerResponseDto> update(@PathVariable Long id, @RequestPart(value = "request") VolunteerUpdateRequestDto requestDto, @RequestPart(value = "file", required = false) List<MultipartFile> multipartFile) {
         if (multipartFile != null && !multipartFile.isEmpty()) {
             requestDto.setPictures(awsS3Service.uploadFile(multipartFile));
         }
-        Volunteer updated = volunteerFacade.update(id, requestDto);
+        VolunteerResponseDto updated = volunteerFacade.update(id, requestDto);
         return ResponseEntity.ok().body(updated);
     }
 
