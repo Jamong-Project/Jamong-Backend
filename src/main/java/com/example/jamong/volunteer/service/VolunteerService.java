@@ -2,7 +2,6 @@ package com.example.jamong.volunteer.service;
 
 import com.example.jamong.exception.NoExistVolunteerException;
 import com.example.jamong.volunteer.domain.Volunteer;
-import com.example.jamong.volunteer.dto.VolunteerCardResponseDto;
 import com.example.jamong.volunteer.dto.VolunteerSaveRequestDto;
 import com.example.jamong.volunteer.dto.VolunteerUpdateRequestDto;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,14 +20,8 @@ public class VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
 
-    public List<VolunteerCardResponseDto> findAll(Pageable pageable) {
-        List<Volunteer> volunteerList = volunteerRepository.findAll(pageable).getContent();
-
-        List<VolunteerCardResponseDto> volunteerCardResponseDtos = volunteerList.stream()
-                .map(Volunteer::toCardDto)
-                .collect(Collectors.toList());
-
-        return volunteerCardResponseDtos;
+    public List<Volunteer> findAll(Pageable pageable) {
+        return volunteerRepository.findAll(pageable).getContent();
     }
 
     public HttpHeaders getTotalPage() {

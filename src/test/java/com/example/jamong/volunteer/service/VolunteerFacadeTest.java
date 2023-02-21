@@ -8,10 +8,15 @@ import com.example.jamong.volunteer.domain.Application;
 import com.example.jamong.volunteer.domain.Favorite;
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerCardResponseDto;
+import com.example.jamong.volunteer.facade.VolunteerApplicationFacade;
+import com.example.jamong.volunteer.facade.VolunteerFacade;
+import com.example.jamong.volunteer.facade.VolunteerFavoriteFacade;
+import com.example.jamong.volunteer.mapper.VolunteerMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,6 +37,12 @@ public class VolunteerFacadeTest {
     @InjectMocks
     private VolunteerFacade volunteerFacade;
 
+    @InjectMocks
+    private VolunteerApplicationFacade volunteerApplicationFacade;
+
+    @InjectMocks
+    private VolunteerFavoriteFacade volunteerFavoriteFacade;
+
     @Mock
     private VolunteerService volunteerService;
 
@@ -44,10 +55,14 @@ public class VolunteerFacadeTest {
     @Mock
     private FavoriteService favoriteService;
 
+    @Mock
+    private VolunteerMapper volunteerMapper = Mappers.getMapper(VolunteerMapper.class);
+
+
     private Volunteer firstVolunteer;
     private Volunteer secondVolunteer;
     private Volunteer volunteer;
-    private List<VolunteerCardResponseDto> volunteerCardResponseDtoList;
+    private List<Volunteer> volunteers;
     private User user;
     private UserEmailRequestDto userEmailRequestDto;
     private Application application;
@@ -70,13 +85,13 @@ public class VolunteerFacadeTest {
                 .content("봉사활동 내용")
                 .build();
 
-        List<Volunteer> volunteers = new ArrayList<>();
+        volunteers = new ArrayList<>();
 
         volunteers.add(firstVolunteer);
         volunteers.add(secondVolunteer);
 
-        volunteerCardResponseDtoList = volunteers.stream()
-                .map(Volunteer::toCardDto)
+        List<VolunteerCardResponseDto> volunteerCardResponseDtoList = volunteers.stream()
+                .map(volunteerMapper::toCardResponseDto)
                 .collect(Collectors.toList());
 
         userEmailRequestDto = UserEmailRequestDto.builder()
@@ -107,7 +122,7 @@ public class VolunteerFacadeTest {
     @DisplayName("봉사활동 카드 전체 조회")
     public void findAll() {
         //given
-        given(volunteerService.findAll(any())).willReturn(volunteerCardResponseDtoList);
+        given(volunteerService.findAll(any())).willReturn(volunteers);
 
         //when
         Pageable page = PageRequest.of(0, 1);
@@ -126,7 +141,7 @@ public class VolunteerFacadeTest {
         given(applicationService.isAppliedVolunteer(any(), any())).willReturn(false);
 
         //when
-        volunteerFacade.applyVolunteer(1L, userEmailRequestDto);
+        volunteerApplicationFacade.applyVolunteer(1L, userEmailRequestDto);
         verify(applicationService).applyVolunteer(any());
     }
 
@@ -141,7 +156,7 @@ public class VolunteerFacadeTest {
         given(applicationService.isAppliedVolunteer(any(), any())).willReturn(true);
 
         //when
-        volunteerFacade.applyVolunteer(1L, userEmailRequestDto);
+        volunteerApplicationFacade.applyVolunteer(1L, userEmailRequestDto);
         verify(applicationService).deleteByUserAndVolunteer(any(), any());
     }
 
@@ -152,7 +167,7 @@ public class VolunteerFacadeTest {
 
         given(volunteerService.getVolunteerById(any())).willReturn(volunteer);
 
-        volunteerFacade.pressFavorite(1L, userEmailRequestDto);
+        volunteerFavoriteFacade.pressFavorite(1L, userEmailRequestDto);
         verify(favoriteService).save(any());
     }
 }

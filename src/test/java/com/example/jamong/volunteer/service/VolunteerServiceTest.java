@@ -2,10 +2,12 @@ package com.example.jamong.volunteer.service;
 
 import com.example.jamong.volunteer.domain.Volunteer;
 import com.example.jamong.volunteer.dto.VolunteerCardResponseDto;
+import com.example.jamong.volunteer.mapper.VolunteerMapper;
 import com.example.jamong.volunteer.repository.VolunteerRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,6 +35,9 @@ public class VolunteerServiceTest {
     @Mock
     VolunteerRepository volunteerRepository;
 
+    @Mock
+    VolunteerMapper volunteerMapper = Mappers.getMapper(VolunteerMapper.class);
+
     @Test
     @DisplayName("봉사활동 전체 조회")
     public void findAll() {
@@ -52,7 +57,7 @@ public class VolunteerServiceTest {
         volunteers.add(volunteer2);
 
         List<VolunteerCardResponseDto> volunteerCardResponseDtoList = volunteers.stream()
-                .map(Volunteer::toCardDto)
+                .map(volunteerMapper::toCardResponseDto)
                 .collect(Collectors.toList());
 
         Page<Volunteer> page = new PageImpl(volunteers);
@@ -60,7 +65,7 @@ public class VolunteerServiceTest {
         given(volunteerRepository.findAll(any(Pageable.class))).willReturn(page);
 
         Pageable pageable = PageRequest.of(0, 2);
-        assertThat(volunteerService.findAll(pageable)).usingRecursiveComparison().isEqualTo(volunteerCardResponseDtoList);
+        assertThat(volunteerService.findAll(pageable)).usingRecursiveComparison().isEqualTo(volunteers);
     }
 
     @Test
@@ -99,7 +104,6 @@ public class VolunteerServiceTest {
         given(volunteerRepository.findById(id)).willReturn(ofNullable(volunteer));
         assertThat(volunteerService.getVolunteerById(id)).usingRecursiveComparison().isEqualTo(volunteer);
     }
-
 
     @Test
     @DisplayName("봉사활동 신청 테스트")
